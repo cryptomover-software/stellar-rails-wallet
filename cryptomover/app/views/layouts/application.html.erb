@@ -18,7 +18,6 @@
         <title>Cryptomover</title>
         
         <%= csrf_meta_tags %>
-
         <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
         <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
   </head>
@@ -106,14 +105,12 @@
                       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
                           <i class="fa fa-bars"></i>
                       </button>
-                      <a class="navbar-brand" href="#brand">
-
+                      <!-- <a class="navbar-brand" href="#brand"> -->
                           <!-- <img src="assets/images/logo.png" class="logo logo-display m-top-10" alt="">
                                <img src="assets/images/logo.jpg" class="logo logo-scrolled" alt=""> -->
-                          <%= image_tag("logo.png", class: "logo logo-display m-top-10")%>
-                          <%= image_tag("logo.jpg", class: "logo logo-scrolled")%>
-
-                      </a>
+                          <%= link_to image_tag("logo.png", class: "logo logo-display m-top-10"), root_path, class: "navbar-brand"%>
+                          <%= link_to image_tag("logo.jpg", class: "logo logo-scrolled"), root_path, class: "navbar-brand"%>
+                          <!-- </a> -->
                   </div>
                   <!-- End Header Navigation -->
 
@@ -159,8 +156,9 @@
               <!-- End Side Menu -->
 
           </nav>
-
-          <%= yield %>
+          <div id="content">
+              <%= yield %>
+          </div>
 
           <!-- scroll up-->
           <div class="scrollup">
@@ -198,7 +196,7 @@
       <!-- paradise slider js -->
 
 
-      <script src="http://maps.google.com/maps/api/js?key=AIzaSyD_tAQD36pKp9v4at5AnpGbvBUsLCOSJx8"></script>
+      <!-- <script src="http://maps.google.com/maps/api/js?key=AIzaSyD_tAQD36pKp9v4at5AnpGbvBUsLCOSJx8"></script> -->
 
       <script>
        function showmap() {
