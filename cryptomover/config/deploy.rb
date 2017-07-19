@@ -1,10 +1,10 @@
 # config valid only for current version of Capistrano
 lock "3.8.2"
-server '54.254.245.88', port: 22, roles: [:web, :app], primary: true
+server 'ec2-54-254-245-88.ap-southeast-1.compute.amazonaws.com', port: 22, roles: [:web, :app], primary: true
 
 set :application, "cryptomover"
 set :repo_url, "git@gitlab.com:Cryptomover_Web_App/web-app.git"
-set :user, 'cmdeploy'
+set :user, 'ec2-user'
 set :puma_threads, [4, 16]
 set :puma_workers, 0
 
