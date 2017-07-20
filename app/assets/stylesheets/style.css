@@ -737,6 +737,15 @@ textarea::-ms-input-placeholder{
 .culmn{
     width:100%;
     overflow: hidden;
+    height: 100%;
+}
+.wrapper{
+}
+#footer{
+    height: 100px;
+    bottom: 0px;
+    position: absolute;
+    width: 100%;
 }
 /*heading title all area*/
 .head_title{
