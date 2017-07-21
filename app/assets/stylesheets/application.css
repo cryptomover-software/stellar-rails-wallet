@@ -18,7 +18,9 @@ html {
     min-height: 100%;
 }
 body {
-    margin-bottom: 100px;
+    //margin-bottom: 100px;
+    min-height: 100%;
+    position: absolute;
 }
 .navbar {
 
@@ -27,7 +29,9 @@ body {
     height: 100%;
 }
 #page-content {
-    padding-top: 85px;
-    height: 100%;
-    background-color: grey;
+    min-height: 100% !important;
+}
+.page-navbar-color {
+    height: 85px;
+    background-color: lightgrey;
 }
