@@ -22,11 +22,11 @@ development:
 test:
   <<: *default
   # database: db/test.sqlite3
-  host: <%= ENV.fetch("STAGING_POSTGRESQL_HOST") %>
+  host: <%= ENV.fetch("TEST_POSTGRESQL_HOST") %>
   database: test
   pool: 5
-  username: <%= ENV.fetch("STAGING_POSTGRESQL_USERNAME")%>
-  password: <%= ENV.fetch("STAGING_POSTGRESQL_PASSWORD")%>
+  username: <%= ENV.fetch("TEST_POSTGRESQL_USERNAME")%>
+  password: <%= ENV.fetch("TEST_POSTGRESQL_PASSWORD")%>
 
 production:
   <<: *default

@@ -25,7 +25,7 @@ set :puma_workers, 0
 # set :pty, true
 set :pty,             true
 set :use_sudo,  true
-set :stage,           :staging
+set :stage,           :test
 set :deploy_via,      :remote_cache
 set :deploy_to,       "/home/ec2-user/apps/#{fetch(:application)}"
 set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
