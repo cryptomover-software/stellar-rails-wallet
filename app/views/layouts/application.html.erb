@@ -106,10 +106,10 @@
                           <i class="fa fa-bars"></i>
                       </button>
                       <!-- <a class="navbar-brand" href="#brand"> -->
-                          <!-- <img src="assets/images/logo.png" class="logo logo-display m-top-10" alt="">
-                               <img src="assets/images/logo.jpg" class="logo logo-scrolled" alt=""> -->
-                          <%= link_to image_tag("logo.png", class: "logo logo-display m-top-10"), root_path, class: "navbar-brand"%>
-                          <%= link_to image_tag("logo.jpg", class: "logo logo-scrolled"), root_path, class: "navbar-brand"%>
+                      <!-- <img src="assets/images/logo.png" class="logo logo-display m-top-10" alt="">
+                           <img src="assets/images/logo.jpg" class="logo logo-scrolled" alt=""> -->
+                      <%= link_to image_tag("co-logo.png", class: "logo logo-display m-top-10", width: "150px", height: "50px"), root_path, class: "navbar-brand"%>
+                          <%= link_to image_tag("co-logo.png", class: "logo logo-scrolled", width: "150px", height: "50px"), root_path, class: "navbar-brand"%>
                           <!-- </a> -->
                   </div>
                   <!-- End Header Navigation -->
@@ -117,13 +117,19 @@
                   <!-- Collect the nav links, forms, and other content for toggling -->
                   <div class="collapse navbar-collapse" id="navbar-menu">
                       <ul class="nav navbar-nav navbar-right" data-in="fadeInDown" data-out="fadeOutUp">
-                          <li><a href="#hello">Hello</a></li>                    
-                          <li><a href="#about">About</a></li>                    
-                          <li><a href="#service">Services</a></li>                    
-                          <li><a href="#portfolio">Portfolio</a></li>                    
-                          <li><a href="#pricing">Pricing</a></li>                    
-                          <li><a href="#blog">Blog</a></li>                    
-                          <li><a href="#contact">Contact</a></li>  
+                          <li><%= link_to "Home", root_path %></li>
+                          <li><%= link_to "CM Tokens" %></li>
+                          <li><%= link_to "Demo" %></li>
+                          <li><%= link_to "Trade Tokens"%></li>
+                          <li><%= link_to "About Us", about_path %></li>
+                          <li><%= link_to "Subscribe Now" %></li>
+                          <!-- <li><a href="#hello">Hello</a></li>                    
+                               <li><a href="#about">About</a></li>                    
+                               <li><a href="#service">Services</a></li>                    
+                               <li><a href="#portfolio">Portfolio</a></li>                    
+                               <li><a href="#pricing">Pricing</a></li>                    
+                               <li><a href="#blog">Blog</a></li>                    
+                               <li><a href="#contact">Contact</a></li>   -->
                       </ul>
                   </div><!-- /.navbar-collapse -->
               </div>  
