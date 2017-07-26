@@ -36,7 +36,5 @@ body {
     background-color: #033333;
 }
 .logo-display {
-    -webkit-box-shadow: 5px 5px 10px 3px rgba(22,85,130,1);
-    -moz-box-shadow: 5px 5px 10px 3px rgba(22,85,130,1);
-    box-shadow: 5px 5px 10px 3px rgba(22,85,130,1);
+
 }
