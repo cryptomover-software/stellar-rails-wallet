@@ -1,0 +1,233 @@
+<div class="wrapper wrapper-content">
+    <div class="container">
+
+        <div class="row">
+            <div class="col-lg-4">
+              <div class="ibox float-e-margins">
+                  <div class="ibox-title">
+                      <!-- <span class="label label-warning pull-right">Data has changed</span> -->
+                      <h5>Portfolio Summary</h5>
+                  </div>              
+                  <div class="ibox-content" style="height:300px;">
+                      <div class="row">
+                          <div class="col-xs-4">
+                              <small class="stats-label">Product</small>
+                              <h4>CM3</h4>
+                          </div>
+
+                          <div class="col-xs-4">
+                              <small class="stats-label">Total Value</small>
+                              <h4>1235.00</h4>
+                          </div>
+                          <div class="col-xs-4">
+                              <small class="stats-label">% return</small>
+                              <h4>15.23%</h4>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-4">
+                              <small class="stats-label">Product</small>
+                              <h4>CM3</h4>
+                          </div>
+
+                          <div class="col-xs-4">
+                              <small class="stats-label">Total Value</small>
+                              <h4>1235.00</h4>
+                          </div>
+                          <div class="col-xs-4">
+                              <small class="stats-label">% return</small>
+                              <h4>15.23%</h4>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-4">
+                              <small class="stats-label">Product</small>
+                              <h4>CM3</h4>
+                          </div>
+
+                          <div class="col-xs-4">
+                              <small class="stats-label">Total Value</small>
+                              <h4>1235.00</h4>
+                          </div>
+                          <div class="col-xs-4">
+                              <small class="stats-label">% return</small>
+                              <h4>15.23%</h4>
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-xs-4">
+                              <small class="stats-label">Product</small>
+                              <h4>CM3</h4>
+                          </div>
+
+                          <div class="col-xs-4">
+                              <small class="stats-label">Total Value</small>
+                              <h4>1235.00</h4>
+                          </div>
+                          <div class="col-xs-4">
+                              <small class="stats-label">% return</small>
+                              <h4>15.23%</h4>
+                          </div>
+                      </div>                      
+                  </div>
+              </div>
+            </div>          
+            <div class="col-lg-8">
+              
+              <div class="ibox float-e-margins">
+                  <div class="ibox-content">
+                      <div>
+                          <span class="pull-right text-right">
+                              <small>The latest: <strong>7 days</strong></small>
+                              <br />
+                              <!-- All sales: 162,862 -->
+                          </span>
+                          <h3 class="font-bold no-margins">
+                              Portfolio Performance
+                          </h3>
+                          <!-- <small>Sales marketing.</small> -->
+                      </div>
+
+                      <div class="m-t-sm">
+
+                          <div class="row">
+                              <div class="col-md-12">
+                                  <div>
+                                      <canvas id="lineChart" height="114"></canvas>
+                                  </div>
+                              </div>
+                          </div>
+
+                      </div>
+
+                      <div class="m-t-md">
+                          <small class="pull-right">
+                              <i class="fa fa-clock-o"> </i>
+                              Update on 16.07.2017
+                          </small>
+                          <small>
+                              <!-- <strong>Analysis of sales:</strong> The value has been changed over time, and last month reached a level over $50,000. -->
+                          </small>
+                      </div>
+
+                  </div>
+              </div>
+              
+            </div>
+        </div>
+        
+        
+        <div class="row">
+            <div class="col-lg-4">              
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <!-- <span class="label label-warning pull-right">Data has changed</span> -->
+                        <h5>Portfolio Pie</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <canvas id="pieChart" height="160"></canvas>
+                    </div>  
+                </div>                            
+            </div>          
+            <div class="col-lg-8">              
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <!-- <span class="label label-warning pull-right">Data has changed</span> -->
+                        <h5>Portfolio Exposure</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Allcoin </th>
+                                    <th>Weight </th>
+                                    <th>Exposure </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>BTC</td>
+                                    <td>300.0</td>
+                                    <td>66%</td>
+                                </tr>
+                                <tr>
+                                    <td>ETH</td>
+                                    <td>50.0</td>
+                                    <td>11%</td>
+                                </tr>
+                                <tr>
+                                    <td>LTC</td>
+                                    <td>100.0</td>
+                                    <td>22%</td>
+                                </tr>
+                                </tbody>
+                            </table>   
+                        </div>     
+                    </div>  
+                </div>  
+            </div>
+        </div>
+
+    </div>
+</div>    
+
+
+<% content_for :javascript do %>
+
+<script type="text/javascript">
+
+$(function() {
+    var lineData = {
+        labels: ["7-20", "7-21", "7-22", "7-23", "7-24", "7-25", "7-26"],
+        datasets: [
+            {
+                label: "CM3",
+                backgroundColor: "rgba(26,179,148,0.5)",
+                borderColor: "rgba(26,179,148,0.7)",
+                pointBackgroundColor: "rgba(26,179,148,1)",
+                pointBorderColor: "#fff",
+                data: [118, 138, 120, 109, 126, 117, 110]
+            },
+            {
+                label: "CM10",
+                backgroundColor: "rgba(220,220,220,0.5)",
+                borderColor: "rgba(220,220,220,1)",
+                pointBackgroundColor: "rgba(220,220,220,1)",
+                pointBorderColor: "#fff",
+                data: [95, 99, 90, 71, 116, 95, 80]
+            }
+        ]
+    };
+
+    var lineOptions = {
+        responsive: true
+    };
+
+
+    var ctx = document.getElementById("lineChart").getContext("2d");
+    new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
+
+
+    var pieData = {
+      labels: ["BTC","ETH","LTC" ],
+      datasets: [{
+          data: [300,50,100],
+          backgroundColor: ["#a3e1d4","#dedede","#b5b8cf"]
+      }]
+    };
+    
+    var ctxPie = document.getElementById("pieChart").getContext("2d");    
+    new Chart(ctxPie,{
+        type: 'pie',
+        data: pieData,
+        options: lineOptions
+    });
+
+
+});
+
+
+</script>
+
+<% end %>
