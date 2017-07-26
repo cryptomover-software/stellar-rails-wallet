@@ -1,0 +1,714 @@
+/ Home Sections
+%section#hello.home.bg-mega
+  .overlay
+  .container
+    .row
+      .main_home
+        .home_text
+          %h1.text-white Invest in Cryptocurrencies safely and securely
+          %h6.text-white Choose your portfolio now!
+        .home_btns.m-top-40
+          %a.btn.btn-primary.m-top-20{:href => "https://bootstrapthemes.co", :target => "_blank"} DEMO
+          %a.btn.btn-default.m-top-20{:href => "https://bootstrapthemes.co", :target => "_blank"} TRADE TOKENS
+    / End off row
+  / End off container
+/ End off Home Sections
+/ About Sections
+%section#about.about.roomy-100
+  .container
+    .row
+      .main_about
+        .col-md-6
+          .about_content
+            %h2 ABOUT US
+            .separator_left
+            %p Cryptomover is an index fund in digital asset world, first of its kind. The aim is to provide end to end automated altcoin investment platform accessible to everyone. We are based in Hong Kong.
+            .about_btns.m-top-40
+              / <a href="" class="btn btn-primary">Read More</a>
+              = link_to 'Read More', about_path, class: "btn btn-primary"
+        .col-md-6
+          .about_accordion.wow.fadeIn
+            #faq_main_content.faq_main_content
+              %h6
+                %i.fa.fa-angle-right
+                UNIQUE DESIGN
+              %div
+                .content
+                  %p
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              / End off accordion item-1
+              %h6.open
+                %i.fa.fa-angle-right
+                EXPERIENCE TEAM
+              .open
+                .content
+                  %p
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              / End off accordion item-2
+              %h6
+                %i.fa.fa-angle-right
+                GREAT SERVICE
+              %div
+                .content
+                  %p
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              / End off accordion item-3
+              %h6
+                %i.fa.fa-angle-right
+                FREE UPDATES
+              %div
+                .content
+                  %p
+                    Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                    sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                    magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              / End off accordion item-4
+    / End off row
+  / End off container
+  %br/
+  %br/
+  %br/
+  %br/
+  %hr/
+  %br/
+  %br/
+  .container
+    .row
+      .about_bottom_content
+        .col-md-4
+          .about_bottom_item.m-top-20
+            .ab_head
+              .ab_head_icon
+                %i.icofont.icofont-fire-burn
+              %h6.m-top-20 WE'RE CREATIVE
+            %p.m-top-20
+              Lorem ipsum dolor sit amet, consectetuer adipiscing ealit,
+              sed diaim nonummy nibsih euismod tincidiunt laorieet doloire
+              magna diam aliquafm erat voluitpati.
+        .col-md-4
+          .about_bottom_item.m-top-20
+            .ab_head
+              .ab_head_icon
+                %i.icofont.icofont-speech-comments
+              %h6.m-top-20 WE'RE FRIENDLY
+            %p.m-top-20
+              Lorem ipsum dolor sit amet, consectetuer adipiscing ealit,
+              sed diaim nonummy nibsih euismod tincidiunt laorieet doloire
+              magna diam aliquafm erat voluitpati.
+        .col-md-4
+          .about_bottom_item.m-top-20
+            .ab_head
+              .ab_head_icon
+                %i.icofont.icofont-heart
+              %h6.m-top-20 WE LOVE MINIMALISM
+            %p.m-top-20
+              Lorem ipsum dolor sit amet, consectetuer adipiscing ealit,
+              sed diaim nonummy nibsih euismod tincidiunt laorieet doloire
+              magna diam aliquafm erat voluitpati.
+    / End off row
+  / End off container
+/ End off About section
+/ Video section
+%section#video.video
+  .overlay
+  .main_video.roomy-100.m-top-100.m-bottom-100.text-center
+    .video_text.text-center
+      %a.video-link{:href => "http://www.youtube.com/watch?v=7HKoqNJtMTQ"}
+        %span.fa.fa-play
+/ End off video section
+.container
+  .row
+    .main_featured.m-top-100
+      .col-sm-12
+        .head_title.text-center
+          %h2 FEATURED WORK
+          .separator_auto
+          %p
+            Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+            sed diam nonummy nibh euismod nostrud exerci tation ullamcorper
+            suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+.featured_slider
+  %div
+    .featured_img
+      / <img src="assets/images/fprojects/1.jpg" alt="" />
+      = image_tag("fprojects/1.jpg")
+      %a.popup-img{:href => "assets/images/fprojects/1.jpg"}
+  %div
+    .featured_img
+      / <img src="assets/images/fprojects/2.jpg" alt="" />
+      = image_tag("fprojects/2.jpg")
+      %a.popup-img{:href => "assets/images/fprojects/2.jpg"}
+  %div
+    .featured_img
+      / <img src="assets/images/fprojects/3.jpg" alt="" />
+      = image_tag("fprojects/3.jpg")
+      %a.popup-img{:href => "assets/images/fprojects/3.jpg"}
+  %div
+    .featured_img
+      / <img src="assets/images/fprojects/4.jpg" alt="" />
+      = image_tag("fprojects/4.jpg")
+      %a.popup-img{:href => "assets/images/fprojects/4.jpg"}
+  %div
+    .featured_img
+      / <img src="assets/images/fprojects/5.jpg" alt="" />
+      = image_tag("fprojects/5.jpg")
+      %a.popup-img{:href => "assets/images/fprojects/5.jpg"}
+/ End off featured slider
+/ Service Section
+%section#service.service
+  .container
+    .row
+      .main_service.roomy-100
+        .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
+          .head_title.text-center
+            %h2 OUR SERVICES
+            .separator_auto
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod nostrud exerci tation ullamcorper
+              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+        .col-md-4
+          .service_item
+            %i.icofont.icofont-light-bulb
+            %h6.m-top-30 BRANDING
+            .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat.
+        .col-md-4
+          .service_item
+            %i.icofont.icofont-imac
+            %h6.m-top-30 BRANDING
+            .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat.
+        .col-md-4
+          .service_item
+            %i.icofont.icofont-video
+            %h6.m-top-30 BRANDING
+            .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat.
+    / End off row
+  / End off container
+/ End off Featured section
+/ Impress section
+%section#impress.impress.roomy-100
+  .overlay
+  .container
+    .row
+      .main_impress.text-center
+        .col-sm-8.col-sm-offset-2
+          %h2.text-white.text-uppercase Impressed?  Let's work together
+          %p.m-top-40.text-white
+            At vero eos et accusamus et iusto odio dignissimos ducimus qui ditqs praesentium
+            voluptatum deleniti atque corrupti quos dolores et quas molestias
+          .impress_btns.m-top-30
+            %a.btn.btn-primary.m-top-20{:href => ""} HIRE US
+            %a.btn.btn-default.m-top-20{:href => ""} HIRE US
+    / End off row
+  / End off container
+/ End off Impress section
+/ Portfolio Section
+%section#portfolio.portfolio.lightbg
+  .container
+    .row
+      .main_portfolio.roomy-100
+        .col-md-8.col-md-offset-2
+          .head_title.text-center
+            %h2 OUR PORTOFLIO
+            .separator_auto
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod nostrud exerci tation ullamcorper
+              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+        .portfolio_content
+          .col-md-8
+            .row
+              .col-md-12
+                .portfolio_item
+                  / <img src="assets/images/Portfolio/2.jpg" alt="" />
+                  = image_tag("Portfolio/2.jpg")
+                  .portfolio_hover.text-center
+                    %h6.text-uppercase.text-white Title
+                    %p.text-white Lorem ipsum dolor sit amet
+                    .portfolio_hover_icon
+                      %a.popup-img{:href => "assets/images/Portfolio/2.jpg"}
+                        %i.fa.fa-expand
+                      %a{:href => ""}
+                        %i.fa.fa-search
+              .col-md-6.m-top-30
+                .portfolio_item.portfolio_item2
+                  / <img src="assets/images/Portfolio/3.jpg" alt="" />
+                  = image_tag("Portfolio/3.jpg")
+                  .portfolio_hover.text-center
+                    %h6.text-uppercase.text-white Title
+                    %p.text-white Lorem ipsum dolor sit amet
+                    .portfolio_hover_icon
+                      %a.popup-img{:href => "assets/images/Portfolio/3.jpg"}
+                        %i.fa.fa-expand
+                      %a{:href => ""}
+                        %i.fa.fa-search
+              .col-md-6.m-top-30
+                .portfolio_item.portfolio_item2
+                  / <img src="assets/images/Portfolio/5.jpg" alt="" />
+                  = image_tag("Portfolio/5.jpg")
+                  .portfolio_hover.text-center
+                    %h6.text-uppercase.text-white Title
+                    %p.text-white Lorem ipsum dolor sit amet
+                    .portfolio_hover_icon
+                      %a.popup-img{:href => "assets/images/Portfolio/5.jpg"}
+                        %i.fa.fa-expand
+                      %a{:href => ""}
+                        %i.fa.fa-search
+          .col-md-4
+            .portfolio_item.portfolio_item3.sm-m-top-30
+              / <img src="assets/images/Portfolio/1.jpg" alt="" />
+              = image_tag("Portfolio/1.jpg")
+              .portfolio_hover.text-center
+                %h6.text-uppercase.text-white Title
+                %p.text-white Lorem ipsum dolor sit amet
+                .portfolio_hover_icon
+                  %a.popup-img{:href => "assets/images/Portfolio/1.jpg"}
+                    %i.fa.fa-expand
+                  %a{:href => ""}
+                    %i.fa.fa-search
+          .col-md-4.m-top-30
+            .portfolio_item.portfolio_item2
+              / <img src="assets/images/Portfolio/6.jpg" alt="" />
+              = image_tag("Portfolio/6.jpg")
+              .portfolio_hover.text-center
+                %h6.text-uppercase.text-white Title
+                %p.text-white Lorem ipsum dolor sit amet
+                .portfolio_hover_icon
+                  %a.popup-img{:href => "assets/images/Portfolio/6.jpg"}
+                    %i.fa.fa-expand
+                  %a{:href => ""}
+                    %i.fa.fa-search
+          .col-md-8.m-top-30
+            .portfolio_item
+              / <img src="assets/images/Portfolio/4.jpg" alt="" />
+              = image_tag("Portfolio/4.jpg")
+              .portfolio_hover.text-center
+                %h6.text-uppercase.text-white Title
+                %p.text-white Lorem ipsum dolor sit amet
+                .portfolio_hover_icon
+                  %a.popup-img{:href => "assets/images/Portfolio/4.jpg"}
+                    %i.fa.fa-expand
+                  %a{:href => ""}
+                    %i.fa.fa-search
+    / End off row
+  / End off container
+/ End off Portfolio section
+/ Skill Sections
+%section#skill.skill.roomy-100
+  .container
+    .row
+      .main_skill
+        .col-md-6
+          .skill_content.wow.fadeIn
+            %h2 Our skill
+            .separator_left
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              quis nostrud exerci tation ullamcorper suscipit lobortis
+              nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor
+              sit amet, consectetuer adipiscing elit, sed diam nonummy nibh
+              euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+              Ut wisi enim ad minim veniam, quis nostrud exerci tation
+              ullamcorper suscipit lobortis nisl ut aliquip
+              ex ea commodo consequat.
+        .col-md-6
+          .skill_bar.sm-m-top-50
+            .teamskillbar.clearfix.m-top-20{"data-percent" => "80%"}
+              %h6 GRAPHIC DESIGN
+              .teamskillbar-bar
+            / End Skill Bar
+            .teamskillbar.clearfix.m-top-50{"data-percent" => "75%"}
+              %h6 TYPOGRAPHY
+              .teamskillbar-bar
+            / End Skill Bar
+            .teamskillbar.clearfix.m-top-50{"data-percent" => "90%"}
+              %h6 HTML / CSS
+              .teamskillbar-bar
+            / End Skill Bar
+    / End off row
+  / End off container
+  %br/
+  %br/
+  %br/
+  %hr/
+  %br/
+  %br/
+  %br/
+  .container
+    .row
+      .skill_bottom_content.text-center
+        .col-md-3
+          .skill_bottom_item
+            %h2.statistic-counter 3468
+            .separator_small
+            %h5
+              %em Projects Finished
+        .col-md-3
+          .skill_bottom_item
+            %h2.statistic-counter 4638
+            .separator_small
+            %h5
+              %em Happy Clients
+        .col-md-3
+          .skill_bottom_item
+            %h2.statistic-counter 3468
+            .separator_small
+            %h5
+              %em Hours of work
+        .col-md-3
+          .skill_bottom_item
+            %h2.statistic-counter 3468
+            .separator_small
+            %h5
+              %em Cup of coffee
+    / End off row
+  / End off container
+/ End off Skill section
+/ Testimonial Section
+%section#testimonial.testimonial.fix
+  .overlay
+  .container
+    .row
+      .main_testimonial.roomy-100
+        .head_title.text-center
+          %h2.text-white OUR TESTIMONIALS
+        .testimonial_slid.text-center
+          .testimonial_item
+            .col-sm-10.col-sm-offset-1
+              %p.text-white
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
+                suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+              .test_authour.m-top-30
+                %h6.text-white.m-bottom-20 JOHN DOE - THEMEFOREST USER
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+          .testimonial_item
+            .col-sm-10.col-sm-offset-1
+              %p.text-white
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
+                suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+              .test_authour.m-top-30
+                %h6.text-white.m-bottom-20 JOHN DOE - THEMEFOREST USER
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+          .testimonial_item
+            .col-sm-10.col-sm-offset-1
+              %p.text-white
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
+                suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+              .test_authour.m-top-30
+                %h6.text-white.m-bottom-20 JOHN DOE - THEMEFOREST USER
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+          .testimonial_item
+            .col-sm-10.col-sm-offset-1
+              %p.text-white
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy
+                nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.
+                Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper
+                suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+              .test_authour.m-top-30
+                %h6.text-white.m-bottom-20 JOHN DOE - THEMEFOREST USER
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+                %i.fa.fa-star
+    / End off row
+  / End off container
+/ End off Testimonial section
+/ Pricing Section
+%section#pricing.pricing.lightbg
+  .container
+    .row
+      .main_pricing.roomy-100
+        .col-md-8.col-md-offset-2.col-sm-12
+          .head_title.text-center
+            %h2 OUR PRICING
+            .separator_auto
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt tation ullamcorper
+              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+        .col-md-4.col-sm-12
+          .pricing_item
+            .pricing_head.p-top-30.p-bottom-100.text-center
+              %h3.text-uppercase STARTER
+            .pricing_price_border.text-center
+              .pricing_price
+                %h3.text-white $19
+                %p.text-white per month
+            .pricing_body.bg-white.p-top-110.p-bottom-60
+              %ul
+                %li
+                  %i.fa.fa-check-circle.text-primary
+                  %span 10
+                  user
+                %li.disabled
+                  %i.fa.fa-times-circle
+                  Unlimited Bandwidth
+                %li.disabled
+                  %i.fa.fa-times-circle
+                  Full Statistics
+              .pricing_btn.text-center.m-top-40
+                %a.btn.btn-primary{:href => ""} CHOOSE PLAN
+        / End off col-md-4
+        .col-md-4.col-sm-12
+          .pricing_item.sm-m-top-30
+            .pricing_top_border
+            .pricing_head.p-top-30.p-bottom-100.text-center
+              %h3.text-uppercase PREMIUM
+            .pricing_price_border.text-center
+              .pricing_price
+                %h3.text-white $39
+                %p.text-white per month
+            .pricing_body.bg-white.p-top-110.p-bottom-60
+              %ul
+                %li
+                  %i.fa.fa-check-circle.text-primary
+                  %span 50
+                  user
+                %li
+                  %i.fa.fa-check-circle.text-primary
+                  Unlimited Bandwidth
+                %li.disabled
+                  %i.fa.fa-times-circle
+                  Full Statistics
+              .pricing_btn.text-center.m-top-40
+                %a.btn.btn-primary{:href => ""} CHOOSE PLAN
+        / End off col-md-4
+        .col-md-4.col-sm-12
+          .pricing_item.sm-m-top-30
+            .pricing_head.p-top-30.p-bottom-100.text-center
+              %h3.text-uppercase bUSINESS
+            .pricing_price_border.text-center
+              .pricing_price
+                %h3.text-white $99
+                %p.text-white per month
+            .pricing_body.bg-white.p-top-110.p-bottom-60
+              %ul
+                %li
+                  %i.fa.fa-check-circle.text-primary
+                  Unlimited Users
+                %li
+                  %i.fa.fa-check-circle.text-primary
+                  Unlimited Bandwidth
+                %li
+                  %i.fa.fa-check-circle.text-primary
+                  Full Statistics
+              .pricing_btn.text-center.m-top-40
+                %a.btn.btn-primary{:href => ""} CHOOSE PLAN
+        / End off col-md-4
+    / End off row
+  / End off container
+/ End off Pricing section
+/ client brand section
+%section#cbrand.cbrand
+  .container
+    .row
+      .main_cbrand.text-center.roomy-100
+        .col-md-2.col-sm-4.col-xs-6
+          .cbrand_item.m-bottom-10
+            %a{:href => ""}
+              / <img src="assets/images/clients/1.jpg" alt="" />
+              = image_tag("clients/1.jpg")
+        .col-md-2.col-sm-4.col-xs-6
+          .cbrand_item.m-bottom-10
+            %a{:href => ""}
+              / <img src="assets/images/clients/2.jpg" alt="" />
+              = image_tag("clients/2.jpg")
+        .col-md-2.col-sm-4.col-xs-6
+          .cbrand_item.m-bottom-10
+            %a{:href => ""}
+              / <img class="" src="assets/images/clients/5.jpg" alt="" />
+              = image_tag("clients/5.jpg")
+        .col-md-2.col-sm-4.col-xs-6
+          .cbrand_item.m-bottom-10
+            %a{:href => ""}
+              / <img src="assets/images/clients/4.jpg" alt="" />
+              = image_tag("clients/4.jpg")
+        .col-md-2.col-sm-4.col-xs-6
+          .cbrand_item.m-bottom-10
+            %a{:href => ""}
+              / <img src="assets/images/clients/3.jpg" alt="" />
+              = image_tag("clients/3.jpg")
+        .col-md-2.col-sm-4.col-xs-6
+          .cbrand_item.m-bottom-10
+            %a{:href => ""}
+              / <img src="assets/images/clients/1.jpg" alt="" />
+              = image_tag("clients/1.jpg")
+    / End off row
+  / End off container
+/ End off Cbrand section
+/ Subscribe section
+%section#subscribe.subscribe.roomy-100.fix
+  .overlay
+  .container
+    .row
+      .main_subscribe.text-center
+        .col-sm-8.col-sm-offset-2
+          %h2.text-white SUBSCRIBE US
+          %p.m-top-30.text-white
+            At vero eos et accusamus et iusto odio dignissimos
+            ducimus qui blanditiis praesentium
+        .col-sm-10.col-sm-offset-1
+          .subscribe_btns.m-top-40
+            %form.form-inline
+              .form-group
+                %input#inputEmail2.form-control{:placeholder => "Email Address", :type => "email"}/
+              %button.btn.btn-primary{:type => "submit"} SUBSCRIBE
+    / End off row
+  / End off container
+/ End off Impress section
+/ Blog Section
+%section#blog.blog
+  .container
+    .row
+      .main_blog.text-center.roomy-100
+        .col-sm-8.col-sm-offset-2
+          .head_title.text-center
+            %h2 RECENT BLOGS
+            .separator_auto
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt tation ullamcorper
+              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+        .col-md-4
+          .blog_item.m-top-20
+            .blog_item_img
+              / <img src="assets/images/Blog/1.jpg" alt="" />
+              = image_tag("Blog/1.jpg")
+            .blog_text.roomy-40
+              %h6 PLEASUARE WITHOUT CONSCIENCE
+              %p
+                %em
+                  %a{:href => ""} May 15, 2016
+                  \/
+                  %a{:href => ""}> admin
+                  \/
+                  %a{:href => ""} Co-working
+        .col-md-4
+          .blog_item.m-top-20
+            .blog_item_img
+              / <img src="assets/images/Blog/2.jpg" alt="" />
+              = image_tag("Blog/2.jpg")
+            .blog_text.roomy-40
+              %h6 PLEASUARE WITHOUT CONSCIENCE
+              %p
+                %em
+                  %a{:href => ""} May 15, 2016
+                  \/
+                  %a{:href => ""}> admin
+                  \/
+                  %a{:href => ""} Co-working
+        .col-md-4
+          .blog_item.m-top-20
+            .blog_item_img
+              / <img src="assets/images/Blog/3.jpg" alt="" />
+              = image_tag("Blog/3.jpg")
+            .blog_text.roomy-40
+              %h6 PLEASUARE WITHOUT CONSCIENCE
+              %p
+                %em
+                  %a{:href => ""} May 15, 2016
+                  \/
+                  %a{:href => ""}> admin
+                  \/
+                  %a{:href => ""} Co-working
+    / End off row
+  / End off container
+/ End off Blog section
+/ Maps Section
+.main_maps.text-center.fix
+  .overlay
+  .maps_text
+    %h3.text-white{:onclick => "showmap()"}
+      FIND US ON THE MAP
+      %i.fa.fa-angle-down
+    #map_canvas.mapheight
+/ End off Maps Section
+/ Contact Us Section
+%section#contact.contact.bg-mega.fix
+  .container
+    .row
+      .main_contact.roomy-100.text-white
+        .col-md-4
+          .rage_widget
+            .widget_head
+              %h3.text-white RAGE
+              .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat. Ut wisi enim ad minim veniam,
+              quis nostrud exerci tation ullamcorper suscipit lobortis nisl
+              ut aliquip ex ea commodo consequat.
+            .widget_socail.m-top-30
+              %ul.list-inline
+                %li
+                  %a{:href => ""}
+                    %i.fa.fa-facebook
+                %li
+                  %a{:href => ""}
+                    %i.fa.fa-twitter
+                %li
+                  %a{:href => ""}
+                    %i.fa.fa-linkedin
+                %li
+                  %a{:href => ""}
+                    %i.fa.fa-vimeo
+                %li
+                  %a{:href => ""}
+                    %i.fa.fa-instagram
+        .col-md-8.sm-m-top-30
+          %form{:action => "subcribe.php"}
+            .row
+              .col-sm-6
+                .form-group
+                  %input#first_name.form-control{:name => "first_name", :placeholder => "Name", :required => "", :type => "text"}/
+              .col-sm-6
+                .form-group
+                  %input#phone.form-control{:name => "phone", :placeholder => "Phone", :type => "text"}/
+              .col-sm-12
+                .form-group
+                  %textarea.form-control{:placeholder => "Message", :rows => "6"}
+                .form-group.text-center
+                  %a.btn.btn-primary{:href => ""} SEND MESSAGE
+    / End off row
+  / End off container
+/ End off Contact Section
