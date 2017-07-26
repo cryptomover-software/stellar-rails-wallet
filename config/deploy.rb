@@ -7,7 +7,7 @@ set :repo_url, "git@gitlab.com:Cryptomover_Web_App/web-app.git"
 set :user, 'ec2-user'
 set :puma_threads, [4, 16]
 set :puma_workers, 0
-
+set :branch, "site_content"
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
@@ -70,8 +70,8 @@ namespace :deploy do
   desc "Make sure local git is in sync with remote."
   task :check_revision do
     on roles(:app) do
-      unless `git rev-parse HEAD` == `git rev-parse origin/master`
-        puts "WARNING: HEAD is not the same as origin/master"
+      unless `git rev-parse HEAD` == `git rev-parse origin/#{fetch(:branch)}`
+        puts "WARNING: HEAD is not the same as origin/#fetch(:branch)}"
         puts "Run `git push` to sync changes."
         exit
       end
