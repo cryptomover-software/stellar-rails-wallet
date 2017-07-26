@@ -46,3 +46,18 @@ body {
 .home_text {
     margin-top: 30px;
 }
+.navbar-brand {
+    margin-top: -20px;
+}
+.logo-scrolled {
+    width: 150px;
+    height: 50px;
+    margin-top: -15px;
+    @media(max-width: 360px) {
+        margin-left: -13px;
+    }
+}
+.logo-display {
+    width: 210px;
+    height: 80px;
+}
