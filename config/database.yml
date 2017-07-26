@@ -14,7 +14,7 @@ development:
   adapter: sqlite3
   encoding: utf8
   database: db/development.sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+ # pool: <%#= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -22,11 +22,11 @@ development:
 test:
   <<: *default
   # database: db/test.sqlite3
-  host: <%= ENV.fetch("TEST_POSTGRESQL_HOST") %>
+#  host: <%#= ENV.fetch("TEST_POSTGRESQL_HOST") %>
   database: test
   pool: 5
-  username: <%= ENV.fetch("TEST_POSTGRESQL_USERNAME")%>
-  password: <%= ENV.fetch("TEST_POSTGRESQL_PASSWORD")%>
+  # username: <%#= ENV.fetch("TEST_POSTGRESQL_USERNAME")%>
+  # password: <%#= ENV.fetch("TEST_POSTGRESQL_PASSWORD")%>
 
 production:
   <<: *default
