@@ -15,9 +15,22 @@
                 .col-xs-4.col-sm-12
                   = change
         .home_text
-          %h1.text-white Invest in Cryptocurrencies safely and securely
-          %h6.text-white Choose your portfolio now!
-        .home_btns.m-top-40
+          .row
+            .col-xs-12.col-sm-6#header-text
+              %h2.text-white
+                %b Diversify your cryptocurrencies portfolio with us quickly & safely
+              %h4.text-white
+                %u Choose your portfolio now!
+            .col-xs-12.col-sm-6
+              .row
+                .col-xs-12.text-center
+                  = video_tag("/videos/intro.mp4", controls: "true", width: "600px")
+              .row.m-top-10
+                .col-xs-6.text-white.text-center
+                  New to Cryptocurrency?
+                .col-xs-6.text-white.text-center
+                  New to Index funds?
+        .home_btns
           %a.btn.btn-primary.m-top-20{:href => "https://bootstrapthemes.co", :target => "_blank"} DEMO
           %a.btn.btn-default.m-top-20{:href => "https://bootstrapthemes.co", :target => "_blank"} TRADE TOKENS
     / End off row
