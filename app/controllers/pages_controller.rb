@@ -7,4 +7,8 @@ class PagesController < ApplicationController
 
   def about    
   end
+  
+  def dashboard
+    render :layout => "dashboard"    
+  end
 end
