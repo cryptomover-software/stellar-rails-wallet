@@ -22,8 +22,8 @@
                 %u Choose your portfolio now!
             .col-xs-12.col-sm-6
               .row
-                .col-xs-12.text-center
-                  = video_tag("/videos/intro.mp4", controls: "true", width: "600px", poster: "intro_video_thumbnail.png", type: "video/mp4")
+                .col-xs-12.text-center.embed-responsive.embed-responsive-16by9{align: "center"}
+                  = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "intro-video", class: "embed-responsive-item")
               .row.m-top-20
                 .col-xs-6.text-white.text-center
                   New to Cryptocurrency?
