@@ -13,7 +13,8 @@
                 .col-xs-4.col-sm-12
                   = value
                 .col-xs-4.col-sm-12
-                  = change
+                  #index-change{class: ( change.positive? ? "positive-change" : "negative-change")}
+                    = "#{change} %"
         .home_text
           .row
             .col-xs-12.col-sm-6#header-text
