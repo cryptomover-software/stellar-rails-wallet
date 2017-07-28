@@ -42,43 +42,43 @@
 %section#service.service
   .container
     .row
-      .main_service.roomy-100
+      .main_service
         .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
           .head_title.text-center
             .our-products
               OUR INDEXES
             .separator_auto
             %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod nostrud exerci tation ullamcorper
-              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-        .col-md-4
-          .service_item
-            %i.icofont.icofont-light-bulb
-            %h6.m-top-30 BRANDING
-            .separator_small
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-              magna aliquam erat volutpat.
-        .col-md-4
-          .service_item
-            %i.icofont.icofont-imac
-            %h6.m-top-30 BRANDING
-            .separator_small
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-              magna aliquam erat volutpat.
-        .col-md-4
-          .service_item
-            %i.icofont.icofont-video
-            %h6.m-top-30 BRANDING
-            .separator_small
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-              magna aliquam erat volutpat.
+              We charge only 0.01% per day as the management fee for each product
+        - @index_names.each_with_index do |name, index|
+          .col-md-3
+            .service_item
+              %i.icofont.icofont-light-bulb
+              %h6.m-top-30
+                = "0#{index} / #{name}"
+              .separator_small
+              %p
+                Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+                sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+                magna aliquam erat volutpat.
+        -# .col-md-4
+        -#   .service_item
+        -#     %i.icofont.icofont-imac
+        -#     %h6.m-top-30 BRANDING
+        -#     .separator_small
+        -#     %p
+        -#       Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+        -#       sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+        -#       magna aliquam erat volutpat.
+        -# .col-md-4
+        -#   .service_item
+        -#     %i.icofont.icofont-video
+        -#     %h6.m-top-30 BRANDING
+        -#     .separator_small
+        -#     %p
+        -#       Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+        -#       sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+        -#       magna aliquam erat volutpat.
     / End off row
   / End off container
   
