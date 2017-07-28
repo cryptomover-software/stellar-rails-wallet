@@ -50,35 +50,29 @@
             .separator_auto
             %p
               We charge only 0.01% per day as the management fee for each product
-        - @index_names.each_with_index do |name, index|
-          .col-md-3
+        - @index_names.zip(@index_desc, @index_yield).each_with_index do |name, index|
+          .col-md-3.text-center
             .service_item
               %i.icofont.icofont-light-bulb
-              %h6.m-top-30
-                = "0#{index} / #{name}"
-              .separator_small
+              %h5.m-top-30
+                %p
+                  %span.text-green
+                    = "0#{index+1} / "
+                  = "#{name[0]}"
+              / .separator_small
               %p
-                Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-                sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-                magna aliquam erat volutpat.
-        -# .col-md-4
-        -#   .service_item
-        -#     %i.icofont.icofont-imac
-        -#     %h6.m-top-30 BRANDING
-        -#     .separator_small
-        -#     %p
-        -#       Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-        -#       sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-        -#       magna aliquam erat volutpat.
-        -# .col-md-4
-        -#   .service_item
-        -#     %i.icofont.icofont-video
-        -#     %h6.m-top-30 BRANDING
-        -#     .separator_small
-        -#     %p
-        -#       Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-        -#       sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-        -#       magna aliquam erat volutpat.
+                = name[1]
+                %br
+                Yield:
+                = name[2]
+                %br
+                No Entry/Exit Fee
+                %br
+                Current Price:
+                %br
+                For Details
+                %br
+                = link_to "Click Here"
     / End off row
   / End off container
   
