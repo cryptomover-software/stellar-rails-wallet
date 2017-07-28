@@ -750,7 +750,8 @@ textarea::-ms-input-placeholder{
 }
 /*heading title all area*/
 .head_title{
-    padding-bottom: 7.143rem;
+    //padding-bottom: 7.143rem;
+    padding-bottom: 3rem;
     overflow: hidden;
 }
 .head_title h2{
