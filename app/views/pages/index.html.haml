@@ -13,14 +13,15 @@
                 .col-xs-4.col-sm-12
                   = value
                 .col-xs-4.col-sm-12
-                  = change
+                  #index-change{class: ( change.positive? ? "positive-change" : "negative-change")}
+                    = "#{change} %"
         .home_text
           .row
-            .col-xs-12.col-sm-6#header-text
+            .col-xs-12.col-lg-6#header-text
               %h1#header-title.text-white Diversify your cryptocurrencies portfolio with us quickly & safely
-              %h4#header-portfolio.text-white.m-top-50
+              %h4#header-portfolio.text-white
                 %u Choose your portfolio now!
-            .col-xs-12.col-sm-6
+            .col-xs-12.col-lg-6
               .row
                 .col-xs-12.text-center.embed-responsive.embed-responsive-16by9{align: "center"}
                   = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "intro-video", class: "embed-responsive-item")
