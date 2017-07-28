@@ -9,7 +9,8 @@
             .col-sm-3
               .row
                 .col-xs-4.col-sm-12
-                  = title
+                  %b
+                    = title
                 .col-xs-4.col-sm-12
                   = value
                 .col-xs-4.col-sm-12
@@ -18,13 +19,13 @@
         .home_text
           .row
             .col-xs-12.col-lg-6#header-text
-              %h1#header-title.text-white Diversify your cryptocurrencies portfolio with us quickly & safely
+              #header-title.text-white Diversify your cryptocurrencies portfolio with us quickly & safely
               %h4#header-portfolio.text-white
                 %u Choose your portfolio now!
             .col-xs-12.col-lg-6
-              .row
+              .row.m-0
                 .col-xs-12.text-center.embed-responsive.embed-responsive-16by9{align: "center"}
-                  = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "intro-video", class: "embed-responsive-item")
+                  = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "intro-video", class: "embed-responsive-item", controlsList: "nodownload")
               .row.m-top-20
                 .col-xs-6.text-white.text-center
                   New to Cryptocurrency?
@@ -36,6 +37,51 @@
     / End off row
   / End off container
 / End off Home Sections
+
+/ Service Section
+%section#service.service
+  .container
+    .row
+      .main_service.roomy-100
+        .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
+          .head_title.text-center
+            .our-products
+              OUR INDEXES
+            .separator_auto
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod nostrud exerci tation ullamcorper
+              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+        .col-md-4
+          .service_item
+            %i.icofont.icofont-light-bulb
+            %h6.m-top-30 BRANDING
+            .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat.
+        .col-md-4
+          .service_item
+            %i.icofont.icofont-imac
+            %h6.m-top-30 BRANDING
+            .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat.
+        .col-md-4
+          .service_item
+            %i.icofont.icofont-video
+            %h6.m-top-30 BRANDING
+            .separator_small
+            %p
+              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
+              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
+              magna aliquam erat volutpat.
+    / End off row
+  / End off container
+  
 / About Sections
 %section#about.about.roomy-100
   .container
@@ -183,48 +229,6 @@
       = image_tag("fprojects/5.jpg")
       %a.popup-img{:href => "assets/images/fprojects/5.jpg"}
 / End off featured slider
-/ Service Section
-%section#service.service
-  .container
-    .row
-      .main_service.roomy-100
-        .col-md-8.col-md-offset-2.col-sm-10.col-sm-offset-1
-          .head_title.text-center
-            %h2 OUR SERVICES
-            .separator_auto
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod nostrud exerci tation ullamcorper
-              suscipit lobortis nisl ut aliquip ex ea commodo consequat.
-        .col-md-4
-          .service_item
-            %i.icofont.icofont-light-bulb
-            %h6.m-top-30 BRANDING
-            .separator_small
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-              magna aliquam erat volutpat.
-        .col-md-4
-          .service_item
-            %i.icofont.icofont-imac
-            %h6.m-top-30 BRANDING
-            .separator_small
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-              magna aliquam erat volutpat.
-        .col-md-4
-          .service_item
-            %i.icofont.icofont-video
-            %h6.m-top-30 BRANDING
-            .separator_small
-            %p
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit,
-              sed diam nonummy nibh euismod tincidunt ut laoreet dolore
-              magna aliquam erat volutpat.
-    / End off row
-  / End off container
 / End off Featured section
 / Impress section
 %section#impress.impress.roomy-100
