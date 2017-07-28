@@ -55,10 +55,9 @@
             .service_item
               %i.icofont.icofont-light-bulb
               %h5.m-top-30
-                %p
-                  %span.text-green
-                    = "0#{index+1} / "
-                  = "#{name[0]}"
+                %span.text-green
+                  = "0#{index+1} / "
+                = "#{name[0]}"
               / .separator_small
               %p
                 = name[1]
@@ -73,6 +72,21 @@
                 For Details
                 %br
                 = link_to "Click Here"
+    / End off row
+  / End off container
+
+/ Demo Video Section
+%section#service.service.m-top-100
+  .container
+    .row.m-0
+      .col-xs-12
+        .head_title.text-center
+          .our-products
+            DEMO
+      .col-xs-12.text-center.embed-responsive.embed-responsive-16by9{align: "center"}
+        = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "demo-video", class: "embed-responsive-item", controlsList: "nodownload")
+      .col-xs-12.text-center.m-top-30
+        %a.btn.btn-get-tokens.m-top-20{href: "https://bootstrapthemes.co", target: "_blank"} Get Tokens
     / End off row
   / End off container
   
