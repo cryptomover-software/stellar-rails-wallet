@@ -92,6 +92,11 @@
                           </small>
                           <small>
                               <!-- <strong>Analysis of sales:</strong> The value has been changed over time, and last month reached a level over $50,000. -->
+                              <div data-toggle="buttons" class="btn-group lineBtns">
+                                  <label class="btn btn-sm btn-white active"> <input type="radio" id="option1" name="options"> Weekly </label>
+                                  <label class="btn btn-sm btn-white"> <input type="radio" id="option2" name="options"> Monthly </label>
+                                  <label class="btn btn-sm btn-white"> <input type="radio" id="option3" name="options"> Annually </label>
+                              </div>                              
                           </small>
                       </div>
 
@@ -163,7 +168,7 @@
 <script type="text/javascript">
 
 $(function() {
-    var lineData = {
+    var lineData1 = {
         labels: ["7-20", "7-21", "7-22", "7-23", "7-24", "7-25", "7-26"],
         datasets: [
             {
@@ -184,6 +189,50 @@ $(function() {
             }
         ]
     };
+    
+    var lineData2 = {
+        labels: ["2017-02", "2017-03", "2017-04", "2017-05", "2017-06", "2017-07", "2017-08"],
+        datasets: [
+            {
+                label: "CM3",
+                backgroundColor: "rgba(26,179,148,0.5)",
+                borderColor: "rgba(26,179,148,0.7)",
+                pointBackgroundColor: "rgba(26,179,148,1)",
+                pointBorderColor: "#fff",
+                data: [68, 78, 80, 99, 76, 67, 100]
+            },
+            {
+                label: "CM10",
+                backgroundColor: "rgba(220,220,220,0.5)",
+                borderColor: "rgba(220,220,220,1)",
+                pointBackgroundColor: "rgba(220,220,220,1)",
+                pointBorderColor: "#fff",
+                data: [48, 38, 30, 59, 76, 67, 40]
+            }
+        ]
+    };
+    
+    var lineData3 = {
+        labels: ["2015", "2016", "2017"],
+        datasets: [
+            {
+                label: "CM3",
+                backgroundColor: "rgba(26,179,148,0.5)",
+                borderColor: "rgba(26,179,148,0.7)",
+                pointBackgroundColor: "rgba(26,179,148,1)",
+                pointBorderColor: "#fff",
+                data: [58, 88, 138]
+            },
+            {
+                label: "CM10",
+                backgroundColor: "rgba(220,220,220,0.5)",
+                borderColor: "rgba(220,220,220,1)",
+                pointBackgroundColor: "rgba(220,220,220,1)",
+                pointBorderColor: "#fff",
+                data: [33, 65, 99]
+            }
+        ]
+    };
 
     var lineOptions = {
         responsive: true
@@ -191,7 +240,22 @@ $(function() {
 
 
     var ctx = document.getElementById("lineChart").getContext("2d");
-    new Chart(ctx, {type: 'line', data: lineData, options:lineOptions});
+    new Chart(ctx, {type: 'line', data: lineData1, options:lineOptions});
+    
+    
+    $(document).on('change', '.lineBtns input:radio', function (event) {
+      var data; 
+      var id = $(this).attr('id');
+      if(id == 'option1'){
+        data = lineData1;
+      }else if(id == 'option2'){
+        data = lineData2;        
+      }else{
+        data = lineData3;        
+      }
+      console.log(data)
+      new Chart(ctx, {type: 'line', data: data, options:lineOptions});              
+    });
 
 
     var pieData = {
