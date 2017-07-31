@@ -569,7 +569,7 @@
   .container
     .row
       .main_subscribe.text-center
-        .col-sm-8.col-sm-offset-2
+        .col-xs-12
           .section-title.text-white.p-0
             SUBSCRIBE NOW
           %p.m-top-30.text-white
@@ -642,13 +642,13 @@
   / End off container
 / End off Blog section
 / Maps Section
--# .main_maps.text-center.fix
--#   .overlay
--#   .maps_text
--#     %h3.text-white{:onclick => "showmap()"}
--#       FIND US ON THE MAP
--#       %i.fa.fa-angle-down
--#     #map_canvas.mapheight
+.main_maps.text-center.fix
+  .overlay
+  .maps_text
+    -# %h3.text-white{:onclick => "showmap()"}
+      -# FIND US ON THE MAP
+      -# %i.fa.fa-angle-down
+    #map_canvas.mapheight
 / End off Maps Section
 / Contact Us Section
 -# %section#contact.contact.bg-mega.fix
