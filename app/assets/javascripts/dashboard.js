@@ -10,3 +10,4 @@
 //= require bootstrap-sprockets
 //= require rails-ujs
 //= require chartjs/Chart.min.js
+//= require iCheck/icheck.min.js
