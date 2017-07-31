@@ -5,4 +5,5 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'pages#dashboard'  
   get 'trade', to: 'pages#trade'    
   get 'trade1', to: 'pages#trade1'      
+  get 'trade2', to: 'pages#trade2'        
 end
