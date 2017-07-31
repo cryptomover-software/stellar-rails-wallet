@@ -181,3 +181,17 @@ body {
     margin:20px auto;
     background: #605E5E;
 }
+
+#press-release {
+    p {
+        line-height: 3;
+    }
+    .head_title {
+        padding: 0;
+    }
+}
+
+#press-release-items {
+    width: 70%;
+    margin-bottom: 70px;
+}
