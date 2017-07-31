@@ -33,7 +33,7 @@ body {
 }
 
 #content > section:nth-of-type(odd) {
-    background-color: lightgrey;
+    background-color: #EAEAEA;
 }
 
 #page-content {
@@ -167,4 +167,17 @@ body {
 {
     margin: 0 auto;
     float: none;
+}
+
+#about {
+    .section-title {
+        color: #605E5E;
+    }
+}
+
+.separator_about{
+    width:85px;
+    height:2px;
+    margin:20px auto;
+    background: #605E5E;
 }
