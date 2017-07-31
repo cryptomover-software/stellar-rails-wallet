@@ -18,6 +18,7 @@ html {
     position: relative;
     min-height: 100%;
 }
+
 body {
     //margin-bottom: 100px;
     min-height: 100%;
@@ -26,25 +27,32 @@ body {
 .navbar {
 
 }
+
 #content {
     height: 100%;
 }
+
 #page-content {
     min-height: 100% !important;
 }
+
 .page-navbar-color {
     height: 80px;
     background-color: #033333;
 }
+
 .logo-display {
 
 }
+
 #home-index {
     text-align: center;
     font-family: "Arial"
 }
+
 #header-text {
 }
+
 #header-title {
     line-height: 1;
     margin-top: 10px;
@@ -55,27 +63,32 @@ body {
         font-weight: nolmal;
     }
 }
+
 #header-portfolio {
     margin-top: 50px;
     @media(max-width: 980px) {
         margin: 30px 0 30px 0;
     }
 }
+
 .home_btns {
     @media(max-width: 980px) {
         text-align: center;
         margin-top: 25px;
     }
 }
+
 .home_text {
     margin-top: 30px;
     @media(max-width: 980px) {
         text-align: center;
     }
 }
+
 .navbar-brand {
     margin-top: -20px;
 }
+
 .logo-scrolled {
     width: 270px;
     height: 80px;
@@ -87,34 +100,74 @@ body {
         height: 60px;
     }
 }
+
 .logo-display {
     width: 270px;
     height: 80px;
 }
+
 #intro-video {
 
 }
+
 .positive-change {
     color: lime;
 }
+
 .negative-change {
     // color: #ff4050;
     color: orangered;
 }
-.our-products {
+
+.section-title {
     font-size: 100px;
     font-weight: bold;
 }
+
 .text-green {
     color: green;
 }
+
 .btn-get-tokens {
     border: 2px solid;
     border-color: darkgrey;
-    background-color: transparent;
+    background-color: #E7FF6E;
     color: darkgrey;
     padding:1rem 2rem;
     border-radius: 0;
     font-weight: bold;
     font-size: 20px;
+}
+
+.btn-get-token {
+    @extend .btn-get-tokens;
+    border: none;
+    font-weight: normal;
+    text-transform: lowercase;
+    color: black;
+}
+.btn-get-token:first-letter {
+    text-transform: uppercase;
+}
+
+#get-token {
+    background-color: lightgrey;
+}
+
+.get-token-title {
+    padding-top: 70px
+}
+
+.get-token {
+    background-color: #F0F0F0;
+    border: 1px solid black;
+    padding: 30px 0 50px 0;
+    width: 50%;
+    margin-bottom: 70px;
+}
+
+.center-table
+{
+    margin: 0 auto !important;
+    float: none !important;
 }
