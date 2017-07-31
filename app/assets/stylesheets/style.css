@@ -1548,7 +1548,8 @@ Brand Section style
 Subscribe Section style
 =====================*/
 .subscribe{
-    background: url('background/subscribe.jpg') no-repeat center center;
+    //background: url('background/subscribe.jpg') no-repeat center center;
+    background: transparent;
     background-size: cover;
     position: relative;
 }
