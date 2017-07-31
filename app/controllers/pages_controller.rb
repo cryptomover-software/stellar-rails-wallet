@@ -21,4 +21,8 @@ class PagesController < ApplicationController
   def trade1
     render :layout => "dashboard"        
   end
+  
+  def trade2
+    render :layout => "dashboard"            
+  end
 end
