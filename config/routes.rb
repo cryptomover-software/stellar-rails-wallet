@@ -3,4 +3,6 @@ Rails.application.routes.draw do
   root 'pages#index'
   get 'about', to: 'pages#about'
   get 'dashboard', to: 'pages#dashboard'  
+  get 'trade', to: 'pages#trade'    
+  get 'trade1', to: 'pages#trade1'      
 end
