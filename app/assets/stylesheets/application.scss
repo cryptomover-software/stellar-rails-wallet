@@ -32,6 +32,10 @@ body {
     height: 100%;
 }
 
+#content > section:nth-of-type(odd) {
+    background-color: lightgrey;
+}
+
 #page-content {
     min-height: 100% !important;
 }
@@ -129,14 +133,7 @@ body {
 }
 
 .btn-get-tokens {
-    border: 2px solid;
-    border-color: darkgrey;
-    background-color: #E7FF6E;
-    color: darkgrey;
-    padding:1rem 2rem;
-    border-radius: 0;
-    font-weight: bold;
-    font-size: 20px;
+    margin: 20px 0 50px 0;
 }
 
 .btn-get-token {
@@ -151,11 +148,11 @@ body {
 }
 
 #get-token {
-    background-color: lightgrey;
+    // background-color: lightgrey;
 }
 
 .get-token-title {
-    padding-top: 70px
+
 }
 
 .get-token {

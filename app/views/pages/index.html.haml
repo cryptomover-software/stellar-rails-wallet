@@ -77,29 +77,29 @@
 / End our indexes section
 
 / Demo Video Section
-%section#service.service.m-top-100
+%section#demo.m-top-100
   .container
     .row.m-0
       .col-xs-12
         .head_title.text-center
-          .section-title
+          .section-title.m-top-50
             DEMO
       .col-xs-12.text-center.embed-responsive.embed-responsive-16by9{align: "center"}
         = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "demo-video", class: "embed-responsive-item", controlsList: "nodownload")
       .col-xs-12.text-center.m-top-30
-        %a.btn.btn-primary.m-top-20{href: "https://bootstrapthemes.co", target: "_blank"} Get Tokens
+        %a.btn.btn-primary.btn-get-tokens{href: "https://bootstrapthemes.co", target: "_blank"} Get Tokens
     / End off row
   / End off container
 / End Demo video section
 
 / Get Token Section
-%section#get-token.m-top-70
+%section#get-token.m-top-50
   .container
     .row
       .main_service
         .col-xs-12
           .head_title.text-center
-            .section-title.get-token-title
+            .section-title
               GET TOKEN
       .col-xs-12
         = render "shared/get_token"
