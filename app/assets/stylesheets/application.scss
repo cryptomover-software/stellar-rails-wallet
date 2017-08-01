@@ -48,7 +48,9 @@ body {
 .logo-display {
 
 }
-
+#hello {
+    font-family: "Raleway"
+}
 #home-index {
     text-align: center;
     font-family: "Arial"
@@ -60,8 +62,8 @@ body {
 #header-title {
     line-height: 1;
     margin-top: 10px;
-    font-size: 60px;
-    font-weight: bold;
+    font-size: 39px;
+    font-weight: normal;
     @media(max-width: 360px) {
         font-size: 40px;
         font-weight: nolmal;
@@ -69,13 +71,16 @@ body {
 }
 
 #header-portfolio {
-    margin-top: 50px;
+    font-size: 20px;
+    margin-top: 30px;
+    margin-bottom: 30px;
     @media(max-width: 980px) {
         margin: 30px 0 30px 0;
     }
 }
 
 .home_btns {
+    text-align: center;
     @media(max-width: 980px) {
         text-align: center;
         margin-top: 25px;
