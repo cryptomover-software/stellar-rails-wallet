@@ -50,10 +50,13 @@ body {
 }
 #hello {
     font-family: "Raleway"
-    a {
-        color: white;
-    }
 }
+
+#hello a:link    { color: white };  /* unvisited links */
+#hello a:visited { color: white };  /* visited links   */
+#hello a:hover   { color: white };  /* user hovers     */
+#hello a:active  { color: white };  /* active links    */
+
 #home-index {
     text-align: center;
     font-family: "Arial"
