@@ -47,7 +47,7 @@
         -# / End Top Search
         .container
           / Start Atribute Navigation
-          .attr-nav
+          -# .attr-nav
             %ul
               -# %li.dropdown
               -#   %a.dropdown-toggle{"data-toggle": "dropdown", href: "#"}
@@ -90,9 +90,9 @@
               -# %li.search
               -#   %a{href: "#"}
               -#     %i.fa.fa-search
-              %li.side-menu
-                %a{href: "#"}
-                  %i.fa.fa-bars
+              -# %li.side-menu
+                -# %a{href: "#"}
+                  -# %i.fa.fa-bars
           / End Atribute Navigation
           / Start Header Navigation
           .navbar-header
@@ -110,11 +110,11 @@
           #navbar-menu.collapse.navbar-collapse
             %ul.nav.navbar-nav.navbar-right{"data-in": "fadeInDown", "data-out": "fadeOutUp"}
               %li= link_to "Home", root_path
-              %li= link_to "CM Tokens"
-              %li= link_to "Demo"
-              %li= link_to "Trade Tokens"
+              %li= link_to "Index", "#index"
+              %li= link_to "Demo", "#demo"
+              %li= link_to "Trade Tokens", "#get-token"
               %li= link_to "About Us", "#about"
-              %li= link_to "Subscribe Now"
+              %li= link_to "Subscribe Now", "#subscribe"
               /
                 <li><a href="#hello">Hello</a></li>
                 <li><a href="#about">About</a></li>
