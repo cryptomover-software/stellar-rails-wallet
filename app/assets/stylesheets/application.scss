@@ -50,6 +50,9 @@ body {
 }
 #hello {
     font-family: "Raleway"
+    a {
+        color: white;
+    }
 }
 #home-index {
     text-align: center;
@@ -203,4 +206,12 @@ body {
 
 #subscribe {
     padding: 50px 0 50px 0;
+}
+
+.coin-title {
+    font-size: 20px;
+}
+
+.coin-value, .coin-change {
+    font-size: 17px;
 }
