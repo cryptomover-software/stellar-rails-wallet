@@ -20,10 +20,13 @@
                         <div class="col-lg-12">
                             <form class="m-t" role="form" action="#">                                                    
                                 <div class="row" style="text-align:center;">
-                                    <div class="col-xs-5">
-                                      <!-- <span class="label label-warning b-r-xl" style="font-size:50px;border-radius:40px;padding:6px 22px;"><i class="fa fa-btc"></i></span> -->
-                                        <p><strong>Deposit</strong></p>
-                                        <div><img src="/assets/bitcoin_wix.png"></div>
+                                    <div class="col-xs-5">                                                                               <div id="depositCoin">
+                                        <p><strong>Deposit</strong></p>                           
+                                        <p class="deposit-img">
+                                          <a href="#" data-toggle="modal" data-target="#myModal"><img src="/assets/bitcoin_wix.png"></a>
+                                        </p>
+                                        <p class="deposit-name"><strong>BTC</strong></p>
+                                      </div>    
                                     </div>
                                     <div class="col-xs-2">
                                         <br/>                                       
@@ -31,8 +34,13 @@
                                     </div>
                                     <div class="col-xs-5">
                                       <!-- <span class="label label-info b-r-xl" style="font-size:40px;border-radius:40px;padding:6px 22px;">CM3</span>     -->                     
+                                      <div id="receiveCoin">
                                         <p><strong>Receive</strong></p>                           
-                                        <div><img src="/assets/cm3_logo_1.png">   </div>
+                                        <p class="receive-img">
+                                            <a href="#" data-toggle="modal" data-target="#myModal2"><img src="/assets/cm3_logo_1.png"></a>
+                                        </p>
+                                        <p class="receive-name"><strong>CM3</strong></p>
+                                      </div>                                                         
                                     </div>
                                 </div>   
                                 
@@ -61,12 +69,105 @@
 
 
 
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+<div class="modal-dialog">
+<div class="modal-content animated bounceInRight">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <i class="fa fa-btc modal-icon"></i>
+            <h4 class="modal-title">Select Coin</h4>
+            <small class="font-bold">select the coin you want to deposit</small>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+             <div class="row" style="text-align:center;">
+                 <div class="col-xs-4">
+                     <p><strong>BTC</strong></p>
+                     <div>
+                       <a href="#" data-name="BTC" data-src="/assets/bitcoin_wix.png"><img src="/assets/bitcoin_wix.png"></a>
+                     </div>
+                 </div>
+                 <div class="col-xs-4">
+                     <p><strong>ETH</strong></p>
+                     <div>
+                       <a href="#" data-name="ETH" data-src="/assets/bitcoin_wix.png"><img src="/assets/bitcoin_wix.png"></a>
+                     </div>
+                 </div>
+                 <div class="col-xs-4">
+                     <p><strong>TNG</strong></p>
+                     <div>
+                       <a href="#" data-name="TNG" data-src="/assets/bitcoin_wix.png"><img src="/assets/bitcoin_wix.png"></a>
+                     </div>
+                 </div>
+             </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+    </div>
+</div>
+</div>
+
+
+<div class="modal inmodal" id="myModal2" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
+<div class="modal-dialog">
+<div class="modal-content animated bounceInRight">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <i class="fa fa-btc modal-icon"></i>
+            <h4 class="modal-title">Select Coin</h4>
+            <small class="font-bold">select the coin you want to receive</small>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+             <div class="row" style="text-align:center;">
+                 <div class="col-xs-4">
+                     <p><strong>CM3</strong></p>
+                     <div>
+                       <a href="#" data-name="CM3" data-src="/assets/cm3_logo_1.png"><img src="/assets/cm3_logo_1.png"></a>
+                     </div>
+                 </div>
+                 <div class="col-xs-4">
+                     <p><strong>CM10</strong></p>
+                     <div>
+                       <a href="#" data-name="CM10" data-src="/assets/cm3_logo_1.png"><img src="/assets/cm3_logo_1.png"></a>
+                     </div>
+                 </div>
+                 <div class="col-xs-4">
+                     <p><strong>CME</strong></p>
+                     <div>
+                       <a href="#" data-name="CME" data-src="/assets/cm3_logo_1.png"><img src="/assets/cm3_logo_1.png"></a>
+                     </div>
+                 </div>
+             </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-white" data-dismiss="modal">Close</button>
+            <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        </div>
+    </div>
+</div>
+</div>
+
 
 <% content_for :javascript do %>
 
 <script type="text/javascript">
 
+$("#myModal .modal-body a").on('click', function(){
+  $("#depositCoin .deposit-name").text($(this).data('name'));
+  $("#depositCoin .deposit-img img").attr('src', $(this).data('src'));  
+  $('#myModal').modal('hide');
+})
 
+$("#myModal2 .modal-body a").on('click', function(){
+  $("#receiveCoin .receive-name").text($(this).data('name'));
+  $("#receiveCoin .receive-img img").attr('src', $(this).data('src'));    
+  $('#myModal2').modal('hide');
+})
 
 </script>
 
