@@ -25,12 +25,12 @@
                   = link_to "Choose Funds", "#index-section-start"
             .col-xs-12
               .row.m-0
-                .col-xs-12.text-center.center-block{align: "center"}
+                .col-xs-12.text-center.center-block.video-container{align: "center"}
                   = video_tag("/videos/intro.mp4", controls: "true", poster: "intro_video_thumbnail.png", type: "video/mp4", id: "intro-video", class: "", controlsList: "nodownload", width: "70%")
-              .row.m-top-30
-                .col-xs-6.text-white.text-center
+              .row.new-to-wrapper
+                .col-xs-12.col-sm-6.text-white.text-center.new-to
                   = link_to "New to Cryptocurrency?", "https://www.youtube.com/watch?v=PP8XRklTE7w"
-                .col-xs-6.text-white.text-center
+                .col-xs-12.col-sm-6.text-white.text-center.new-to
                   = link_to "New to Index funds?", "https://www.youtube.com/watch?v=tqm3T2-XzYQ"
         .home_btns
           %a.btn.btn-primary.m-top-20{href: "#demo"} DEMO
