@@ -33,4 +33,16 @@ class PagesController < ApplicationController
   def trade3
     render :layout => "dashboard"            
   end
+  
+  def login
+    render :layout => "dashboard"                
+  end
+  
+  def signup
+    render :layout => "dashboard"                
+  end
+  
+  def forgot_password
+    render :layout => "dashboard"                
+  end
 end
