@@ -58,8 +58,11 @@ body {
 #hello a:active  { color: white };  /* active links    */
 
 #home-index {
-    @media(max-width: 640px) {
+    @media(min-width: 640px) {
         margin-top: 0;
+    }
+    @media(min-width: 980px) {
+        margin-top: 30px;
     }
     text-align: center;
     font-family: "Arial";
