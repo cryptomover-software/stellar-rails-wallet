@@ -51,6 +51,12 @@ body {
 #hello {
     font-family: "Raleway"
 }
+
+#hello a:link    { color: white };  /* unvisited links */
+#hello a:visited { color: white };  /* visited links   */
+#hello a:hover   { color: white };  /* user hovers     */
+#hello a:active  { color: white };  /* active links    */
+
 #home-index {
     text-align: center;
     font-family: "Arial"
@@ -203,4 +209,12 @@ body {
 
 #subscribe {
     padding: 50px 0 50px 0;
+}
+
+.coin-title {
+    font-size: 20px;
+}
+
+.coin-value, .coin-change {
+    font-size: 17px;
 }
