@@ -743,6 +743,15 @@ textarea::-ms-input-placeholder{
 .wrapper{
 }
 #footer{
+    @media(min-width: 320px) and (min-height: 533px) {
+        height: 120px;
+    }
+    @media(min-width: 320px) and (min-height: 568px) {
+        height: 140px;
+    }
+    @media(min-width: 360px) {
+        height: 121px;
+    }
     height: 100px;
     bottom: 0px;
     position: absolute;
@@ -1030,7 +1039,13 @@ Home Section style
     background-size: cover;
     position: relative;
 }
-.main_home{
+.main_home {
+    @media(min-width: 320px) {
+        padding-top: 60px;
+    }
+    @media(min-width: 640px) {
+        padding-top: 70px;
+    }
     overflow: hidden;
     // padding-top: 300px;
     padding-top: 100px;
@@ -1679,6 +1694,10 @@ Footer Section style
 
 .main_footer{
     overflow: hidden;
+    @media(min-width: 320px) and (max-height: 533px) {
+        padding-top: 0.25rem;
+    }
+    padding-top: 2.25rem;
 }
 
 .main_footer i {
