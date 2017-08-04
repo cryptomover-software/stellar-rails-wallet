@@ -52,27 +52,28 @@
             %p
               We charge only 0.01% per day as the management fee for each product
         - @index_names.zip(@index_desc, @index_yield).each_with_index do |name, index|
-          .col-md-3.text-center
+          .col-xs-12.col-sm-6.col-md-3.text-center
             .service_item
               %i.icofont.icofont-light-bulb
-              %h5.m-top-30
+              %h5.index-title
                 %span.text-green
                   = "0#{index+1} / "
                 = "#{name[0]}"
               / .separator_small
-              %p
-                = name[1]
-                %br
-                Yield:
-                = name[2]
-                %br
-                No Entry/Exit Fee
-                %br
-                Current Price:
-                %br
-                For Details
-                %br
-                = link_to "Click Here"
+              .row
+                .col-xs-6.col-sm-12
+                  = name[1]
+                  %br
+                  Yield:
+                  = name[2]
+                .col-xs-6.col-sm-12
+                  Current Price:
+                  %br
+                  For Details
+                  %br
+                  = link_to "Click Here"
+                .col-xs-12
+                  No Entry/Exit Fee
     / End off row
   / End off container
 / End our indexes section
