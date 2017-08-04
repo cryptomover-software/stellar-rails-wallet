@@ -152,8 +152,13 @@
     background-color: #F0F0F0;
     border: 1px solid black;
     padding: 30px 0 50px 0;
-    width: 50%;
     margin-bottom: 70px;
+    @media(min-width: 320px) {
+        width: 100%;
+    }
+    @media(min-width: 980px) {
+        width: 50%;
+    }
 }
 
 #about {

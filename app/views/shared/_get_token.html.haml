@@ -1,20 +1,22 @@
 .get-token.center-block
-  .text-center
-    %h4
-      Choose Which Tokens to Trade
-      %table.center-table.text-center
-        %tr
-          %th.text-right
-            Deposit
-          %th
-          %th.text-left
-            Receive
-        %tr
-          %td.text-right
-            = image_tag "bitcoin_wix"
-          %td.text-center.col-md-2
-            = image_tag "noun_947250_cc"
-          %td.text-left
-            = image_tag "cm3_logo_1"
-  .text-center.m-top-30
-    .btn.btn-primary{href: "https://google.com", target: "_blank"} Submit
+  .row.text-center
+    .col-xs-12
+      %h4 Choose Which Tokens to Trade
+    .col-xs-12.text-center
+      .row
+        .col-xs-12.col-sm-4.text-center
+          .row
+            .col-xs-6.col-sm-12
+              %b Deposit
+            .col-xs-6.col-sm-12
+              = image_tag "bitcoin_wix"
+        .col-sm-4.hidden-xs.m-top-10
+          = image_tag "noun_947250_cc", width: "80px"
+        .col-xs-12.col-sm-4
+          .row
+            .col-xs-6.col-sm-12
+              %b Receive
+            .col-xs-6.col-sm-12
+              = image_tag "cm3_logo_1"
+    .col-xs-12.text-center.m-top-30
+      .btn.btn-primary{href: "https://google.com", target: "_blank"} Submit
