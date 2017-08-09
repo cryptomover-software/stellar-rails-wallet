@@ -7,7 +7,8 @@ end
 
 gem 'bootstrap-sass'
 gem 'font-awesome-rails'
-
+gem 'shopify_api'
+gem 'activeadmin', github: 'activeadmin'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.2'
