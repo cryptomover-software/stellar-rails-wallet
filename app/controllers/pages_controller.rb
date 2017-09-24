@@ -9,42 +9,54 @@ class PagesController < ApplicationController
     # quantities = {"B": 10, "E": 25, "L": 5}
     # current_prices = {"B": 200000, "E": 150000, "L": 50000}
     # @cm3_price = quantities.values.zip(current_prices.values).map { |x, y| x * y}.inject(:+)
-    
+
     @index_values = [390, 321.61, 500.2, 450.2]
   end
 
-  def about    
+  def about
   end
-  
+
   def dashboard
-    render :layout => "dashboard"    
+    render :layout => "dashboard"
   end
-  
+
   def trade
-    render :layout => "dashboard"        
+    render :layout => "dashboard"
   end
-  
+
   def trade1
-    render :layout => "dashboard"        
+    render :layout => "dashboard"
   end
-  
+
   def trade2
-    render :layout => "dashboard"            
+    render :layout => "dashboard"
   end
-  
+
   def trade3
-    render :layout => "dashboard"            
+    render :layout => "dashboard"
   end
-  
+
   def login
-    render :layout => "dashboard"                
+    render :layout => "dashboard"
   end
-  
+
   def signup
-    render :layout => "dashboard"                
+    render :layout => "dashboard"
   end
-  
+
   def forgot_password
-    render :layout => "dashboard"                
+    render :layout => "dashboard"
+  end
+
+  def stellar_login
+    render :layout => "dashboard"
+  end
+
+  def stellar_account
+    render :layout => "dashboard"
+  end
+
+  def stellar_dashboard
+    render :layout => "dashboard"
   end
 end

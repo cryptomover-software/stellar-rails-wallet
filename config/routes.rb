@@ -12,5 +12,9 @@ Rails.application.routes.draw do
   get 'signup', to: 'pages#signup'
   get 'forgot_password', to: 'pages#forgot_password'
 
+  get 'stellar_login', to: 'pages#stellar_login'
+  get 'stellar_account', to: 'pages#stellar_account'
+  get 'stellar_dashboard', to: 'pages#stellar_dashboard'    
+
   post '/shopify/checkout_create', to: 'shopify#checkout_create'
 end
