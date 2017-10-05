@@ -14,7 +14,14 @@ Rails.application.routes.draw do
 
   get 'stellar_login', to: 'pages#stellar_login'
   get 'stellar_account', to: 'pages#stellar_account'
-  get 'stellar_dashboard', to: 'pages#stellar_dashboard'    
+  get 'stellar_dashboard', to: 'pages#stellar_dashboard'
+  get 'stellar_subscribe', to: 'pages#stellar_subscribe'
+  post 'stellar_subscribe', to: 'pages#stellar_subscribe'
+  get 'stellar_send', to: 'pages#stellar_send'
+  post 'stellar_send', to: 'pages#stellar_send'    
+
+  post 'login', to: 'pages#login'
+  get 'logout', to: 'pages#logout'
 
   post '/shopify/checkout_create', to: 'shopify#checkout_create'
 end

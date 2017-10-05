@@ -77,6 +77,7 @@ GEM
     babel-transpiler (0.7.0)
       babel-source (>= 4.0, < 6)
       execjs (~> 2.0)
+    base32 (0.3.2)
     bindex (0.5.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
@@ -119,6 +120,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
+    digest-crc (0.4.1)
     erubi (1.6.1)
     execjs (2.7.0)
     ffi (1.9.18)
@@ -135,6 +137,8 @@ GEM
     has_scope (0.7.1)
       actionpack (>= 4.1, < 5.2)
       activesupport (>= 4.1, < 5.2)
+    httparty (0.15.6)
+      multi_xml (>= 0.5.2)
     i18n (0.8.6)
     inherited_resources (1.7.2)
       actionpack (>= 3.2, < 5.2.x)
@@ -177,6 +181,7 @@ GEM
     mini_portile2 (2.2.0)
     minitest (5.10.3)
     multi_json (1.12.1)
+    multi_xml (0.6.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
@@ -224,6 +229,10 @@ GEM
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
+    rbnacl (5.0.0)
+      ffi
+    rbnacl-libsodium (1.0.13)
+      rbnacl (>= 3.0.1)
     react-rails (2.2.1)
       babel-transpiler (>= 0.7.0)
       connection_pool
@@ -272,6 +281,13 @@ GEM
     sshkit (1.14.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    stellar-base (0.12.0)
+      activesupport (>= 4.2.7)
+      base32
+      digest-crc
+      rbnacl
+      rbnacl-libsodium (~> 1.0.3)
+      xdr (~> 2.0.0)
     temple (0.8.0)
     thor (0.19.4)
     thread_safe (0.3.6)
@@ -292,6 +308,9 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
+    xdr (2.0.0)
+      activemodel (>= 4.2.7)
+      activesupport (>= 4.2.7)
     xpath (2.1.0)
       nokogiri (~> 1.3)
 
@@ -311,6 +330,7 @@ DEPENDENCIES
   coffee-rails (~> 4.2)
   font-awesome-rails
   haml
+  httparty
   jbuilder (~> 2.5)
   jquery-rails
   jquery-ui-rails
@@ -325,6 +345,7 @@ DEPENDENCIES
   spring
   spring-watcher-listen (~> 2.0.0)
   sqlite3
+  stellar-base
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)

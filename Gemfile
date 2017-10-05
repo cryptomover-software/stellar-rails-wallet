@@ -10,6 +10,8 @@ gem 'font-awesome-rails'
 gem 'shopify_api'
 gem 'activeadmin', github: 'activeadmin'
 
+gem 'stellar-base'
+gem "httparty"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.2'
 # Use sqlite3 as the database for Active Record
