@@ -27,7 +27,7 @@ set :pty,             true
 set :use_sudo,  true
 set :stage,           :test
 set :deploy_via,      :remote_cache
-set :deploy_to,       "/home/ec2-user/apps/#{fetch(:application)}"
+set :deploy_to,       "/home/ec2-user/apps/#{fetch(:application)}-stellar"
 set :puma_bind,       "unix://#{shared_path}/tmp/sockets/#{fetch(:application)}-puma.sock"
 set :puma_state,      "#{shared_path}/tmp/pids/puma.state"
 set :puma_pid,        "#{shared_path}/tmp/pids/puma.pid"
@@ -40,7 +40,7 @@ set :puma_init_active_record, true  # Change to false when not using ActiveRecor
 set :puma_prune_bundler, true
 
 # Default value for :linked_files is []
-append :linked_files, "config/database.yml" #, "config/secrets.yml"
+#append :linked_files, "config/database.yml" #, "config/secrets.yml"
 
 # Default value for linked_dirs is []
 append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
