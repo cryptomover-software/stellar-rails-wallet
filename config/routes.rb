@@ -1,5 +1,4 @@
 Rails.application.routes.draw do
-  ActiveAdmin.routes(self)
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'pages#index'
   get 'about', to: 'pages#about'
@@ -18,7 +17,7 @@ Rails.application.routes.draw do
   get 'stellar_subscribe', to: 'pages#stellar_subscribe'
   post 'stellar_subscribe', to: 'pages#stellar_subscribe'
   get 'stellar_send', to: 'pages#stellar_send'
-  post 'stellar_send', to: 'pages#stellar_send'    
+  post 'stellar_send', to: 'pages#stellar_send'
 
   post 'login', to: 'pages#login'
   get 'logout', to: 'pages#logout'
