@@ -7,8 +7,6 @@ end
 
 gem 'bootstrap-sass'
 gem 'font-awesome-rails'
-gem 'shopify_api'
-gem 'activeadmin', github: 'activeadmin'
 
 gem 'stellar-base'
 gem "httparty"
