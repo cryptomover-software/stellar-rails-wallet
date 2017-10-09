@@ -106,9 +106,15 @@ class PagesController < ApplicationController
 
   def stellar_dashboard
     url = "https://horizon.stellar.org/accounts/#{session[:address]}"
+    transactions_url = "https://horizon.stellar.org/accounts/#{session[:address]}/payments?limit=50"
     response = HTTParty.get(url)
     body = JSON.parse(response.body)
     @balances = body['balances'] || []
+
+    response = HTTParty.get(transactions_url)
+    body = JSON.parse(response.body)
+    @transactions = body['_embedded']['records'] || []
+
     render :layout => "dashboard"
   end
 
