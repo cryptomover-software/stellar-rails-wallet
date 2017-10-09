@@ -56,6 +56,40 @@
                   </div>
                 </div>
 
+
+                <div class="ibox float-e-margins">
+                    <div class="ibox-title">
+                        <!-- <span class="label label-warning pull-right">Data has changed</span> -->
+                        <h5>Transactions</h5>
+                    </div>
+                    <div class="ibox-content">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>Asset Code </th>
+                                    <th>From </th>
+                                    <th>To </th>
+                                    <th>Amount </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <% @transactions.reverse.each do |b| %>
+                                <tr>
+                                    <td><%= b["asset_code"] || "XLM" %></td>
+                                    <td><%= b["from"] %></td>
+                                    <td><%= b["to"] %></td>
+                                    <td>
+                                      <%= b["amount"] %>
+                                    </td>
+                                </tr>
+                                <% end %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
