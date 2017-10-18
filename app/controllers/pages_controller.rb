@@ -114,7 +114,7 @@ class PagesController < ApplicationController
     response = HTTParty.get(transactions_url)
     body = JSON.parse(response.body)
     @transactions = []
-    @transactions ||= body['_embedded']['records']  if body['_embedded'].present?
+    @transactions = body['_embedded']['records']  if body['_embedded'].present? && body['_embedded']['records'].present?
 
     render :layout => "dashboard"
   end
