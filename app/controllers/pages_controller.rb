@@ -49,6 +49,9 @@ class PagesController < ApplicationController
   end
 
   def stellar_login
+    session[:challenge_hidden] = SecureRandom.hex(32)
+    session[:challenge_visual] = Time.now.strftime("%Y-%m-%d %H:%M:%S")
+
     if session[:address].present?
       redirect_to "/stellar_dashboard"
     else
