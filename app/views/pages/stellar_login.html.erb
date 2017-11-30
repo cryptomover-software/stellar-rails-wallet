@@ -1,4 +1,3 @@
-<script src="https://connect.trezor.io/4/connect.js"></script>
 <div class="passwordBox animated fadeInDown">
     <div class="row">
 
@@ -33,8 +32,8 @@
                         <script>
                           function trezorLoginCallback(result) {
                               if (result.success) {
-                                  console.log('Public key:', result.public_key); // pubkey in hex
-                                  console.log('Signature:', result.signature); // signature in hex
+                                  alert('Public key:', result.public_key); // pubkey in hex
+                                  alert('Signature:', result.signature); // signature in hex                                  
                                   console.log('Version 2:', result.version === 2); // version field
                               } else {
                                   console.error('Error:', result.error);
@@ -59,3 +58,5 @@
         </div>
     </div>
 </div>
+
+<script src="https://connect.trezor.io/4/connect.js"></script>
