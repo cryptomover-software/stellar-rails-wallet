@@ -36,6 +36,11 @@ ActiveRecord::Schema.define(version: 20170926022844) do
   end
 
   create_table "checkouts", force: :cascade do |t|
+    t.string "params"
+    t.string "checkout_id"
+    t.string "email"
+    t.datetime "checkout_created_at"
+    t.float "total_price"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
