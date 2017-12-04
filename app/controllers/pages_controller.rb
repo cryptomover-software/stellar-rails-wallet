@@ -49,8 +49,6 @@ class PagesController < ApplicationController
   end
 
   def stellar_login
-    session[:challenge_hidden] = SecureRandom.hex(32)
-    session[:challenge_visual] = Time.now.strftime("%Y-%m-%d %H:%M:%S")
 
     if session[:address].present?
       redirect_to "/stellar_dashboard"
@@ -61,7 +59,13 @@ class PagesController < ApplicationController
 
   def login
     begin
-      pair = Stellar::KeyPair.from_seed(params[:seed])
+      if params[:raw] == "true"
+        seed = params[:seed].scan(/../).collect { |c| c.to_i(16).chr }.join
+        pair = Stellar::KeyPair.from_raw_seed(seed)
+      else
+        pair = Stellar::KeyPair.from_seed(params[:seed])
+      end
+
       session[:address] = pair.address
       session[:seed] = pair.seed
       redirect_to "/stellar_dashboard"
