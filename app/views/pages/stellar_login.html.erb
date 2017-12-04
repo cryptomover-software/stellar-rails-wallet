@@ -15,11 +15,11 @@
 
                     <div class="col-lg-12">
 
-                        <form class="m-t" role="form" action="/login">
+                        <form class="m-t" role="form" action="/login" id="login_form">
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="stellar seed" name="seed" required="">
+                                <input type="text" id='login_seed' class="form-control" placeholder="stellar seed" name="seed" required="">
                             </div>
-
+                            <input type="hidden" id='login_tab' name="raw" value="true">
                             <button type="submit" class="btn btn-primary block full-width m-b">login</button>
 
                             <p class="text-muted text-center">
@@ -27,29 +27,59 @@
                             </p>
                             <a class="btn btn-sm btn-white btn-block" href="/stellar_account">Create an account</a>
 
+
                         </form>
 
                         <script>
-                          function trezorLoginCallback(result) {
-                              if (result.success) {
-                                  alert('Public key:', result.public_key); // pubkey in hex
-                                  alert('Signature:', result.signature); // signature in hex                                  
-                                  console.log('Version 2:', result.version === 2); // version field
-                              } else {
-                                  console.error('Error:', result.error);
-                              }
-                          }
-                          </script>
 
-                          <!-- callback is a name of global function -->
-                          <!-- challenges are server-side generated and randomized -->
-                          <!-- site icon is optional and at least 48x48px -->
-                          <!-- text is optional -->
-                          <trezor:login callback="trezorLoginCallback"
-                                        challenge_hidden="<%= session[:challenge_hidden] %>"
-                                        challenge_visual="<%= session[:challenge_visual] %>"
-                                        text="Sign in with TREZOR"
-                                        icon="https://cryptodealer.hk/assets/c.png"></trezor:login>
+                         function trezorCipherKeyValue() {
+
+                        	 var path = document.getElementById("path").value;
+                        	 var key = document.getElementById("key").value;
+                        	 var value = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136';
+
+                        	 var encrypt = true;
+                        	 var ask_on_encrypt = false;
+                        	 var ask_on_decrypt = false;
+
+                        	 //var resultEl = document.getElementById("result");
+
+                           TrezorConnect.closeAfterFailure(false);
+                           TrezorConnect.cipherKeyValue(path, key, value, encrypt, ask_on_encrypt, ask_on_decrypt, function (response) {
+                               if (response.success) {
+                                	 //resultEl.innerHTML = response.value;
+                                  $('#login_seed').val(response.value);
+                                  $('#login_tab').val('true');
+                                  $('#login_form').submit();
+                               } else {
+                                	 //resultEl.innerHTML = "";
+                                	// resultEl.appendChild(document.createTextNode("Error: " + response.error));
+                               }
+                               //document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
+                           });
+                         }
+
+                        </script>
+
+
+                        <form class="m-t" role="form">
+                            <div class="form-group">
+                              <label>Path:</label>
+                              <input id="path" value="m/49'/10'/0'">
+                            </div>
+
+                            <div class="form-group">
+                              <label>Key:</label>
+                              <input id="key" value="My key" size="64">
+                            </div>
+
+                            <a class="btn btn-sm btn-white btn-block" onclick="trezorCipherKeyValue();return false;">Login with Trezor</a>
+
+
+                        </form>
+
+
+
 
                     </div>
                 </div>
