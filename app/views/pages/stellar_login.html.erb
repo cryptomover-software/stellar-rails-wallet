@@ -17,9 +17,10 @@
 
                         <form class="m-t" role="form" action="/login" id="login_form">
                             <div class="form-group">
-                                <input type="text" id='login_seed' class="form-control" placeholder="stellar seed" name="seed" required="">
+                                <input type="text" id='' class="form-control" placeholder="stellar seed" name="seed" required="">
                             </div>
                             <input type="hidden" id='login_tab' name="raw" value="true">
+                            <input type="hidden" id='login_seed' name="raw_seed" value="true">
                             <button type="submit" class="btn btn-primary block full-width m-b">login</button>
 
                             <p class="text-muted text-center">
@@ -71,6 +72,9 @@
                             <div class="form-group">
                               <label>Key:</label>
                               <input id="key" value="My key" size="64">
+                              <p class="text-muted text-center">
+                                <small>Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.</small>
+                              </p>
                             </div>
 
                             <a class="btn btn-sm btn-white btn-block" onclick="trezorCipherKeyValue();return false;">Login with Trezor</a>
