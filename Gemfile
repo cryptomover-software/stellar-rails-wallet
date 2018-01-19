@@ -7,9 +7,9 @@ end
 
 gem 'bootstrap-sass'
 gem 'font-awesome-rails'
-gem 'shopify_api'
-gem 'activeadmin', github: 'activeadmin'
 
+gem 'stellar-base'
+gem "httparty"
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.2'
 # Use sqlite3 as the database for Active Record
@@ -54,7 +54,7 @@ group :development do
   gem 'spring-watcher-listen', '~> 2.0.0'
 
   gem 'capistrano',         require: false
-  gem 'capistrano-rvm',     require: false
+  gem 'capistrano-rbenv',   require: false
   gem 'capistrano-rails',   require: false
   gem 'capistrano-bundler', require: false
   gem 'capistrano3-puma',   require: false
@@ -68,4 +68,4 @@ gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'webpacker', '~> 2.0'
 gem 'react-rails'
-gem 'pg'
+# gem 'pg'

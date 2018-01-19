@@ -1,0 +1,27 @@
+<div class="middle-box text-center loginscreen   animated fadeInDown">
+    <div>
+        <div>
+
+            <!-- <h1 class="logo-name">CryptoMover</h1> -->
+
+        </div>
+        <h3>Send <%= @issue_type == "XLM" ? "Lumens" : @issue_type %> </h3>
+        <div class="ibox">
+          <div class="ibox-content">
+            <%= form_tag  '/stellar_send', {class: "m-t"} do %>
+              <%= hidden_field_tag "issue_type", @issue_type %>
+              <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Recipient's public key or address" required="">
+              </div>
+              <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Amount to send" required="">
+              </div>
+              <button type="submit" class="btn btn-primary block full-width m-b">Register</button>
+
+              <a class="btn btn-sm btn-white btn-block" href="/stellar_dashboard">Back</a>
+            <% end %>
+          </div>
+        </div>
+
+    </div>
+</div>
