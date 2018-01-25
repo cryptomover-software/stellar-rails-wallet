@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>TREZOR Get Address Test</title>
+    <script>
+
+     function trezorGetAddress() {
+        var path = document.getElementById('address').value;
+        // var path = "m/44'/0'/2'" // third account
+                                    // (note that names on connect start with Account 1, which has index 0)
+        // var path = [44 | 0x80000000 ]; // same, in raw form
+
+        var coin = document.getElementById('coin').value;
+        var segwit = document.getElementById('segwit').checked;
+        if (!(coin === 'Testnet' || coin === 'Litecoin' || coin === 'Bitcoin')) {
+          // segwit on non-segwit-enabled coins doesn't make sense
+          segwit = false;
+        }
+
+        if (coin === 'Bitcoin Cash') coin = 'Bcash';
+
+        TrezorConnect.getAddress(path, coin, segwit, function (response) {
+            console.log("TrezorConnect.getAddress response", response);
+            document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
+        });
+     }
+
+    function trezorEthereumGetAddress() {
+      var path = document.getElementById('ethaddress').value;
+
+      TrezorConnect.ethereumGetAddress(path, function (response) {
+        console.log("TrezorConnect.ethereumGetAddress", response);
+        document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
+      });
+    }
+
+    function trezorNemGetAddress(network) {
+      var path = document.getElementById('nemaddress').value;
+
+      // network: 0x68 nem mainnet
+      // network: 0x98 nem testnet
+      TrezorConnect.closeAfterFailure(false);
+      TrezorConnect.nemGetAddress(path, network, function (response) {
+        console.log("TrezorConnect.nemGetAddress", response);
+        document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
+      }, '1.5.2');
+    }
+
+    function handleCoinChange(element) {
+        var coin = element.value;
+        var defaultPaths = {
+          "Bitcoin":       "m/49'/0'/0'/0/0",
+          "Bitcoin Cash":  "m/44'/145'/0'/0/0",
+          "Litecoin":      "m/49'/2'/0'/0/0",
+          "Dogecoin":      "m/44'/3'/0'/0/0",
+          "Dash":          "m/44'/5'/0'/0/0",
+          "Zcash":         "m/44'/133'/0'/0/0",
+          "Testnet":       "m/49'/1'/0'/0/0",
+          "Namecoin":      "m/44'/7'/0'/0/0",
+          "Zcash testnet": "m/44'/133'/0'/0/0",
+        }
+        var checkbox = document.getElementById('segwit');
+        if (coin === 'Testnet' || coin === 'Litecoin' || coin === 'Bitcoin') {
+          checkbox.disabled = false;
+          checkbox.checked = true;
+        } else {
+          checkbox.checked = false;
+          checkbox.disabled = true;
+        }
+        document.getElementById('address').value = defaultPaths[coin];
+    }
+
+    function handleSegwitChange(element) {
+      var address = document.getElementById('address');
+      var addressValue = element.checked ? address.value.replace('m/44', 'm/49') : address.value.replace('m/49', 'm/44');
+      address.value = addressValue;
+    }
+
+    </script>
+  </head>
+  <body>
+    <div>
+        <h3>TrezorConnect.getAddress</h3>
+        <select id="coin" name="coin" style="display: inline-block;" onchange="handleCoinChange(this)">
+            <option>Bitcoin</option>
+            <option>Bitcoin Cash</option>
+            <option>Litecoin</option>
+            <option>Dogecoin</option>
+            <option>Dash</option>
+            <option>Zcash</option>
+            <option>Testnet</option>
+            <option>Namecoin</option>
+            <option>Zcash testnet</option>
+        </select>
+        <input type="text" id="address" name="address" value="m/49'/0'/0'/0/0" style="display: inline-block;" />
+        <input type="checkbox" id="segwit" onchange="handleSegwitChange(this)" checked /> Segwit
+        <button onclick="trezorGetAddress()" style="display: inline-block;">Get Address</button>
+    </div>
+
+    <hr/>
+
+    <div>
+        <h3>TrezorConnect.ethereumGetAddress</h3>
+        <input type="text" id="ethaddress" name="ethaddress" value="m/44'/60'/0'/0/0" />
+        <button onclick="trezorEthereumGetAddress()">Ethereum Get Address</button>
+    </div>
+
+    <hr/>
+
+    <div>
+        <h3>TrezorConnect.nemGetAddress</h3>
+        <input type="text" id="nemaddress" name="nemaddress" value="m/44'/1'/0'/0'/0'" />
+        <button onclick="trezorNemGetAddress(0x68)">NEM Get Address</button>
+        <button onclick="trezorNemGetAddress(0x98)">NEM Get Address (NEM Testnet)</button>
+    </div>
+
+    <pre id="response"></pre>
+
+    <script src="../connect.js"></script>
+
+  </body>
+</html>
