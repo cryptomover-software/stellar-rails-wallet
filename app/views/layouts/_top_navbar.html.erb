@@ -1,0 +1,26 @@
+<div class="row border-bottom white-bg">
+    <nav class="navbar navbar-static-top" role="navigation">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" data-target="#navbar" data-toggle="collapse" class="navbar-toggle collapsed" type="button">
+                <i class="fa fa-reorder"></i>
+            </button>
+            <a href="#" class="navbar-brand">Cryptomover</a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar">
+            <ul class="nav navbar-nav">
+              <li class="dropdown">
+                <a aria-expanded="false" role="button" href="/stellar_login" > Stellar Wallet</a>
+              </li>
+            </ul>
+            <% if session[:address].present? %>
+              <ul class="nav navbar-top-links navbar-right">
+                  <li>
+                      <a href="/logout">
+                          <i class="fa fa-sign-out"></i> Log out
+                      </a>
+                  </li>
+              </ul>
+            <% end %>
+        </div>
+    </nav>
+</div>
