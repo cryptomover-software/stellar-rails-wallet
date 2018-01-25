@@ -140,6 +140,9 @@ def Sending_asset(assetName,issuerAdd,sourceAdd,sourceSeed,desAdd,amount):
     return response
 
 
+
+#Sending_asset("CM3", "GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3", "GDNRWBDBEGMO7BSVOJ5DFLWXRUZDMTABUKBN6LRWJRREKYEFAOXEFZN2", "SAFZ4JAMYXLYHIDR2YNJ3XRAGBWOMMDXYAO7UWNKOHOREKFNDXYQI6NJ", "GCW6OA2Q5BCBPN3R75SRADQMAMMHLOAXT2QRX7KSR76GAF4BFK32T6PH", 1)
+
 #%%    Creat sell order
 def Place_sell_order(sellAsset,sellAssetIssuer,amount,offerID,price,sourceAdd,sourceSeed):
     from stellar_base.operation import ManageOffer
@@ -305,6 +308,8 @@ def Cancel_buy_order(buyAsset,buyAssetIssuer,price,xdr_result,sourceAdd,sourceSe
 #     return xdr
 #
 
+# #Account_creation("GDNRWBDBEGMO7BSVOJ5DFLWXRUZDMTABUKBN6LRWJRREKYEFAOXEFZN2", "SAFZ4JAMYXLYHIDR2YNJ3XRAGBWOMMDXYAO7UWNKOHOREKFNDXYQI6NJ", 2)
+
 #
 # #%% Send Lumens
 # def Sending_lumen(sourceAdd,sourceSeed,desAdd,amount):
@@ -351,6 +356,11 @@ def Cancel_buy_order(buyAsset,buyAssetIssuer,price,xdr_result,sourceAdd,sourceSe
 #     print(response)
 #     return response
 #
+
+# #Trusting_asset("CM3", "GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3", "GDNRWBDBEGMO7BSVOJ5DFLWXRUZDMTABUKBN6LRWJRREKYEFAOXEFZN2", "SAFZ4JAMYXLYHIDR2YNJ3XRAGBWOMMDXYAO7UWNKOHOREKFNDXYQI6NJ", 10000000)
+# Issuing_asset("CM3", "GDNRWBDBEGMO7BSVOJ5DFLWXRUZDMTABUKBN6LRWJRREKYEFAOXEFZN2", "SAFZ4JAMYXLYHIDR2YNJ3XRAGBWOMMDXYAO7UWNKOHOREKFNDXYQI6NJ", "GCW6OA2Q5BCBPN3R75SRADQMAMMHLOAXT2QRX7KSR76GAF4BFK32T6PH", 1)
+# #Issuing_asset("XLM", "GDNRWBDBEGMO7BSVOJ5DFLWXRUZDMTABUKBN6LRWJRREKYEFAOXEFZN2", "SAFZ4JAMYXLYHIDR2YNJ3XRAGBWOMMDXYAO7UWNKOHOREKFNDXYQI6NJ", "GCW6OA2Q5BCBPN3R75SRADQMAMMHLOAXT2QRX7KSR76GAF4BFK32T6PH", 3)
+
 #
 # #%%    Creat sell order
 # def Place_sell_order(sellAsset,sellAssetIssuer,amount,offerID,price,sourceAdd,sourceSeed):
@@ -396,3 +406,50 @@ def Cancel_buy_order(buyAsset,buyAssetIssuer,price,xdr_result,sourceAdd,sourceSe
 #     return True
 #
 #
+#
+# # #%%   Set security levels of a source account
+# # from stellar_base.operation import SetOptions
+# # sequence = horizon.account('GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3').get('sequence')
+# # op_setoption = SetOptions({'master_weight':3,'med_threshold':2,
+# #                            'high_threshold':3})
+# # #op_setoption = SetOptions({'home_domain':'123'})
+# # tx_setoption = Transaction(source='GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3',opts={'sequence':sequence,'operations':[op_setoption]})
+# # envelope_setoption = Te(tx = tx_setoption,opts = {'network_id':'PUBLIC'})
+# # kp = Keypair.from_seed('SA2JP7EB3JQTDXBTSHLUEDPODNVFXLPVX27O4WFQXHUREKJZA7OVCTWQ')
+# # envelope_setoption.sign(kp)
+# # xdr = envelope_setoption.xdr()
+# # response5 = horizon.submit(xdr)
+# # passed_or_not(response5)
+# #
+# #
+# # #%%    Let Add1 sign the Payment from Add2
+# # sequence = horizon.account(Add2).get('sequence')
+# # lumen = Asset('XLM')
+# # op_sendfrom = Payment({'source':Add2,'asset':lumen,'amount':'250','destination':Add1})
+# # tx_sendfrom = Transaction(source = Add2,opts = {'sequence':sequence,'operations':[op_sendfrom]})
+# # envelope_sendfrom = Te(tx=tx_sendfrom,opts = {'network_id':'TESTNET'})
+# # envelope_sendfrom.sign(kp1)
+# # xdr6 = envelope_sendfrom.xdr()
+# # response6 = horizon.submit(xdr6)
+# # passed_or_not(response6)
+# #
+# # #%%   Transaction that contains multiple operations
+# # sequence = horizon.account(Add2).get('sequence')
+# # lumen = Asset('XLM')
+# # CMtest = Asset('CMtest1',Add1)
+# # op_cmt_tx = Payment({'asset':CMtest,'amount':'50','destination':Add3,'source':Add2})
+# # op_xlm_tx = Payment({'asset':lumen,'amount':'500','destination':Add2,'source':Add3})
+# # tx_cmt_ex = Transaction(source=Add2,opts={'sequence':sequence,'fee':'200','operations':[op_cmt_tx,op_xlm_tx]})
+# # envelope_cmt_ex = Te(tx = tx_cmt_ex,opts = {'network_id':'TESTNET'})
+# # envelope_cmt_ex.sign(kp2)
+# # envelope_cmt_ex.sign(kp3)        #The sequence of the signatures does matter, it must follow the operation sequences
+# # xdr7 = envelope_cmt_ex.xdr()
+# # response7 = horizon.submit(xdr7)
+# # passed_or_not(response7)
+# #
+# # #%%   Transaction information from envelope
+# # envelope_cmt_ex.tx.operations[0].asset.code        #checking ther asset name of the payment
+# # envelope_cmt_ex.tx.operations[0].amount            #checking the amount of the payment
+# # envelope_cmt_ex.signatures                         #How to understand the response of this function call?
+# #
+# #

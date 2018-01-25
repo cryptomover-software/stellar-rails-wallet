@@ -1,0 +1,195 @@
+!!!
+/[if lt IE 7] <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="">
+/[if IE 7] <html class="no-js lt-ie9 lt-ie8" lang="">
+/[if IE 8] <html class="no-js lt-ie9" lang="">
+/ [if gt IE 8]><!
+
+%html.no-js{lang: "en"}
+  / <![endif]
+  / <html>
+  
+  %head
+    %meta{charset: "utf-8"}/
+    %title Cryptomover - Digital Assets Fund
+    %meta{content: "", name: "description"}/
+    %meta{content: "width=device-width, initial-scale=1", name: "viewport"}/
+    %link{href: "favicon.ico", rel: "icon", type: "image/png"}/
+    / Google Font link
+    %link{href: "https://fonts.googleapis.com/css?family=Montserrat:400,700", rel: "stylesheet"}/
+    %link{href: "https://fonts.googleapis.com/css?family=Raleway:400,600,700", rel: "stylesheet"}/
+    %link{href: "https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700", rel: "stylesheet"}/
+    / %title Cryptomover
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  %body{"data-spy": "scroll", "data-target": ".navbar-collapse"}
+    / Preloader
+    #loading
+      #loading-center
+        #loading-center-absolute
+          #object_one.object
+          #object_two.object
+          #object_three.object
+          #object_four.object
+    / End off Preloader
+    .culmn
+      / Home page style
+      %nav.navbar.navbar-default.navbar-fixed.white.no-background.bootsnav
+        / Start Top Search
+        -# .top-search
+        -#   .container
+        -#     .input-group
+        -#       %span.input-group-addon
+        -#         %i.fa.fa-search
+        -#       %input.form-control{placeholder: "Search", type: "text"}/
+        -#       %span.input-group-addon.close-search
+        -#         %i.fa.fa-times
+        -# / End Top Search
+        .container
+          / Start Atribute Navigation
+          -# .attr-nav
+            %ul
+              -# %li.dropdown
+              -#   %a.dropdown-toggle{"data-toggle": "dropdown", href: "#"}
+              -#     %i.fa.fa-shopping-bag
+              -#     %span.badge 3
+              -#   %ul.dropdown-menu.cart-list
+              -#     %li
+              -#       %a.photo{href: "#"}
+              -#         / <img src="assets/images/thumb01.jpg" class="cart-thumb" alt="" />
+              -#         = image_tag("thumb01.jpg", class: "cart-thumb")
+              -#       %h6
+              -#         %a{href: "#"} Delica omtantur
+              -#       %p.m-top-10
+              -#         2x -
+              -#         %span.price $99.99
+              -#     %li
+              -#       %a.photo{href: "#"}
+              -#         / <img src="assets/images/thumb01.jpg" class="cart-thumb" alt="" />
+              -#         = image_tag("thumb01.jpg", class: "cart-thumb")
+              -#       %h6
+              -#         %a{href: "#"} Delica omtantur
+              -#       %p.m-top-10
+              -#         2x -
+              -#         %span.price $99.99
+              -#     %li
+              -#       %a.photo{href: "#"}
+              -#         / <img src="assets/images/thumb01.jpg" class="cart-thumb" alt="" />
+              -#         = image_tag("thumb01.jpg", class: "cart-thumb")
+              -#       %h6
+              -#         %a{href: "#"} Delica omtantur
+              -#       %p.m-top-10
+              -#         2x -
+              -#         %span.price $99.99
+              -#     / -- More List --
+              -#     %li.total
+              -#       %span.pull-right
+              -#         %strong> Total
+              -#         \: $0.00
+              -#       %a.btn.btn-cart{href: "#"} Cart
+              -# %li.search
+              -#   %a{href: "#"}
+              -#     %i.fa.fa-search
+              -# %li.side-menu
+                -# %a{href: "#"}
+                  -# %i.fa.fa-bars
+          / End Atribute Navigation
+          / Start Header Navigation
+          .navbar-header
+            %button.navbar-toggle{"data-target": "#navbar-menu", "data-toggle": "collapse", type: "button"}
+              %i.fa.fa-bars
+            / <a class="navbar-brand" href="#brand">
+            /
+              <img src="assets/images/logo.png" class="logo logo-display m-top-10" alt="">
+              <img src="assets/images/logo.jpg" class="logo logo-scrolled" alt="">
+            = link_to image_tag("co-logo.png", class: "logo logo-display"), root_path, class: "navbar-brand"
+            = link_to image_tag("co-logo.png", class: "logo logo-scrolled"), root_path, class: "navbar-brand"
+            / </a>
+          / End Header Navigation
+          / Collect the nav links, forms, and other content for toggling
+          #navbar-menu.collapse.navbar-collapse
+            %ul.nav.navbar-nav.navbar-right{"data-in": "fadeInDown", "data-out": "fadeOutUp"}
+              %li= link_to "Home", root_path
+              %li= link_to "Index", "#index"
+              %li= link_to "Demo", "#demo"
+              %li= link_to "Trade Tokens", "#get-token"
+              %li= link_to "About Us", "#about"
+              %li= link_to "Subscribe Now", "#subscribe"
+              /
+                <li><a href="#hello">Hello</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#service">Services</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#blog">Blog</a></li>
+                <li><a href="#contact">Contact</a></li>
+          / /.navbar-collapse
+        / Start Side Menu
+        .side
+          %a.close-side{href: "#"}
+            %i.fa.fa-times
+          .widget
+            %h6.title Custom Pages
+            %ul.link
+              %li
+                %a{href: "#"} About
+              %li
+                %a{href: "#"} Services
+              %li
+                %a{href: "#"} Blog
+              %li
+                %a{href: "#"} Portfolio
+              %li
+                %a{href: "#"} Contact
+          .widget
+            %h6.title Additional Links
+            %ul.link
+              %li
+                %a{href: "#"} Retina Homepage
+              %li
+                %a{href: "#"} New Page Examples
+              %li
+                %a{href: "#"} Parallax Sections
+              %li
+                %a{href: "#"} Shortcode Central
+              %li
+                %a{href: "#"} Ultimate Font Collection
+        / End Side Menu
+      / Content
+      #content
+        = yield
+      %footer#footer.footer.bg-black
+        .container
+          .row
+            .main_footer.text-center.p-bottom-30
+              %p.wow.fadeInRight{"data-wow-duration": "1s"}
+                \© CryptoMover, Hong Kong. 2017. All Rights Reserved.
+                %br
+                Design
+                %i.fa.fa-heart
+                by
+                %a{href: "https://bootstrapthemes.co", target: "_blank"} Bootstrap Themes 2016. All Rights Reserved
+                %br
+                %small
+                  Double Arrow Icon by StoneHub from Noun Project.
+      / scroll up
+      .scrollup
+        %a{href: "#"}
+          %i.fa.fa-chevron-up
+      / End off scroll up
+    / culmn
+    / JS includes
+    / paradise slider js
+    / <script src="http://maps.google.com/maps/api/js?key=AIzaSyD_tAQD36pKp9v4at5AnpGbvBUsLCOSJx8"></script>
+    :javascript
+      function showmap() {
+          var mapOptions = {
+              zoom: 8,
+              scrollwheel: false,
+              center: new google.maps.LatLng(-34.397, 150.644),
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+          };
+          var map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+          $('.mapheight').css('height', '350');
+          $('.maps_text h3').hide();
+      }
