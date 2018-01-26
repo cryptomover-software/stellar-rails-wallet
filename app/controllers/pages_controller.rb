@@ -58,12 +58,13 @@ class PagesController < ApplicationController
 
   def login
     begin
-      if params[:raw] == "true"
-        seed = params[:raw_seed].scan(/../).collect { |c| c.to_i(16).chr }.join
-        pair = Stellar::KeyPair.from_raw_seed(seed)
-      else
-        pair = Stellar::KeyPair.from_seed(params[:seed])
-      end
+      # if not params[:raw] == "true"
+      #   seed = params[:seed].scan(/../).collect { |c| c.to_i(16).chr }.join
+      #   pair = Stellar::KeyPair.from_raw_seed(seed)
+      # else
+      #   pair = Stellar::KeyPair.from_seed(params[:seed])
+      # end
+      pair = Stellar::KeyPair.from_seed(params[:seed])
 
       session[:address] = pair.address
       session[:seed] = pair.seed
