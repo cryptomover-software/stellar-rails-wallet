@@ -3,9 +3,9 @@
     .col-md-12
       .ibox
         .ibox-content
-          %h2.font-bold login
+          %h1.font-bold Login
           %p
-            Please put in your stellar seed here
+            Please put in your Stellar seed here
           .row
             .col-lg-12
               /
@@ -19,10 +19,10 @@
                 /
                   <input type="hidden" id='login_tab' name="raw" value="true">
                   <input type="hidden" id='login_seed' name="raw_seed" value="true">
-                %button.btn.btn-primary.block.full-width.m-b{:type => "submit"} login
+                %button.btn.btn-primary.block.full-width.m-b{:type => "submit"} Login
               %p.text-muted.text-center
-                %small Do not have an stellar account?
-              %a.btn.btn-sm.btn-white.btn-block{:href => "/stellar_account"} Create an account
+                Do not have an stellar account?
+              %a.btn.btn-sm.btn-white.btn-block{:href => "/stellar_account"} Create new account
               :javascript
                 function trezorCipherKeyValue() {
                 
