@@ -1,0 +1,59 @@
+.wrapper.wrapper-content
+  .container
+    .row
+      .col-lg-12
+        .ibox.float-e-margins
+          .ibox-title
+            / <span class="label label-warning pull-right">Data has changed</span>
+            %h5 Portfolio Exposure
+          .ibox-content
+            %p
+              Your Address:
+              %strong= session[:address]
+            .table-responsive
+              %table.table.table-striped
+                %thead
+                  %tr
+                    %th Coin
+                    %th Ballance
+                    %th Action
+                %tbody
+                  - @balances.each do |b|
+                    %tr
+                      %td= b["asset_code"] || "Lumens"
+                      %td= b["balance"]
+                      %td
+                        = link_to "Send", "/stellar_send?asset_name=#{b['asset_code']}"
+        .ibox
+          .ibox-title
+            %h5 Send Luments/Assets
+          .ibox-content
+            = form_tag  '/stellar_send', {class: "m-t"} do
+              .form-group
+                = select_tag :asset_name, options_for_select(@balances.map{|b| b["asset_code"].nil? ? "lumens" :  [b["asset_code"], "#{b['asset_code']}|#{b['asset_issuer']}"] }, "lumens"), class: "form-control"
+              .form-group
+                %input.form-control{:name => "address", :placeholder => "Recipient's public key or address", :required => "true", :type => "text"}/
+              .form-group
+                %input.form-control{:name => "amount", :placeholder => "Amount to send", :required => "true", :type => "text"}/
+              = submit_tag "Send", disable_with: "Sending",  class: "btn btn-primary block full-width m-b"
+        .ibox.float-e-margins
+          .ibox-title
+            / <span class="label label-warning pull-right">Data has changed</span>
+            %h5 Transactions
+          .ibox-content
+            .table-responsive
+              %table.table.table-striped
+                %thead
+                  %tr
+                    %th Asset Code
+                    %th From
+                    %th To
+                    %th Amount
+                %tbody
+                  - @transactions.reverse.each do |b|
+                    %tr
+                      %td= b["asset_code"] || "XLM"
+                      %td= b["from"]
+                      %td= b["to"]
+                      %td
+                        = b["amount"]
