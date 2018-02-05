@@ -83,7 +83,7 @@ class PagesController < ApplicationController
     return body['balances'] || []
   end
 
-  def get_transacions(session)
+  def get_transactions(session)
     endpoint = "/accounts/#{session[:address]}/payments?limit=50"
     body = get_data_from_stellar_api(endpoint)
     
