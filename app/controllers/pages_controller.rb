@@ -1,4 +1,6 @@
 class PagesController < ApplicationController
+  STELLAR_API = "https://horizon.stellar.org".freeze
+  
   def index
   end
 
@@ -69,17 +71,34 @@ class PagesController < ApplicationController
     end
   end
 
-  def stellar_dashboard
-    url = "https://horizon.stellar.org/accounts/#{session[:address]}"
-    transactions_url = "https://horizon.stellar.org/accounts/#{session[:address]}/payments?limit=50"
+  def get_data_from_stellar_api(endpoint)
+    url = STELLAR_API + endpoint
     response = HTTParty.get(url)
-    body = JSON.parse(response.body)
-    @balances = body['balances'] || []
+    JSON.parse(response.body)
+  end
 
-    response = HTTParty.get(transactions_url)
-    body = JSON.parse(response.body)
-    @transactions = []
-    @transactions = body['_embedded']['records']  if body['_embedded'].present? && body['_embedded']['records'].present?
+  def get_balances(session)
+    endpoint = "/accounts/#{session[:address]}"
+    body = get_data_from_stellar_api(endpoint)
+    return body['balances'] || []
+  end
+
+  def get_transacions(session)
+    endpoint = "/accounts/#{session[:address]}/payments?limit=50"
+    body = get_data_from_stellar_api(endpoint)
+    
+    if body['_embedded'].present? && body['_embedded']['records'].present?
+      body['_embedded']['records']
+    else
+      []
+    end
+    
+  end
+
+  def stellar_dashboard
+    @balances = get_balances(session)
+    # @transactions = []
+    @transactions = get_transactions(session)
 
     render :layout => "dashboard"
   end
