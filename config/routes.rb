@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   get 'login', to: 'pages#login'
   get 'stellar_account', to: 'pages#stellar_account'
-  get 'stellar_dashboard', to: 'pages#stellar_dashboard'
+  get 'wallet', to: 'pages#wallet'
   get 'stellar_subscribe', to: 'pages#stellar_subscribe'
   post 'stellar_subscribe', to: 'pages#stellar_subscribe'
   get 'stellar_send', to: 'pages#stellar_send'
