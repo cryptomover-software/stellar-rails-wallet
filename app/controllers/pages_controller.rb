@@ -3,7 +3,7 @@ class PagesController < ApplicationController
   
   def index
     if session[:address].present?
-      redirect_to "/stellar_dashboard"
+      redirect_to wallet_path
     end
   end
 
@@ -31,7 +31,7 @@ class PagesController < ApplicationController
 
       session[:address] = pair.address
       session[:seed] = pair.seed
-      redirect_to "/stellar_dashboard"
+      redirect_to wallet_path
     rescue
       flash[:notice] = "Invalid seed, please check"
       redirect_to root_path
@@ -98,7 +98,7 @@ class PagesController < ApplicationController
     
   end
 
-  def stellar_dashboard
+  def wallet
     @balances = get_balances(session)
     # @transactions = []
 
@@ -129,7 +129,7 @@ class PagesController < ApplicationController
       flash[:notice] = "Transaction failed"
     end
 
-    redirect_to "/stellar_dashboard"
+    redirect_to wallet_path
 
   end
 end

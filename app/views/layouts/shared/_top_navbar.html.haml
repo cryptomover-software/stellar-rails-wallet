@@ -3,11 +3,11 @@
     .navbar-header
       %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
         %i.fa.fa-reorder
-      %a.navbar-brand{:href => "#"} Cryptomover
+      %a.navbar-brand{:href => root_path} Cryptomover
     #navbar.navbar-collapse.collapse
       %ul.nav.navbar-nav
         %li.dropdown
-          %a{"aria-expanded" => "false", :href => login_path, :role => "button"} Wallet
+          %a{"aria-expanded" => "false", :href => wallet_path, :role => "button"} Wallet
         - if session[:address].present?
           %li
             = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button"
