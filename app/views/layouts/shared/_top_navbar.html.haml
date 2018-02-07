@@ -7,7 +7,10 @@
     #navbar.navbar-collapse.collapse
       %ul.nav.navbar-nav
         %li.dropdown
-          %a{"aria-expanded" => "false", :href => login_path, :role => "button"} Stellar Wallet
+          %a{"aria-expanded" => "false", :href => login_path, :role => "button"} Wallet
+        - if session[:address].present?
+          %li
+            = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button"
       - if session[:address].present?
         %ul.nav.navbar-top-links.navbar-right
           %li

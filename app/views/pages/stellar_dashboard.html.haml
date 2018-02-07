@@ -36,24 +36,3 @@
               .form-group
                 %input.form-control{:name => "amount", :placeholder => "Amount to send", :required => "true", :type => "text"}/
               = submit_tag "Send", disable_with: "Sending",  class: "btn btn-primary block full-width m-b"
-        .ibox.float-e-margins
-          .ibox-title
-            / <span class="label label-warning pull-right">Data has changed</span>
-            %h5 Transactions
-          .ibox-content
-            .table-responsive
-              %table.table.table-striped
-                %thead
-                  %tr
-                    %th Asset Code
-                    %th From
-                    %th To
-                    %th Amount
-                %tbody
-                  - @transactions.reverse.each do |b|
-                    %tr
-                      %td= b["asset_code"] || "XLM"
-                      %td= b["from"]
-                      %td= b["to"]
-                      %td
-                        = b["amount"]
