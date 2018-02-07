@@ -1,0 +1,20 @@
+.ibox.float-e-margins
+  .ibox-title
+    %h5 Transactions
+  .ibox-content
+    .table-responsive
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Asset Code
+            %th From
+            %th To
+            %th Amount
+        %tbody
+          - @transactions.reverse.each do |b|
+            %tr
+              %td= b["asset_code"] || "XLM"
+              %td= b["from"]
+              %td= b["to"]
+              %td
+                = b["amount"]
