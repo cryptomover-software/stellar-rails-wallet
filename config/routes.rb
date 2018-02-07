@@ -1,12 +1,10 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'pages#index'
+  get 'forgot_password', to: 'pages#forgot_password'
 
   get 'dashboard', to: 'pages#dashboard'
-
-  # get 'login', to: 'pages#login'
-
-  get 'forgot_password', to: 'pages#forgot_password'
+  get 'transactions', to: 'pages#transactions'
 
   get 'login', to: 'pages#login'
   get 'stellar_account', to: 'pages#stellar_account'

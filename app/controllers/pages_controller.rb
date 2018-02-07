@@ -101,9 +101,12 @@ class PagesController < ApplicationController
   def stellar_dashboard
     @balances = get_balances(session)
     # @transactions = []
-    @transactions = get_transactions(session)
 
     # render :layout => "dashboard"
+  end
+
+  def transactions
+    @transactions = get_transactions(session)
   end
 
   def stellar_send
