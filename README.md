@@ -14,9 +14,10 @@ Stellar-Rails is an open source Stellar wallet created in  Ruby on Rails web app
   4. rails server
   
 ## To do
-  1. Add trusting asset functionality
+  1. Add trusting asset functionality  
   2. Show the real-time NAV of cryptomover Index funds in USD.
   3. Display customer's total nave and history in USD.
+  4. Add Database Backend Facility
 
 ## LICENSE
 
