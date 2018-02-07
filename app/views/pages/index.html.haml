@@ -1,0 +1,63 @@
+.passwordBox.animated.fadeInDown
+  .row
+    .col-md-12
+      .ibox
+        .ibox-content
+          %h1.font-bold Login
+          %p
+            Enter your Stellar seed here
+          .row
+            .col-lg-12
+              /
+                <form class="m-t" role="form" action="/login">
+                <div class="form-group">
+                <input type="text" class="form-control" placeholder="stellar seed" name="seed" required="">
+                </div>
+              %form#login_form.m-t{:action => "/login", :role => "form"}
+                .form-group
+                  %input.form-control{:id => "", :name => "seed", :placeholder => "Enter seed here", :required => "", :type => "text"}/
+                /
+                  <input type="hidden" id='login_tab' name="raw" value="true">
+                  <input type="hidden" id='login_seed' name="raw_seed" value="true">
+                %button.btn.btn-primary.block.full-width.m-b{:type => "submit"} Login
+              %p.text-muted.text-center
+                Do not have an stellar account?
+              %a.btn.btn-sm.btn-white.btn-block{:href => "/stellar_account"} Create new account
+              :javascript
+                function trezorCipherKeyValue() {
+                
+                                        	 var path = document.getElementById("path").value;
+                                        	 var key = document.getElementById("key").value;
+                                        	 var value = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136';
+                
+                                        	 var encrypt = true;
+                                        	 var ask_on_encrypt = false;
+                                        	 var ask_on_decrypt = false;
+                
+                                        	 //var resultEl = document.getElementById("result");
+                
+                                           TrezorConnect.closeAfterFailure(false);
+                                           TrezorConnect.cipherKeyValue(path, key, value, encrypt, ask_on_encrypt, ask_on_decrypt, function (response) {
+                                               if (response.success) {
+                                                	 //resultEl.innerHTML = response.value;
+                                                  $('#login_seed').val(response.value);
+                                                  $('#login_tab').val('true');
+                                                  $('#login_form').submit();
+                                               } else {
+                                                	 //resultEl.innerHTML = "";
+                                                	// resultEl.appendChild(document.createTextNode("Error: " + response.error));
+                                               }
+                                               //document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
+                                           });
+                                         }
+              %form.m-t{:role => "form"}
+                .form-group
+                  %label Path:
+                  %input#path{:value => "m/49'/10'/0'"}/
+                .form-group
+                  %label Key:
+                  %input#key{:size => "64", :value => "My key"}/
+                  %p.text-muted.text-center
+                    %small Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
+                %a.btn.btn-sm.btn-white.btn-block{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
+%script{:src => "https://connect.trezor.io/4/connect.js"}
