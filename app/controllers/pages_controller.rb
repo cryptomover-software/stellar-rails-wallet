@@ -2,19 +2,22 @@ class PagesController < ApplicationController
   STELLAR_API = "https://horizon.stellar.org".freeze
   
   def index
+    if session[:address].present?
+      redirect_to "/stellar_dashboard"
+    end
   end
 
   def dashboard
     render :layout => "dashboard"
   end
 
-  def stellar_login
-    if session[:address].present?
-      redirect_to "/stellar_dashboard"
-    else
-      render :layout => "dashboard"
-    end
-  end
+  # def stellar_login
+  #   if session[:address].present?
+  #     redirect_to "/stellar_dashboard"
+  #   else
+  #     render :layout => "dashboard"
+  #   end
+  # end
 
   def login
     begin
@@ -31,13 +34,13 @@ class PagesController < ApplicationController
       redirect_to "/stellar_dashboard"
     rescue
       flash[:notice] = "Invalid seed, please check"
-      redirect_to "/stellar_login"
+      redirect_to root_path
     end
   end
 
   def logout
     session[:address] = session[:seed] = nil
-    redirect_to "/stellar_login"
+    redirect_to root_path
   end
 
   def stellar_account
@@ -100,7 +103,7 @@ class PagesController < ApplicationController
     # @transactions = []
     @transactions = get_transactions(session)
 
-    render :layout => "dashboard"
+    # render :layout => "dashboard"
   end
 
   def stellar_send
