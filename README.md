@@ -8,10 +8,11 @@ Stellar-Rails is an open source Stellar wallet created in  Ruby on Rails web app
   4. Create new accounts
   
 ## How to Setup
-  1. Download Repository  
-  2. `cd` to directory  
-  3.  Bundle install  
-  4. rails server
+  1. Download Repository.  
+  2. `cd` to directory.  
+  3. Run command `bundle install` to install necessary ruby gems.   
+  4. Run command `rails server` to start the server.
+  5. Access `http://localhost:3000` in your web browser.
   
 ## To do
   1. Add trusting asset functionality  
