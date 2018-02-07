@@ -5,10 +5,10 @@
         %i.fa.fa-reorder
       %a.navbar-brand{:href => root_path} Cryptomover
     #navbar.navbar-collapse.collapse
-      %ul.nav.navbar-nav
-        %li.dropdown
-          %a{"aria-expanded" => "false", :href => wallet_path, :role => "button"} Wallet
-        - if session[:address].present?
+      - if session[:address].present?
+        %ul.nav.navbar-nav
+          %li.dropdown
+            %a{"aria-expanded" => "false", :href => wallet_path, :role => "button"} Wallet
           %li
             = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button"
       - if session[:address].present?
