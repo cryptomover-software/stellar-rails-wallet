@@ -3,19 +3,19 @@ Rails.application.routes.draw do
   root 'pages#index'
   get 'forgot_password', to: 'pages#forgot_password'
 
-  get 'dashboard', to: 'pages#dashboard'
-  get 'transactions', to: 'pages#transactions'
+  get 'dashboard', to: 'wallets#dashboard'
+  get 'transactions', to: 'wallets#transactions'
 
-  get 'login', to: 'pages#login'
-  get 'stellar_account', to: 'pages#stellar_account'
-  get 'wallet', to: 'pages#wallet'
+  get 'login', to: 'wallets#login'
+  get 'stellar_account', to: 'wallets#stellar_account'
+  get 'wallet', to: 'wallets#index'
   get 'stellar_subscribe', to: 'pages#stellar_subscribe'
   post 'stellar_subscribe', to: 'pages#stellar_subscribe'
-  get 'stellar_send', to: 'pages#stellar_send'
-  post 'stellar_send', to: 'pages#stellar_send'
+  get 'stellar_send', to: 'wallets#stellar_send'
+  post 'stellar_send', to: 'wallets#stellar_send'
 
   # post 'login', to: 'pages#login'
-  get 'logout', to: 'pages#logout'
+  get 'logout', to: 'wallets#logout'
 
   post '/shopify/checkout_create', to: 'shopify#checkout_create'
 end
