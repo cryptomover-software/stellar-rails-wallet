@@ -1,0 +1,37 @@
+.passwordBox.animated.fadeInDown
+  .row
+    .col-md-12
+      .ibox
+        .ibox-title
+          %h1 New Stellar Account
+        .ibox-content
+          %ol
+            %li The seed controls 100% of your fund and CAN NOT be recovered if lost. Make sure to backup it offline securely and never lose it.
+            %li The account will NOT BE active upon creation. It needs to be funded for at least 1XLM.
+            %li You are not recommended to send XLM directly from exchange to this address unless you are sure that the exchange is able to fund non-existing accounts.
+          .row
+            .col-lg-12
+              .feed-activity-list
+                .feed-element
+                  .media-body
+                    %span This is your new public stellar address
+                    %br
+                    %h3
+                      = @address
+                .feed-element
+                  .media-body
+                    %span This is your secret stellar seed
+                    %br
+                    %h3
+                      = @seed
+              .alert.alert-info.text-center
+                %b This account doesn't exist on the network. To create this account, send it at least 1 lumen (XLM) to fulfill the
+                = succeed "." do
+                  %a{:href => "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance"} minimum balance.
+                  %br
+                  Or you can
+                  %br
+                  %a{:href => "/stellar_subscribe"} click here to subscribe
+                  our news, and we will send you 2 lumens.
+            .col-md-12.text-center
+              = link_to "Go to wallet", wallet_path, class: "btn btn-primary"
