@@ -37,16 +37,16 @@ class WalletsController < ApplicationController
     redirect_to root_path
   end
 
-  def stellar_account
-    if session[:address].present? && session[:seed].present?
+  def account
      @address = session[:address]
      @seed = session[:seed]
-    else
+  end
+
+  def new_account
       random = Stellar::KeyPair.random
       session[:address] = @address = random.address
       session[:seed] = @seed = random.seed
-    end
-    render :layout => "dashboard"
+#    render :layout => "dashboard"
   end
 
   def get_data_from_stellar_api(endpoint)

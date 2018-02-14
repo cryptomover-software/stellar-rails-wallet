@@ -22,7 +22,8 @@
                 %button.btn.btn-primary.block.full-width.m-b{:type => "submit"} Login
               %p.text-muted.text-center
                 Do not have an stellar account?
-              %a.btn.btn-sm.btn-white.btn-block{:href => "/stellar_account"} Create new account
+              = link_to "Create New Stellar Account", new_account_path, class: "btn btn-sm btn-white btn-block"
+              -# %a.btn.btn-sm.btn-white.btn-block{:href => "/stellar_account"} Create new account;
               :javascript
                 function trezorCipherKeyValue() {
                 
