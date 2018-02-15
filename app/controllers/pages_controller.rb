@@ -17,10 +17,10 @@ class PagesController < ApplicationController
         redirect_to "/stellar_account"
       else
         flash[:notice] =  "#{@account.errors.full_messages}, please try again"
-        render :layout => "dashboard"
+        # render :layout => "dashboard"
       end
     else
-      render :layout => "dashboard"
+      # render :layout => "dashboard"
     end
   end  
 end
