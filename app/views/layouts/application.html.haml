@@ -8,10 +8,15 @@
     %title Cryptomover
     / Include style per-controller - vendor plugins
     / Main css styles
-    = stylesheet_link_tag    'dashboard', media: 'all', 'data-turbolinks-track' => true
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
     / Main javascript files
-    = javascript_include_tag 'dashboard', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
+    %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"})
+    %script
+      console.log("SDK");
+      console.log(StellarSdk);
+      
   %body.top-navigation
     / Wrapper
     #wrapper{:class => "#{params[:controller]}.#{params[:action]}"}
