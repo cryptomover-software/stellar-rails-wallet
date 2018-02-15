@@ -6,15 +6,21 @@
       %table.table.table-striped
         %thead
           %tr
+            %th Created At
             %th Asset Code
             %th From
             %th To
             %th Amount
         %tbody
-          - @transactions.reverse.each do |b|
+          - @transactions.reverse.each do |transaction|
             %tr
-              %td= b["asset_code"] || "XLM"
-              %td= b["from"]
-              %td= b["to"]
               %td
-                = b["amount"]
+                = transaction['created_at']
+              %td
+                = transaction['asset_code'] || 'XLM'
+              %td
+                = transaction['from']
+              %td
+                = transaction['to']
+              %td
+                = transaction['amount']
