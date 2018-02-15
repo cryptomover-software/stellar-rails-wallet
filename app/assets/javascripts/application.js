@@ -11,8 +11,15 @@
 // about supported directives.
 //
 //= require jquery
+//= require jquery_ujs
 //= require rails-ujs
-//= require react
-//= require react_ujs
 //= require components
+//= require turbolinks
+//= require bootstrap-sprockets
+//= require chartjs/Chart.min.js
+//= require iCheck/icheck.min.js
 //= require_tree .
+
+$(document).ready(function() {
+
+});

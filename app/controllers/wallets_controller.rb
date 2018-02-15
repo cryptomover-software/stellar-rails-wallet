@@ -2,7 +2,7 @@ class WalletsController < ApplicationController
   STELLAR_API = "https://horizon.stellar.org".freeze
   
   def dashboard
-    render :layout => "dashboard"
+    # render :layout => "dashboard"
   end
 
   # def stellar_login
@@ -21,10 +21,12 @@ class WalletsController < ApplicationController
       # else
       #   pair = Stellar::KeyPair.from_seed(params[:seed])
       # end
-      pair = Stellar::KeyPair.from_seed(params[:seed])
+      # pair = Stellar::KeyPair.from_seed(params[:seed])
 
-      session[:address] = pair.address
-      session[:seed] = pair.seed
+      # session[:address] = pair.address
+      # session[:seed] = pair.seed
+      session[:address] = params[:public_key]
+      
       redirect_to wallet_path
     rescue
       flash[:notice] = "Invalid seed. Check seed again."
