@@ -19,7 +19,7 @@
       
   %body.top-navigation
     / Wrapper
-    #wrapper{:class => "#{params[:controller]}.#{params[:action]}"}
+    #wrapper
       / Page wraper
       #page-wrapper{:class => "gray-bg #{@extra_class}"}
         / Page wrapper
@@ -37,7 +37,7 @@
             %strong Copyright
             © Cryptomover, Hong Kong 2017-2018
       / End page wrapper
-    / End wrapper
+      / End wrapper
     / Include javascript per-controller - vendor plugins
     / Include javascript per-view
     / For demo purpose we include javascript in view but you can easily start SeedProject and organize it with Rails asset pipeline as you want
