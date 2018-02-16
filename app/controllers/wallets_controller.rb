@@ -55,12 +55,14 @@ class WalletsController < ApplicationController
     url = STELLAR_API + endpoint
     response = HTTParty.get(url)
     JSON.parse(response.body)
+    # TODO handle API url down
   end
 
   def get_balances(session)
     endpoint = "/accounts/#{session[:address]}"
     body = get_data_from_stellar_api(endpoint)
-    return body['balances'] || []
+
+    body['status'] == 404 ? body['status'] : body['balances']
   end
 
   def get_transactions(session)
@@ -77,9 +79,23 @@ class WalletsController < ApplicationController
 
   def index
     @balances = get_balances(session)
+    session[:balances] = @balances
+
+    if @balances == 404
+      redirect_to inactive_account_path
+      return
+    end
+  end
+
+  def inactive_account
   end
 
   def transactions
+    if session[:balances] == 404
+      redirect_to inactive_account_path
+      return
+    end
+    
     @transactions = get_transactions(session)
   end
 
