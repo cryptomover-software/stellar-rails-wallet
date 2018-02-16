@@ -14,6 +14,7 @@ Rails.application.routes.draw do
 
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'
+  get 'inactive_account', to: 'wallets#inactive_account'
   
   get 'stellar_subscribe', to: 'pages#stellar_subscribe'
   post 'stellar_subscribe', to: 'pages#stellar_subscribe'
