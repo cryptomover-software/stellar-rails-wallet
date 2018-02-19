@@ -1,7 +1,11 @@
 .alert.alert-danger.text-center
   %b
-    = session[:address]
-  .mt-3
-    Account NOT Active. Send Minimum 1 XLM to this address to Activate it.
+    %big
+      INACTIVE ACCOUNT.
+  %br
+  = session[:address]
+  
+  .inactive-prompt
+    Send Minimum 1 XLM to this address to Activate it.
     %br
     Contact support at cryptomover dot com for help.
