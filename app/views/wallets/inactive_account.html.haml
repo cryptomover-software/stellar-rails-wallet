@@ -1,11 +1,14 @@
 .alert.alert-danger.text-center
-  %b
-    %big
-      INACTIVE ACCOUNT.
+  %big
+    INACTIVE ACCOUNT.
   %br
-  = session[:address]
-  
+  .address
+    = session[:address]
+  %hr  
   .inactive-prompt
     Send Minimum 1 XLM to this address to Activate it.
+    %br
+    %br
+    = link_to "Go To Wallet", wallet_path, class: "btn btn-primary"
     %br
     Contact support at cryptomover dot com for help.
