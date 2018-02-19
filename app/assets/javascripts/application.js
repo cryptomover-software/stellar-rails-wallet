@@ -15,7 +15,7 @@
 //= require rails-ujs
 //= require components
 //= require turbolinks
-//= require bootstrap-sprockets
+//= require bootstrap
 //= require chartjs/Chart.min.js
 //= require iCheck/icheck.min.js
 //= require_tree .
