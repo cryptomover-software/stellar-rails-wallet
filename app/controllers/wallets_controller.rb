@@ -1,4 +1,6 @@
 class WalletsController < ApplicationController
+  before_action :user_must_login, except: [:login]
+  
   STELLAR_API = "https://horizon.stellar.org".freeze
   
   def dashboard
@@ -78,7 +80,12 @@ class WalletsController < ApplicationController
   end
 
   def index
-    @balances = get_balances(session)
+    if session[:balances].nil?
+      @balances = get_balances(session)
+    else
+      @balances = session[:balances]
+    end
+    
     session[:balances] = @balances
 
     if @balances == 404
