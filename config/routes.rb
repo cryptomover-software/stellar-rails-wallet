@@ -8,19 +8,23 @@ Rails.application.routes.draw do
   # post 'login', to: 'pages#login'
 
   get 'dashboard', to: 'wallets#dashboard'
-  get 'wallet', to: 'wallets#index'
+  get 'portfolio', to: 'wallets#index'
 
   get 'transactions', to: 'wallets#transactions'
 
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'
+  get 'send_money', to: 'wallets#transfer_assets'
+  get 'fund_new_account', to: 'wallets#fund_new_account'
   get 'inactive_account', to: 'wallets#inactive_account'
+  get 'success', to: 'wallets#success'
+  get 'failed', to: 'wallets#failed'
   
   get 'stellar_subscribe', to: 'pages#stellar_subscribe'
   post 'stellar_subscribe', to: 'pages#stellar_subscribe'
 
-  get 'stellar_send', to: 'wallets#stellar_send'
-  post 'stellar_send', to: 'wallets#stellar_send'
+  #get 'transfer_amount', to: 'wallets#transfer_amount'
+  post 'transfer_amount', to: 'wallets#transfer_amount'
 
-  post '/shopify/checkout_create', to: 'shopify#checkout_create'
+  # post '/shopify/checkout_create', to: 'shopify#checkout_create'
 end
