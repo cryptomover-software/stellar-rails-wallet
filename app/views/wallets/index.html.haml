@@ -10,36 +10,26 @@
             .row
               .col-md-12.col-lg-11
                 Your Address:
-                .address
+                .address#source-public-key
                   = session[:address]
               .col-md-12.col-lg-1
                 %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
-            .table-responsive
+            .table-responsive.balance-table
               %table.table.table-striped
                 %thead
                   %tr
+                    %th Number
                     %th Coin
                     %th Balance
-                    %th Action
                 %tbody
-                  - @balances.each do |b|
+                  - @balances.each_with_index do |balance, index|
                     %tr
-                      %td= b["asset_code"] || "Lumens"
-                      %td= b["balance"]
                       %td
-                        = link_to "Send", "/stellar_send?asset_name=#{b['asset_code']}"
-        .ibox
-          .ibox-title
-            %h5 Send Luments/Assets
-          .ibox-content
-            = form_tag  '/stellar_send', {class: "m-t"} do
-              .form-group
-                = select_tag :asset_name, options_for_select(@balances.map{|b| b["asset_code"].nil? ? "lumens" :  [b["asset_code"], "#{b['asset_code']}|#{b['asset_issuer']}"] }, "lumens"), class: "form-control"
-              .form-group
-                %input.form-control{:name => "address", :placeholder => "Recipient's public key or address", :required => "true", :type => "text"}/
-              .form-group
-                %input.form-control{:name => "amount", :placeholder => "Amount to send", :required => "true", :type => "text"}/
-              = submit_tag "Send", disable_with: "Sending",  class: "btn btn-primary block full-width m-b"
+                        = index + 1
+                      %td
+                        = balance["asset_code"] || "Lumens"
+                      %td
+                        = balance["balance"]
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 

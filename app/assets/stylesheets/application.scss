@@ -141,3 +141,39 @@ body {
     margin-top: 10px;
     word-wrap: break-word;
 }
+.balance-table {
+    td,th {
+        text-align: center;
+    }
+}
+#layout-alert {
+    margin-top: 10px;
+}
+.success {
+    text-align: center;
+    color: green;
+}
+.failed {
+    text-align: center;
+    color: red;
+}
+#progressbar {
+    display: none;
+    width: 100%;
+    height: 40px;
+}
+.ui-progressbar {
+    position: relative;
+}
+.progress-label {
+    position: absolute;
+    left: 50%;
+    top: 4px;
+    // font-weight: bold;
+    // text-shadow: 1px 1px 0 #fff;
+    color: white;
+    font-size: 20px;
+}
+.ui-slider-handle {
+    display: none;
+}

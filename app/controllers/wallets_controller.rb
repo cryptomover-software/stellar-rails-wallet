@@ -1,5 +1,5 @@
 class WalletsController < ApplicationController
-  before_action :user_must_login, except: [:login]
+  before_action :user_must_login, except: [:login, :new_account]
   
   STELLAR_API = "https://horizon.stellar.org".freeze
   
@@ -29,7 +29,7 @@ class WalletsController < ApplicationController
       # session[:seed] = pair.seed
       session[:address] = params[:public_key]
       
-      redirect_to wallet_path
+      redirect_to portfolio_path
     rescue
       flash[:notice] = "Invalid seed. Check seed again."
       redirect_to root_path
@@ -47,10 +47,9 @@ class WalletsController < ApplicationController
   end
 
   def new_account
-      random = Stellar::KeyPair.random
-      session[:address] = @address = random.address
-      session[:seed] = @seed = random.seed
-#    render :layout => "dashboard"
+    random = Stellar::KeyPair.random
+    session[:address] = @address = random.address
+    session[:seed] = @seed = random.seed
   end
 
   def get_data_from_stellar_api(endpoint)
@@ -61,7 +60,8 @@ class WalletsController < ApplicationController
   end
 
   def get_balances(session)
-    endpoint = "/accounts/#{session[:address]}"
+    address = session[:address].delete(' ')
+    endpoint = "/accounts/#{address}"
     body = get_data_from_stellar_api(endpoint)
 
     body['status'] == 404 ? body['status'] : body['balances']
@@ -80,11 +80,7 @@ class WalletsController < ApplicationController
   end
 
   def index
-    if session[:balances].nil?
-      @balances = get_balances(session)
-    else
-      @balances = session[:balances]
-    end
+    @balances = get_balances(session)
     
     session[:balances] = @balances
 
@@ -106,27 +102,27 @@ class WalletsController < ApplicationController
     @transactions = get_transactions(session)
   end
 
-  def stellar_send
-    #@asset_name = (params[:asset_name] == "lumens") ? "XLM" : params[:asset_name]
-    if params[:asset_name].blank? || params[:asset_name] == "lumens"
-      str = %Q(python3 -c 'from Stellar_token_issuer import *; Sending_lumen("#{session[:address]}", "#{session[:seed]}", "#{params[:address]}", #{params[:amount]})')
-    else
-      asset_name, asset_address = params[:asset_name].split("|")
-      str = %Q(python3 -c 'from Stellar_token_issuer import *;Sending_asset("#{asset_name}", "#{asset_address}", "#{session[:address]}", "#{session[:seed]}", "#{params[:address]}", #{params[:amount]})')
+  def transfer_assets
+    @balances = session[:balances]
+  end
+
+  def fund_new_account
+    @to_address = params[:to_address]
+    @from_address = params[:from_address]
+    @amount = params[:amount]
+  end
+
+  def success
+  end
+
+  def failed
+  end
+
+  private
+  
+  def user_must_login
+    if not session[:address].present?
+      redirect_to root_path
     end
-
-    logger.info "===============================#{str}"
-    result = `#{str}`
-
-    logger.info "===============================#{result}"
-
-    if result.index("passed")
-      flash[:notice] = "Transaction passed"
-    else
-      flash[:notice] = "Transaction failed"
-    end
-
-    redirect_to wallet_path
-
   end
 end
