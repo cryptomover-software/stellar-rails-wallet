@@ -6,7 +6,7 @@
           %h1
             Login
           %p
-            Enter your Stellar seed here
+            Enter your Public Stellar Key here
           .row
             .col-lg-12
               /
@@ -16,7 +16,7 @@
                 </div>
               %form#login_form.m-t{:action => "/login", :role => "form"}
                 .form-group
-                  %input#public-key.form-control{:name => "public_key", :placeholder => "Enter seed here", :required => "true", :type => "text"}/
+                  %input#public-key.form-control{:name => "public_key", :placeholder => "Enter Public Key", :required => "true", :type => "text"}/
                 /
                   <input type="hidden" id='login_tab' name="raw" value="true">
                   <input type="hidden" id='login_seed' name="raw_seed" value="true">

@@ -1,0 +1,8 @@
+.ibox
+  .ibox-title
+    .failed
+      %h1 FAILED!
+  .ibox-content.text-center
+    Transaction failed with following error.
+    %br
+    = params[:error_description]
