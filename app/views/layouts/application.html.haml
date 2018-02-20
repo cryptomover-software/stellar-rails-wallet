@@ -8,11 +8,13 @@
     %title Cryptomover
     / Include style per-controller - vendor plugins
     / Main css styles
-    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    %link{href: "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css", rel: "stylesheet"}
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
     / Main javascript files
-    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track': true
+    %script{src: "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"}
     = csrf_meta_tags
-    %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"})
+
       
   %body.top-navigation
     / Wrapper
@@ -25,6 +27,7 @@
         - if flash[:notice].present?
           .alert.alert-danger
             = flash[:notice]
+        #layout-alert.alert.alert-danger
         = yield
         / Footer
         .footer
@@ -39,3 +42,5 @@
     / Include javascript per-view
     / For demo purpose we include javascript in view but you can easily start SeedProject and organize it with Rails asset pipeline as you want
     = yield :javascript
+:javascript
+  $("#layout-alert").hide()

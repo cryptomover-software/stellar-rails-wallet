@@ -1,0 +1,101 @@
+.ibox
+  .ibox-title
+    %h1 Fund New Stellar Account
+    - if @to_address.present?
+      %p.alert.alert-danger
+        Target account
+        %b
+          = @to_address
+        is not active yet. Do you want to tranfer initial Lumens to it, from your own account, to activate it?
+  .ibox-content
+    = render partial: "shared/transfer_assets_form"
+
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
+
+:javascript
+  function progressbar() {
+    $("#secret-seed").prop("disabled", true)
+    $("#target-account").prop("disabled", true)
+    $("#amount-to-send").prop("disabled", true)
+    $("#asset-type").prop("disabled", true)
+    $("#progressbar").show()
+    
+    $("#progressbar").progressbar({
+      value: false
+    });
+
+    var progressbar = $("#progressbar")
+    var progressbarValue = progressbar.find( ".ui-progressbar-value" )
+    progressbar.progressbar( "option", "value", false )
+    progressbarValue.css({"background": "#1ab394"})
+    $("#send_money").hide()
+    $("#cancel-btn").hide()
+  }
+  
+  $('#send_money').click(function(event) {
+    var sourceSecretKey = document.getElementById('secret-seed').value
+    var receiverPublicKey = document.getElementById('target-account').value
+    var amount = document.getElementById('amount-to-send').value
+
+    if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Please Enter All Details.")
+    } else {
+      $("#layout-alert").hide()
+      progressbar()
+      fund_new_account()
+    }
+  })
+  
+  var server = new StellarSdk.Server('https://horizon.stellar.org')
+
+  function submit_transaction(transaction) {    
+    server.submitTransaction(transaction)
+      .then(function(transactionResult) {
+        // console.log(JSON.stringify(transactionResult, null, 2))
+        // console.log('\nSuccess! View the transaction at: ')
+        //console.log(transactionResult._links.transaction.href)
+        document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href
+      })
+      .catch(function(err) {
+        console.log('An error has occured:')
+        console.log(err)
+        document.location.href = '/failed?error_description=' + err.message
+      })
+  }
+  
+  function build_transaction(secretString, sourcePublicKey, sequence) {
+    var amount = document.getElementById('amount-to-send').value
+    var target_account = document.getElementById('target-account').value
+
+    var account = new StellarSdk.Account(sourcePublicKey, sequence)
+
+    var transaction = new StellarSdk.TransactionBuilder(account)
+      .addOperation(StellarSdk.Operation.createAccount({
+        destination: target_account,
+        startingBalance: amount
+      }))
+      .build()
+
+    transaction.sign(StellarSdk.Keypair.fromSecret(secretString))
+    return transaction
+  }
+
+  function fund_new_account() {
+    var secretString = document.getElementById('secret-seed').value
+    var sourceKeypair = StellarSdk.Keypair.fromSecret(secretString)
+    var sourcePublicKey = sourceKeypair.publicKey()
+    StellarSdk.Network.usePublicNetwork();
+    
+    server.accounts()
+      .accountId(sourcePublicKey)
+      .call()
+      .then(function(accountResult) {
+        var transaction = build_transaction(secretString, sourcePublicKey, accountResult.sequence)
+        submit_transaction(transaction)
+      })
+      .catch(function (err) {
+        console.log(err)
+        document.location.href = '/failed?error_description=' + err.message.detail
+      })
+  }

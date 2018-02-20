@@ -1,7 +1,7 @@
 class PagesController < ApplicationController  
   def index
     if session[:address].present?
-      redirect_to wallet_path
+      redirect_to portfolio_path
     end
   end  
 
