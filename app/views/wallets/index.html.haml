@@ -1,35 +1,33 @@
-.wrapper.wrapper-content
-  .container
-    .row
-      .col-lg-12
-        .ibox.float-e-margins
-          .ibox-title
-            / <span class="label label-warning pull-right">Data has changed</span>
-            %h5 Portfolio Exposure
-          .ibox-content
-            .row
-              .col-md-12.col-lg-11
-                Your Address:
-                .address#source-public-key
-                  = session[:address]
-              .col-md-12.col-lg-1
-                %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
-            .table-responsive.balance-table
-              %table.table.table-striped
-                %thead
-                  %tr
-                    %th Number
-                    %th Coin
-                    %th Balance
-                %tbody
-                  - @balances.each_with_index do |balance, index|
-                    %tr
-                      %td
-                        = index + 1
-                      %td
-                        = balance["asset_code"] || "Lumens"
-                      %td
-                        = balance["balance"]
+.row
+  .col-lg-12
+    .ibox.float-e-margins
+      .ibox-title
+        / <span class="label label-warning pull-right">Data has changed</span>
+        %h5 Portfolio Exposure
+      .ibox-content
+        .row
+          .col-md-12.col-lg-11
+            Your Address:
+            .address#source-public-key
+              = session[:address]
+          .col-md-12.col-lg-1
+            %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
+        .table-responsive.balance-table
+          %table.table.table-striped
+            %thead
+              %tr
+                %th Number
+                %th Coin
+                %th Balance
+            %tbody
+              - @balances.each_with_index do |balance, index|
+                %tr
+                  %td
+                    = index + 1
+                  %td
+                    = balance["asset_code"] || "Lumens"
+                  %td
+                    = balance["balance"]
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 
