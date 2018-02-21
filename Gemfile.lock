@@ -40,8 +40,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
-    airbrussh (1.3.0)
-      sshkit (>= 1.6.1, != 1.7.0)
     arel (8.0.0)
     autoprefixer-rails (8.0.0)
       execjs
@@ -56,24 +54,6 @@ GEM
       sass (>= 3.3.4)
     builder (3.2.3)
     byebug (9.1.0)
-    capistrano (3.10.1)
-      airbrussh (>= 1.0.0)
-      i18n
-      rake (>= 10.0.0)
-      sshkit (>= 1.9.0)
-    capistrano-bundler (1.3.0)
-      capistrano (~> 3.1)
-      sshkit (~> 1.2)
-    capistrano-rails (1.3.1)
-      capistrano (~> 3.1)
-      capistrano-bundler (~> 1.1)
-    capistrano-rbenv (2.1.3)
-      capistrano (~> 3.1)
-      sshkit (~> 1.3)
-    capistrano3-puma (3.1.1)
-      capistrano (~> 3.7)
-      capistrano-bundler
-      puma (~> 3.4)
     capybara (2.17.0)
       addressable
       mini_mime (>= 0.1.3)
@@ -129,17 +109,18 @@ GEM
     mail (2.7.0)
       mini_mime (>= 0.1.1)
     method_source (0.9.0)
+    mina (1.2.3)
+      open4 (~> 1.3.4)
+      rake
     mini_mime (1.0.0)
     mini_portile2 (2.3.0)
     minitest (5.11.2)
     multi_json (1.13.1)
     multi_xml (0.6.0)
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
-    net-ssh (4.2.0)
     nio4r (2.2.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
+    open4 (1.3.4)
     public_suffix (3.0.1)
     puma (3.8.1)
     rack (2.0.3)
@@ -211,9 +192,6 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.3.13)
-    sshkit (1.15.1)
-      net-scp (>= 1.1.2)
-      net-ssh (>= 2.8.0)
     stellar-base (0.12.0)
       activesupport (>= 4.2.7)
       base32
@@ -260,11 +238,6 @@ PLATFORMS
 DEPENDENCIES
   bootstrap-sass
   byebug
-  capistrano
-  capistrano-bundler
-  capistrano-rails
-  capistrano-rbenv
-  capistrano3-puma
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
   font-awesome-rails
@@ -274,7 +247,8 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   listen (>= 3.0.5, < 3.2)
-  puma (= 3.8.1)
+  mina
+  puma
   rails (~> 5.1.2)
   react-rails
   sass-rails (~> 5.0)
