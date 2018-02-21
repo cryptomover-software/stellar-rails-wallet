@@ -6,20 +6,12 @@
           %h1
             Login
           %p
-            Enter your Public Stellar Key here
+            Enter your Public Stellar Key
           .row
             .col-lg-12
-              /
-                <form class="m-t" role="form" action="/login">
-                <div class="form-group">
-                <input type="text" class="form-control" placeholder="stellar seed" name="seed" required="">
-                </div>
               %form#login_form.m-t{:action => "/login", :role => "form"}
                 .form-group
                   %input#public-key.form-control{:name => "public_key", :placeholder => "Enter Public Key", :required => "true", :type => "text"}/
-                /
-                  <input type="hidden" id='login_tab' name="raw" value="true">
-                  <input type="hidden" id='login_seed' name="raw_seed" value="true">
                 %button#login-btn.btn.btn-primary.block.full-width.m-b{:type => "submit"} Login
               %p.text-muted.text-center
                 Do not have a Stellar account?
