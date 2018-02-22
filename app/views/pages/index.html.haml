@@ -1,4 +1,4 @@
-.passwordBox.animated.fadeInDown
+#login.animated.fadeInDown
   .row
     .col-md-12
       .ibox
@@ -16,7 +16,6 @@
               %p.text-muted.text-center
                 Do not have a Stellar account?
               = link_to "Create New Stellar Account", new_account_path, class: "btn btn-sm btn-white btn-block"
-              -# %a.btn.btn-sm.btn-white.btn-block{:href => "/stellar_account"} Create new account;
               :javascript
                 function trezorCipherKeyValue() {
                 
@@ -50,8 +49,8 @@
                   %input#path{:value => "m/49'/10'/0'"}/
                 .form-group
                   %label Key:
-                  %input#key{:size => "64", :value => "My key"}/
+                  %input#key{:value => "My key"}/
                   %p.text-muted.text-center
                     %small Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
-                %a.btn.btn-sm.btn-white.btn-block{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
+                %a.btn.btn-sm.btn-primary.btn-block{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
 %script{:src => "https://connect.trezor.io/4/connect.js"}
