@@ -10,6 +10,8 @@
         %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
       .first
         %button{class: "btn btn-primary", id: "first-btn"} First
+      .last
+        %button{class: "btn btn-primary", id: "last-btn"} Last
       .next
         %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_cursor]} Next >>
   .ibox-content
@@ -18,7 +20,7 @@
         %thead
           %tr
             %th Transaction ID
-            %th Created At
+            %th Time
             %th Asset Code
             %th From
             %th To
@@ -48,8 +50,11 @@
   $("#prev-btn").click(function() {
     console.log("prev...")
     var cursor = $(this).data("prev")
-    document.location.href = '/transactions?order=asc_order&cursor='+ cursor
+    document.location.href = '/transactions?order=asc&cursor='+ cursor
   })
   $('#first-btn').click(function() {
     document.location.href = '/transactions'
+  })
+  $('#last-btn').click(function() {
+    document.location.href = '/transactions?order=asc'
   })
