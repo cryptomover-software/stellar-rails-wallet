@@ -1,19 +1,32 @@
 .ibox.float-e-margins
   .ibox-title
-    %h5 Transactions
+    %h1 Transactions
+    %br
+      Address
+      .address
+        = session[:address]
+    #history-nav
+      .row
+        .col-md-6.prev
+          %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
+        .col-md-6.next
+          %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_cursor]} Next >>
   .ibox-content
     .table-responsive
       %table.table.table-striped
         %thead
           %tr
+            %th Transaction ID
             %th Created At
             %th Asset Code
             %th From
             %th To
             %th Amount
         %tbody
-          - @transactions.reverse.each do |transaction|
+          - @transactions.each_with_index do |transaction, index|
             %tr
+              %td
+                = transaction['id']
               %td
                 = transaction['created_at']
               %td
@@ -24,3 +37,22 @@
                 = transaction['to']
               %td
                 = transaction['amount']
+
+  #history-nav
+    %hr
+    .row
+      .col-md-6.prev
+        %button{class: "btn btn-primary", id: "prev-btn"} << Prev
+      .col-md-6.next
+        %button{class: "btn btn-primary", id: "next-btn"} Next >>              
+:javascript
+  $("#next-btn").click(function() {
+    console.log("next...")
+    var cursor = $(this).data("next")
+    document.location.href = '/transactions?cursor='+ cursor
+  })
+  $("#prev-btn").click(function() {
+    console.log("prev...")
+    var cursor = $(this).data("prev")
+    document.location.href = '/transactions?cursor='+ cursor
+  })

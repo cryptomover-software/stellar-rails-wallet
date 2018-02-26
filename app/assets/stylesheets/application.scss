@@ -92,6 +92,17 @@ body {
     /* min-height: 100%;
        position: absolute; */
 }
+nav.navbar.navbar-static-top {
+    background-color: #C1C1C1;
+}
+#navbar {
+    a:link, a:hover, a:visited {
+        color: black;
+    }
+}
+.navbar-brand {
+    color: white;
+}
 .navbar {
 
 }
@@ -201,4 +212,20 @@ body {
 #login-btn {
     /* margin: 0 auto;
        width: 30% */
+}
+#history-nav {
+    margin: 10px 0 10px 0;
+    
+    .prev, .next {
+        text-align: center;
+    }
+    
+    @media(min-width: 750px) {
+        .prev {
+            text-align: right;
+        }
+        .next {
+            text-align: left;
+        }
+    }
 }
