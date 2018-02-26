@@ -17,6 +17,7 @@
 //= require bootstrap
 //= require chartjs/Chart.min.js
 //= require iCheck/icheck.min.js
+//= require pace.min
 //= require_tree .
 
 $(document).ready(function() {
