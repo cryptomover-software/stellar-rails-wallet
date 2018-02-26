@@ -27,7 +27,7 @@ class WalletsController < ApplicationController
 
       # session[:address] = pair.address
       # session[:seed] = pair.seed
-      session[:address] = params[:public_key]
+      session[:address] = params[:public_key].delete(' ')
       
       redirect_to portfolio_path
     rescue
@@ -59,30 +59,69 @@ class WalletsController < ApplicationController
     # TODO handle API url down
   end
 
-  def get_balances(session)
-    address = session[:address].delete(' ')
+  def get_balances()
+    address = session[:address]
     endpoint = "/accounts/#{address}"
     body = get_data_from_stellar_api(endpoint)
 
     body['status'] == 404 ? body['status'] : body['balances']
   end
 
-  def get_transactions(session)
-    endpoint = "/accounts/#{session[:address]}/payments?limit=50"
-    body = get_data_from_stellar_api(endpoint)
+  def set_cursor(url, cookie)
+    url = url['href']
     
-    if body['_embedded'].present? && body['_embedded']['records'].present?
-      body['_embedded']['records']
+    url_params = CGI::parse(URI::parse(url).query)
+
+    if cookie == 'next'
+      session[:next_cursor] = url_params['cursor']
+    else
+      session[:prev_cursor] = url_params['cursor']
+    end
+  end
+
+  def set_transactions_endpoint
+    endpoint = "/accounts/#{session[:address]}/payments?limit=3"
+    
+    if (params[:cursor])
+      endpoint += "&cursor=#{params[:cursor]}"
+    end
+
+    if params[:order] == 'asc_order'
+      endpoint += "&order=asc"
+    else
+      endpoint += "&order=desc"
+    end
+  end
+  
+  def get_transactions
+    endpoint = set_transactions_endpoint()
+
+    body = get_data_from_stellar_api(endpoint)
+
+    url = body['_links']['next']
+    set_cursor(url, 'next')
+
+    url = body['_links']['prev']
+    set_cursor(url, 'prev')
+    
+    if body['_embedded']['records'].present?
+      return body['_embedded']['records']
     else
       []
+    end
+
+    respond_to do |format|
+      format.html
     end
     
   end
 
   def index
-    @balances = get_balances(session)
+    @balances = get_balances()
     
     session[:balances] = @balances
+    session[:next_cursor] = nil
+    session[:prev_cursor] = nil
 
     if @balances == 404
       redirect_to inactive_account_path
@@ -99,7 +138,12 @@ class WalletsController < ApplicationController
       return
     end
     
-    @transactions = get_transactions(session)
+    @transactions = get_transactions()
+
+    respond_to do |format|
+      format.html { @transactions }
+      format.json { render json: body['_embedded']['records']}
+    end
   end
 
   def transfer_assets
