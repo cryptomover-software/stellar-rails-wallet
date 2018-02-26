@@ -80,7 +80,7 @@ class WalletsController < ApplicationController
   end
 
   def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=3"
+    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
     
     if (params[:cursor])
       endpoint += "&cursor=#{params[:cursor]}"
@@ -139,6 +139,8 @@ class WalletsController < ApplicationController
     end
     
     @transactions = get_transactions()
+
+    @transactions = @transactions.reverse if params[:order] == 'asc_order'
 
     respond_to do |format|
       format.html { @transactions }
