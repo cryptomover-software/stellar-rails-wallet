@@ -6,11 +6,12 @@
       .address
         = session[:address]
     #history-nav
-      .row
-        .col-md-6.prev
-          %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
-        .col-md-6.next
-          %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_cursor]} Next >>
+      .prev
+        %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
+      .first
+        %button{class: "btn btn-primary", id: "first-btn"} First
+      .next
+        %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_cursor]} Next >>
   .ibox-content
     .table-responsive
       %table.table.table-striped
@@ -38,13 +39,6 @@
               %td
                 = transaction['amount']
 
-  #history-nav
-    %hr
-    .row
-      .col-md-6.prev
-        %button{class: "btn btn-primary", id: "prev-btn"} << Prev
-      .col-md-6.next
-        %button{class: "btn btn-primary", id: "next-btn"} Next >>              
 :javascript
   $("#next-btn").click(function() {
     console.log("next...")
@@ -55,4 +49,7 @@
     console.log("prev...")
     var cursor = $(this).data("prev")
     document.location.href = '/transactions?order=asc_order&cursor='+ cursor
+  })
+  $('#first-btn').click(function() {
+    document.location.href = '/transactions'
   })
