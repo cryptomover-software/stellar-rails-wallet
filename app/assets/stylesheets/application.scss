@@ -216,19 +216,19 @@ nav.navbar.navbar-static-top {
 #history-nav {
     margin: 10px 0 10px 0;
     text-align: center;
-    .prev, .next, .first {
+    .prev, .next, .first, .last {
         text-align: center;
         display: inline-block;
     }
     
-    @media(min-width: 750px) {
-        .prev {
-            text-align: right;
-        }
-        .next {
-            text-align: left;
-        }
-    }
+    /* @media(min-width: 750px) {
+       .prev {
+       text-align: right;
+       }
+       .next {
+       text-align: left;
+       }
+       } */
 }
 // Pace Atom Start
 .pace {
