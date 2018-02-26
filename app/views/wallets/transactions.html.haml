@@ -54,5 +54,5 @@
   $("#prev-btn").click(function() {
     console.log("prev...")
     var cursor = $(this).data("prev")
-    document.location.href = '/transactions?cursor='+ cursor
+    document.location.href = '/transactions?order=asc_order&cursor='+ cursor
   })
