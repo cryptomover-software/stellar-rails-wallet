@@ -86,7 +86,7 @@ class WalletsController < ApplicationController
       endpoint += "&cursor=#{params[:cursor]}"
     end
 
-    if params[:order] == 'asc_order'
+    if params[:order] == 'asc'
       endpoint += "&order=asc"
     else
       endpoint += "&order=desc"
