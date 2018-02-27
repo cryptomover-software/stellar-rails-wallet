@@ -43,6 +43,8 @@
 
     var amount = document.getElementById('amount-to-send').value
 
+    var memo_type = $("input[name=memotype]:checked").val()
+
     var memo = document.getElementById('memo').value
 
     var asset_tag = document.getElementById('asset-type')
@@ -81,6 +83,18 @@
       StellarSdk.Network.usePublicNetwork()
       // StellarSdk.Network.useTestNetwork()
 
+      var set_memo = StellarSdk.Memo.text(memo)
+
+      if (memo_type == 'id') {
+        set_memo = StellarSdk.Memo.id(memo)
+      } else if (memo_type == 'hash') {
+        set_memo = StellarSdk.Memo.hash(memo)
+      } else if (memo_type == 'return') {
+        set_memo = StellarSdk.Memo.return(memo)
+      } else {
+        set_memo = StellarSdk.Memo.text(memo)
+      }
+
       server.loadAccount(sourcePublicKey)
        .then(function(account) {
          var transaction = new StellarSdk.TransactionBuilder(account)
@@ -94,7 +108,7 @@
              // They are represented in JS Stellar SDK in string format
              amount: amount,
            })) // TODO Memo
-           .addMemo(StellarSdk.Memo.text(memo))
+           .addMemo(set_memo)
            // .addMemo(StellarSdk.Memo.text('Hello world!'))
            .build()
 
