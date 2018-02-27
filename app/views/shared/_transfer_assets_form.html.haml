@@ -1,12 +1,16 @@
 .form-group
-  - if @balances.present?
-    .form-label
-      Asset Type
-    = select_tag :asset_name, options_for_select(@balances.map{|b| b["asset_code"].nil? ? "lumens" :  [b["asset_code"], "#{b['asset_code']}|#{b['asset_issuer']}"] }, "lumens"), class: "form-control", id: "asset-type"
   .form-group
     .form-label
       Recipients Public Key
     %input.form-control{id: "target-account", name: "address", placeholder: "Recipient's public key or address", required: true, type: "text"}/
+  .form-group
+    .form-label
+      From Account
+    %input.form-control{name: "from_address", type: "text", disabled: true, value: session[:address]}
+  - if @balances.present?
+    .form-label
+      Asset Type
+    = select_tag :asset_name, options_for_select(@assets, selected: "Lumens"), class: "form-control", id: "asset-type"
   .form-group
     .form-label
       Amount
