@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get 'portfolio', to: 'wallets#index'
 
   get 'transactions', to: 'wallets#transactions'
+  get 'trust_asset', to: 'wallets#trust_asset'
 
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'

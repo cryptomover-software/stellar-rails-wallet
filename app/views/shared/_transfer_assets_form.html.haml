@@ -2,11 +2,7 @@
   .form-group
     .form-label
       Recipients Public Key
-    %input.form-control{id: "target-account", name: "address", placeholder: "Recipient's public key or address", required: true, type: "text"}/
-  .form-group
-    .form-label
-      From Account
-    %input.form-control{name: "from_address", type: "text", disabled: true, value: session[:address]}
+    %input.form-control{id: "target-account", name: "address", placeholder: "Recipient's public key or address", required: true, type: "text"}
   - if @balances.present?
     .form-label
       Asset Type
@@ -19,6 +15,10 @@
     .form-label
       Type your Secret Key
     %input.form-control{id: "secret-seed", type: "password", placeholder: "Your Secret Key", required: true}
+  .form-group
+    .form-label
+      Memo
+    %input.form-control{id: "memo", type: "text", placeholder: "Type Memo", required: true}
   .container-fluid
     .row
       .col.text-center
