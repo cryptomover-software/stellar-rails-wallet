@@ -1,0 +1,51 @@
+%h1 Trust Asset
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
+  
+:javascript
+  //$(document).ready(function() {
+    console.log("trusting...")
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+
+    var asset = new StellarSdk.Asset("HKDC","GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3")
+
+    // var sourcePublicKey = "GATEULHQJHKOF5VJNIDA2E4EDSLUEMPK4BVLKPLMMLJ57JGTII7VU4ZG"
+    var sourcePublicKey = "GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO"
+
+    // var sourceSecretKey = "SCKQPIDJ2EPMBHJGYMBDLBWTGQZTZIM3MMCP7NFLIPGM6YZBHFAKFFPI"
+    var sourceSecretKey = "SDGUGBQXE6KPGRULOF3CSZLQX7UUAYVERLHHTLXC626357P5KPBGFUIU"
+
+    var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
+    // var sourceKeypair = StellarSdk.Keypair.fromPublicKey(sourcePublicKey)
+
+    console.log(asset)
+
+    StellarSdk.Network.usePublicNetwork()
+
+    server.loadAccount(sourcePublicKey)
+    .then(function(account){
+      var transaction = new StellarSdk.TransactionBuilder(account)
+        .addOperation(StellarSdk.Operation.changeTrust({
+          asset: asset,
+          limit: '1000'
+        }))
+        .build();
+
+      console.log("signining")
+      transaction.sign(sourceKeypair)
+
+      console.log("submitting")
+      server.submitTransaction(transaction)
+        .then(function(result){
+          console.log("Result = ")
+          console.log(result)
+        })
+        .catch(function(err) {
+          console.log("ERROR")
+          console.log(err)
+        })
+    })
+    .catch(function(error){
+      console.log('ERROR!', error)
+    })
+  //})
+
