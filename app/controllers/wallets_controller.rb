@@ -2,6 +2,7 @@ class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :new_account]
   
   STELLAR_API = "https://horizon.stellar.org".freeze
+  NATIVE_ASSET = "native".freeze
   
   def dashboard
     # render :layout => "dashboard"
@@ -148,8 +149,13 @@ class WalletsController < ApplicationController
     end
   end
 
+  def trust_asset
+  end
+
   def transfer_assets
     @balances = session[:balances]
+
+    @assets = @balances.map{ |balance| balance["asset_type"] == NATIVE_ASSET ? "Lumens" : "#{balance['asset_code']}, #{balance['asset_issuer']}"}
   end
 
   def fund_new_account

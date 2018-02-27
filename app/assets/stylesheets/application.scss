@@ -322,3 +322,9 @@ nav.navbar.navbar-static-top {
 }
 
 // Pace Atom End
+.transactionbox {
+    margin: 0 auto;
+    @media(min-width: 750px) {
+        width: 50%;
+    }
+}
