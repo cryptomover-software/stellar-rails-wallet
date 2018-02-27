@@ -2,6 +2,11 @@
   .ibox
     .ibox-title
       %h1 Send Lumens/Assets
+      %br
+      From Account
+      %br
+      .address
+        = session[:address]
     .ibox-content
       = render partial: "shared/transfer_assets_form"
 
@@ -37,6 +42,8 @@
     var receiverPublicKey = document.getElementById('target-account').value
 
     var amount = document.getElementById('amount-to-send').value
+
+    var memo = document.getElementById('memo').value
 
     var asset_tag = document.getElementById('asset-type')
 
@@ -87,6 +94,7 @@
              // They are represented in JS Stellar SDK in string format
              amount: amount,
            })) // TODO Memo
+           .addMemo(StellarSdk.Memo.text(memo))
            // .addMemo(StellarSdk.Memo.text('Hello world!'))
            .build()
 
