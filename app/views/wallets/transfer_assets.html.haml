@@ -1,8 +1,9 @@
-.passwordBox.ibox
-  .ibox-title
-    %h1 Send Lumens/Assets
-  .ibox-content
-    = render partial: "shared/transfer_assets_form"
+.transactionbox
+  .ibox
+    .ibox-title
+      %h1 Send Lumens/Assets
+    .ibox-content
+      = render partial: "shared/transfer_assets_form"
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 
@@ -32,18 +33,39 @@
 
   $('#send_money').click(function(event) {
     var sourceSecretKey = document.getElementById('secret-seed').value
+
     var receiverPublicKey = document.getElementById('target-account').value
+
     var amount = document.getElementById('amount-to-send').value
+
+    var asset_tag = document.getElementById('asset-type')
+
+    var asset = asset_tag.options[asset_tag.selectedIndex].text
+
+    if (asset == "Lumens") {
+      asset = StellarSdk.Asset.native()
+    } else {
+      var asset_arr = asset.split(',')
+
+      var asset_code = asset_arr[0].replace(/\s/g,'')
+
+      var asset_issuer = asset_arr[1].replace(/\s/g,'')
+
+      asset = new StellarSdk.Asset(asset_code, asset_issuer)
+    }
 
     if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
       $("#layout-alert").show()
+
       $("#layout-alert").html("Please Enter All Details.")
     } else {
       $("#layout-alert").hide()
+
       progressbar()
       
       // Derive Keypair object and public key (that starts with a G) from the secret
       var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
+
       var sourcePublicKey = sourceKeypair.publicKey()
       
       // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
@@ -52,8 +74,6 @@
       StellarSdk.Network.usePublicNetwork()
       // StellarSdk.Network.useTestNetwork()
 
-      console.log("loadAccount...")
-
       server.loadAccount(sourcePublicKey)
        .then(function(account) {
          var transaction = new StellarSdk.TransactionBuilder(account)
@@ -61,11 +81,12 @@
            .addOperation(StellarSdk.Operation.payment({
              destination: receiverPublicKey,
              // The term native asset refers to lumens
-             asset: StellarSdk.Asset.native(),
+             // asset: StellarSdk.Asset.native(),
+             asset: asset,
              // Lumens are divisible to seven digits past the decimal.
              // They are represented in JS Stellar SDK in string format
              amount: amount,
-           }))
+           })) // TODO Memo
            // .addMemo(StellarSdk.Memo.text('Hello world!'))
            .build()
 
@@ -89,8 +110,10 @@
 
              if (result_code == 'op_no_destination') {
                fund_new_account(sourcePublicKey, receiverPublicKey, amount)
+             } else if (result_code == 'op_no_trust') {
+               document.location.href = '/trust_asset?failed=true&address='+ receiverPublicKey + '&asset_code=' + asset_code + '&asset_issuer=' + asset_issuer
              } else {
-               document.location.href = '/failed?error_description=' + result_code
+               // document.location.href = '/failed?error_description=' + result_code
              }
            })
        })
