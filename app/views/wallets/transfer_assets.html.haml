@@ -18,6 +18,8 @@
     $("#target-account").prop("disabled", true)
     $("#amount-to-send").prop("disabled", true)
     $("#asset-type").prop("disabled", true)
+    $("input[name=memotype]").attr("disabled", "disabled")
+    $("#memo").prop("disabled", true)
     
     $("#progressbar").progressbar({
       value: false
@@ -31,6 +33,10 @@
     $("#cancel-btn").hide()
     $("#progressbar").show()
   }
+
+  $("input[name=memotype]").click(function() {
+    $("#memo").prop("disabled", false)
+  })
   
   function fund_new_account(sourcePublicKey, receiverPublicKey, amount) {
     document.location.href = "/fund_new_account?from_address=" + sourcePublicKey + "&to_address=" + receiverPublicKey + "&amount=" + amount
