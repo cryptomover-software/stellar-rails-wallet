@@ -20,6 +20,7 @@ class WalletsController < ApplicationController
       # session[:address] = pair.address
       # session[:seed] = pair.seed
       session.clear
+
       # TODO validate correct stellar public key
       session[:address] = params[:public_key].delete(' ')
       
