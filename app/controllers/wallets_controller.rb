@@ -1,10 +1,12 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :new_account]
   before_action :activate_account, except: [:index, :login, :logout, :new_account, :forgot_password, :inactive_account]
-  # for Index action, we check account status only after fetching the balance and after initializing the balance cookie.
+  # for Index action, we check account status each time
+  # after fetching balance and after initializing the balance cookie.
   
   STELLAR_API = "https://horizon.stellar.org".freeze
   NATIVE_ASSET = "native".freeze
+  INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   
   def dashboard
   end
@@ -28,7 +30,7 @@ class WalletsController < ApplicationController
       
       redirect_to portfolio_path
     rescue
-      flash[:notice] = "Invalid seed. Check seed again."
+      flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path
     end
   end
@@ -65,6 +67,8 @@ class WalletsController < ApplicationController
   end
 
   def set_cursor(url, cookie)
+    # Setting Pagination Cursor for
+    # Previous and Next actions
     url = url['href']
     
     url_params = CGI::parse(URI::parse(url).query)
@@ -93,6 +97,7 @@ class WalletsController < ApplicationController
 
     body = get_data_from_stellar_api(endpoint)
 
+    # Set links for previous and next buttons
     url = body['_links']['next']
     set_cursor(url, 'next')
 
@@ -106,6 +111,9 @@ class WalletsController < ApplicationController
     @balances = get_balances()
     
     session[:balances] = @balances
+
+    # Reset previous and next button links of transactions page,
+    # when user visits home page
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
 
@@ -121,7 +129,7 @@ class WalletsController < ApplicationController
   def transactions    
     @transactions = get_transactions()
 
-    @transactions = @transactions.reverse if params[:order] == 'asc_order'
+    return @transactions.reverse if params[:order] == 'asc_order'
 
     respond_to do |format|
       format.html { @transactions }
@@ -133,9 +141,15 @@ class WalletsController < ApplicationController
   end
 
   def transfer_assets
+    # TODO refresh assets and balances without visiting home page
     @balances = session[:balances]
 
-    @assets = @balances.map{ |balance| balance["asset_type"] == NATIVE_ASSET ? "Lumens" : "#{balance['asset_code']}, #{balance['asset_issuer']}"}
+    @assets = @balances.map{
+      |balance|
+      balance["asset_type"] == NATIVE_ASSET ?
+        "Lumens" :
+        "#{balance['asset_code']}, #{balance['asset_issuer']}"
+    }
   end
 
   def fund_new_account
