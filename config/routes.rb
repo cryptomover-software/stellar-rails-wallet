@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'
   get 'send_money', to: 'wallets#transfer_assets'
-  get 'fund_new_account', to: 'wallets#fund_new_account'
+  # get 'fund_new_account', to: 'wallets#fund_new_account'
   get 'inactive_account', to: 'wallets#inactive_account'
   get 'success', to: 'wallets#success'
   get 'failed', to: 'wallets#failed'
