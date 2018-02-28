@@ -4,12 +4,12 @@
       %h1 SUCCESS!
   .ibox-content.text-center
     %big
-      Amount Transferred.
+      = params[:message]
     %br
     Check Transaction History
     %br
     OR
     %br
-    View the Transaction at
+    View the Transaction Details at
     %br
     = link_to params[:transaction_url], "#{params[:transaction_url]}"
