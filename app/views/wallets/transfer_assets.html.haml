@@ -18,7 +18,6 @@
     $("#target-account").prop("disabled", true)
     $("#amount-to-send").prop("disabled", true)
     $("#asset-type").prop("disabled", true)
-    $("#progressbar").show()
     
     $("#progressbar").progressbar({
       value: false
@@ -30,6 +29,7 @@
     progressbarValue.css({"background": "#1ab394"})
     $("#send_money").hide()
     $("#cancel-btn").hide()
+    $("#progressbar").show()
   }
   
   function fund_new_account(sourcePublicKey, receiverPublicKey, amount) {

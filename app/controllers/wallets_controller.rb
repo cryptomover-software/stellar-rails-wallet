@@ -52,10 +52,10 @@ class WalletsController < ApplicationController
   end
 
   def get_data_from_stellar_api(endpoint)
+    # TODO handle API url down
     url = STELLAR_API + endpoint
     response = HTTParty.get(url)
     JSON.parse(response.body)
-    # TODO handle API url down
   end
 
   def get_balances()
