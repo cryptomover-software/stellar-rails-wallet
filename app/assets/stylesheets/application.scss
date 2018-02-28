@@ -182,12 +182,15 @@ nav.navbar.navbar-static-top {
 }
 .progress-label {
     position: absolute;
-    left: 50%;
+    left: 15%;
     top: 4px;
     // font-weight: bold;
     // text-shadow: 1px 1px 0 #fff;
     color: white;
     font-size: 20px;
+    @media(min-width: 750px) {
+        left:30%;
+    }
 }
 .ui-slider-handle {
     display: none;
