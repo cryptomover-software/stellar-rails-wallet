@@ -121,7 +121,8 @@
              // console.log(JSON.stringify(transactionResult, null, 2))
              // console.log('\nSuccess! View the transaction at: ')
              // console.log(transactionResult._links.transaction.href)
-             document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href
+             var message = 'Amount ' + amount + ' transferred to ' + receiverPublicKey + ' successfully.'
+             document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
            })
            .catch(function(err) {
              console.log('An error has occured:')

@@ -1,5 +1,7 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :new_account]
+  before_action :activate_account, except: [:index, :login, :logout, :new_account, :forgot_password, :inactive_account]
+  # for Index action, we check account status only after fetching the balance and after initializing the balance cookie.
   
   STELLAR_API = "https://horizon.stellar.org".freeze
   NATIVE_ASSET = "native".freeze
@@ -77,9 +79,7 @@ class WalletsController < ApplicationController
   def set_transactions_endpoint
     endpoint = "/accounts/#{session[:address]}/payments?limit=10"
     
-    if (params[:cursor])
-      endpoint += "&cursor=#{params[:cursor]}"
-    end
+    endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
     if params[:order] == 'asc'
       endpoint += "&order=asc"
@@ -99,16 +99,7 @@ class WalletsController < ApplicationController
     url = body['_links']['prev']
     set_cursor(url, 'prev')
     
-    if body['_embedded']['records'].present?
-      return body['_embedded']['records']
-    else
-      []
-    end
-
-    respond_to do |format|
-      format.html
-    end
-    
+    body['_embedded']['records'].present? ? body['_embedded']['records'] : []
   end
 
   def index
@@ -127,12 +118,7 @@ class WalletsController < ApplicationController
   def inactive_account
   end
 
-  def transactions
-    if session[:balances] == 404
-      redirect_to inactive_account_path
-      return
-    end
-    
+  def transactions    
     @transactions = get_transactions()
 
     @transactions = @transactions.reverse if params[:order] == 'asc_order'
@@ -169,6 +155,13 @@ class WalletsController < ApplicationController
   def user_must_login
     if not session[:address].present?
       redirect_to root_path
+    end
+  end
+
+  def activate_account
+    if session[:balances] == 404
+      redirect_to inactive_account_path
+      return
     end
   end
 end
