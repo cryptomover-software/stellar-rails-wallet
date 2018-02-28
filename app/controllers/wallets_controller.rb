@@ -5,16 +5,7 @@ class WalletsController < ApplicationController
   NATIVE_ASSET = "native".freeze
   
   def dashboard
-    # render :layout => "dashboard"
   end
-
-  # def stellar_login
-  #   if session[:address].present?
-  #     redirect_to "/stellar_dashboard"
-  #   else
-  #     render :layout => "dashboard"
-  #   end
-  # end
 
   def login
     begin
@@ -28,6 +19,7 @@ class WalletsController < ApplicationController
 
       # session[:address] = pair.address
       # session[:seed] = pair.seed
+      # TODO validate correct stellar public key
       session[:address] = params[:public_key].delete(' ')
       
       redirect_to portfolio_path
