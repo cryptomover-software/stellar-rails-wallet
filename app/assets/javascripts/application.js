@@ -23,3 +23,15 @@
 $(document).ready(function() {
 
 });
+
+function progressbar() {    
+  $("#progressbar").progressbar({
+    value: false
+  });
+
+  var progressbar = $("#progressbar")
+  var progressbarValue = progressbar.find( ".ui-progressbar-value" )
+  progressbar.progressbar( "option", "value", false )
+  progressbarValue.css({"background": "#1ab394"})
+  $("#progressbar").show()
+}

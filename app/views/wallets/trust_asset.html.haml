@@ -38,9 +38,19 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
   
 :javascript
+  function hide_form_controls(){
+    $('#secret-seed').prop("disabled", true)
+    $('#asset-code').prop("disabled", true)
+    $('#asset-issuer').prop("disabled", true)
+    $('#limit').prop("disabled", true)
+    $('#trust-btn').hide()
+    $('#cancel-btn').hide()
+  }
   //$(document).ready(function() {
   $('#trust-btn').click(function(){
     console.log("trusting...")
+    hide_form_controls()
+    progressbar()
     var server = new StellarSdk.Server('https://horizon.stellar.org')
 
     var asset_code = document.getElementById('asset-code').value
