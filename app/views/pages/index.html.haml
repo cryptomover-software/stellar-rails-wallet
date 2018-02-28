@@ -2,11 +2,20 @@
   .row
     .col-md-12
       .ibox
-        .ibox-content
+        .ibox-title
+          .alert.alert-danger.text-center
+            WORK IN PROGRESS!
+            %br
+            %b
+              This wallet is still in development. Minor bugs might appear.
+              %br
+              Please use this wallet for testing purpose only.
+              %br
           %h1
             Login
           %p
             Enter your Public Stellar Key
+        .ibox-content
           .row
             .col-lg-12
               %form#login_form.m-t{:action => "/login", :role => "form"}
@@ -52,5 +61,6 @@
                   %input#key{:value => "My key"}/
                   %p.text-muted.text-center
                     %small Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
-                %a.btn.btn-sm.btn-primary.btn-block{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
+                // %a.btn.btn-sm.btn-primary.btn-block{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
+                %button.btn.btn-primary.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
 %script{:src => "https://connect.trezor.io/4/connect.js"}
