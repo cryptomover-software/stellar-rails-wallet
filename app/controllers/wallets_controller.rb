@@ -19,6 +19,7 @@ class WalletsController < ApplicationController
 
       # session[:address] = pair.address
       # session[:seed] = pair.seed
+      session.clear
       # TODO validate correct stellar public key
       session[:address] = params[:public_key].delete(' ')
       
@@ -30,7 +31,7 @@ class WalletsController < ApplicationController
   end
 
   def logout
-    session[:address] = session[:seed] = nil
+    session.clear
     redirect_to root_path
   end
 
