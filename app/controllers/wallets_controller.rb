@@ -173,7 +173,7 @@ class WalletsController < ApplicationController
   end
 
   def activate_account
-    if session[:balances] == 404
+    if (session[:balances] == 404) || (session[:balances].blank?)
       redirect_to inactive_account_path
       return
     end
