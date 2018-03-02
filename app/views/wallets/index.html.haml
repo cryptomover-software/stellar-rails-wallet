@@ -16,18 +16,24 @@
           %table.table.table-striped
             %thead
               %tr
-                %th Number
+                %th 
                 %th Coin
+                %th Issuer
                 %th Balance
+                %th USD Value
             %tbody
-              - @balances.each_with_index do |balance, index|
+              - @balances.each do |balance|
                 %tr
                   %td
-                    = index + 1
+                    %i.fas.fa-usd
                   %td
                     = balance["asset_code"] || "Lumens"
                   %td
+                    = balance["asset_issuer"]
+                  %td
                     = balance["balance"]
+                  %td
+                    1.00 $
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 
