@@ -6,7 +6,6 @@ git_source(:github) do |repo_name|
 end
 
 gem 'bootstrap-sass'
-gem 'font-awesome-rails'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.2'
@@ -62,7 +61,5 @@ gem 'httparty'
 gem 'haml'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-# gem 'webpacker', '~> 2.0'
-# gem 'react-rails'
-# gem 'pg'
 gem 'mina'
+gem 'font-awesome-sass', '~> 5.0.6'

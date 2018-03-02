@@ -26,7 +26,7 @@
             %th To
             %th Amount
         %tbody
-          - @transactions.each_with_index do |transaction, index|
+          - @transactions.each do |transaction|
             %tr
               %td
                 = transaction['id']

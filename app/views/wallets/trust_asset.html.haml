@@ -2,10 +2,15 @@
   .ibox
     .ibox-title
       %h1 Trust Asset
+      %span
+        %big
+          Not Sure About Asset Code and Issuer?
+      .mt-1
+        %button{class: "btn btn-primary", id: "browse-assets"} Browse All Assets
     .ibox-content
       .form-group
         .form-label
-          Public Key
+          Public Key 
         %input.form-control{id: "source-account", value: session[:address], disabled: true, type: "text"}
       .form-group
         .form-label
@@ -38,6 +43,10 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
   
 :javascript
+  $("#browse-assets").click(function() {
+    document.location.href = '/assets'
+  })
+  
   function hide_form_controls(){
     $('#secret-seed').prop("disabled", true)
     $('#asset-code').prop("disabled", true)

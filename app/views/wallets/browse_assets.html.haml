@@ -1,0 +1,54 @@
+.ibox.float-e-margins
+  .ibox-title
+    %h1 Transactions
+    %br
+      Address
+      .address
+        = session[:address]
+    #assets-nav
+      .prev
+        %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
+      .first
+        %button{class: "btn btn-primary", id: "first-btn"} First
+      .last
+        %button{class: "btn btn-primary", id: "last-btn"} Last
+      .next
+        %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
+  .ibox-content
+    .table-responsive
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Asset Code
+            %th Asset Type
+            %th Asset Issuer
+            %th TOML URL
+        %tbody
+          - @assets.each do |asset|
+            %tr
+              %td
+                = asset['asset_code']
+              %td
+                = asset['asset_type']
+              %td
+                = asset['asset_issuer']
+              %td
+                = asset['_links']['toml']['href']
+
+:javascript
+  $("#next-btn").click(function() {
+    console.log("next...")
+    var cursor = $(this).data("next")
+    document.location.href = '/assets?cursor='+ cursor
+  })
+  $("#prev-btn").click(function() {
+    console.log("prev...")
+    var cursor = $(this).data("prev")
+    document.location.href = '/assets?order=asc&cursor='+ cursor
+  })
+  $('#first-btn').click(function() {
+    document.location.href = '/assets'
+  })
+  $('#last-btn').click(function() {
+    document.location.href = '/assets?order=asc'
+  })

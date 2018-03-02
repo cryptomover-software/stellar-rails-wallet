@@ -66,7 +66,15 @@ class WalletsController < ApplicationController
     body['status'] == 404 ? body['status'] : body['balances']
   end
 
-  def set_cursor(url, cookie)
+  def set_cursor(url, cookie, type)
+    if type
+      next_cursor = :next_asset_cursor
+      prev_cursor = :prev_asset_cursor
+    else
+      next_cursor = :next_cursor
+      prev_cursor = :prev_cursor
+    end
+      
     # Setting Pagination Cursor for
     # Previous and Next actions
     url = url['href']
@@ -74,14 +82,26 @@ class WalletsController < ApplicationController
     url_params = CGI::parse(URI::parse(url).query)
 
     if cookie == 'next'
-      session[:next_cursor] = url_params['cursor']
+      session[next_cursor] = url_params['cursor']
     else
-      session[:prev_cursor] = url_params['cursor']
+      session[prev_cursor] = url_params['cursor']
     end
   end
 
   def set_transactions_endpoint
     endpoint = "/accounts/#{session[:address]}/payments?limit=10"
+    
+    endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
+
+    if params[:order] == 'asc'
+      endpoint += "&order=asc"
+    else
+      endpoint += "&order=desc"
+    end
+  end
+
+  def set_assets_endpoint
+    endpoint = "/assets?limit=20"
     
     endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
@@ -137,6 +157,29 @@ class WalletsController < ApplicationController
     end
   end
 
+  def get_assets
+    endpoint = set_assets_endpoint()
+
+    body = get_data_from_stellar_api(endpoint)
+    
+    # Set links for previous and next buttons
+    url = body['_links']['next']
+    set_cursor(url, 'next', 'asset')
+
+    url = body['_links']['prev']
+    set_cursor(url, 'prev', 'asset')
+    
+    body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+  end
+
+  def browse_assets
+    @assets = get_assets()
+
+    return @assets.reverse if params[:order] == 'asc_order'
+
+    return @assets
+  end
+  
   def trust_asset
   end
 
