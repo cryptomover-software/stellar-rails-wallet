@@ -98,10 +98,20 @@ nav.navbar.navbar-static-top {
 #navbar {
     a:link, a:hover, a:visited {
         color: black;
+
+        @media(min-width: 750px) {
+            font-size: 20px;
+        }
     }
 }
 .navbar-brand {
     color: white;
+    height: 100%;
+    width: 100%;
+    
+    img {
+        width: 150px;
+    }
 }
 .navbar {
 
