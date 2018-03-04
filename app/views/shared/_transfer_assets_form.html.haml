@@ -16,23 +16,22 @@
       Type your Secret Key
     %input.form-control{id: "secret-seed", type: "password", placeholder: "Your Secret Key", required: true}
   Memo Type
-  .form-group
-    .form-check.form-check-inline
-      %label.form-check-label
-        %input.form-check-input{type: "radio", name: "memotype", value: "text"} TEXT
-    .form-check.form-check-inline
-      %label.form-check-label
-        %input.form-check-input{type: "radio", name: "memotype", value: "id"} ID
-    .form-check.form-check-inline
-      %label.form-check-label
-        %input.form-check-input{type: "radio", name: "memotype", value: "hash"} HASH
-    .form-check.form-check-inline
-      %label.form-check-label
-        %input.form-check-input{type: "radio", name: "memotype", value: "return"} RETURN
+  .form-check.form-check-inline
+    %label.radio-inline
+      %input.form-check-input{type: "radio", name: "memotype", value: "text"} TEXT
+    %label.radio-inline
+      %input.form-check-input{type: "radio", name: "memotype", value: "id"} ID
+    %label.radio-inline
+      %input.form-check-input{type: "radio", name: "memotype", value: "hash"} HASH
+    %label.radio-inline
+      %input.form-check-input{type: "radio", name: "memotype", value: "return"} RETURN
   .form-group
     .form-label
       Memo
     %input.form-control{id: "memo", type: "text", placeholder: "Type Memo", disabled: true}
+  .form-check
+    %label.form-check-label
+      %input.form-check-input{type: "checkbox", name: "fund-new", value: "fund-new", id: "fund-new-chk"}  Fund New Account
   .container-fluid
     .row
       .col.text-center
