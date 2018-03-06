@@ -47,14 +47,19 @@
   $.ajax({
     url: "/get_balances",
   }).done(function(balances) {
-    $("#progressbar").hide()
-    var row = ""
-    $.each(balances , function(index, balance) {
-      if (balance["asset_type"] == "native") {
-        row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
-      } else {
-        row = $("<tr><td><i class='fas fa-usd'></td><td>"+balance["asset_code"]+"</td><td>"+balance["asset_issuer"]+"</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
-      }
-      $("#balances-tbl").append(row)
-    })
+    if (balances == 404) {
+      console.log("redirecting...")
+      document.location.href = "/inactive_account"
+    } else {
+      $("#progressbar").hide()
+      var row = ""
+      $.each(balances, function(index, balance) {
+        if (balance["asset_type"] == "native") {
+          row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
+        } else {
+          row = $("<tr><td><i class='fas fa-usd'></td><td>"+balance["asset_code"]+"</td><td>"+balance["asset_issuer"]+"</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
+        }
+        $("#balances-tbl").append(row)
+      })
+    }
   })

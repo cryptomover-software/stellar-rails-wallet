@@ -1,6 +1,6 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :new_account]
-  before_action :activate_account, except: [:index, :login, :logout, :new_account, :forgot_password, :inactive_account]
+  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
   
@@ -65,11 +65,8 @@ class WalletsController < ApplicationController
     result = get_data_from_api(url)
 
     balances = result['status'] == 404 ? result['status'] : result['balances']
-    # balances = 404
 
-    redirect_to inactive_account_path if balances == 404
-
-    balances = get_usd_price(balances)
+    balances = get_usd_price(balances) if balances != 404
     session[:balances] = balances
 
     respond_to do |format|
