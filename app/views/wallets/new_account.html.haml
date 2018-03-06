@@ -12,19 +12,16 @@
               %li You are not recommended to send XLM directly from exchange to this address unless you are sure that the exchange is able to fund non-existing accounts.
             .row
               .col-lg-12
-                .feed-activity-list
-                  .feed-element
-                    .media-body
-                      %span This is your new public stellar address
-                      %br
-                      %h3
-                        = @address
-                  .feed-element
-                    .media-body
-                      %span This is your secret stellar seed
-                      %br
-                      %h3
-                        = @seed
+                %span This is your new public stellar address
+                %br
+                .address
+                  = @address
+                %br
+                %br
+                %span This is your secret stellar seed
+                %br
+                .address
+                  = @seed
                 .alert.alert-danger.text-center
                   %b This account doesn't exist on the network. To create this account, send it at least 1 lumen (XLM) to fulfill the
                   = succeed "." do
