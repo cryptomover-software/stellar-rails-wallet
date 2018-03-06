@@ -95,11 +95,12 @@ body {
        position: absolute; */
 }
 nav.navbar.navbar-static-top {
-    background-color: #C1C1C1;
+    // background-color: #C1C1C1;
+    background-color: $navy;
 }
 #navbar {
     a:link, a:hover, a:visited {
-        color: black;
+        color: white;
 
         @media(min-width: 750px) {
             /* font-size: 20px; */

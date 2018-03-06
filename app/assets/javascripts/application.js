@@ -32,7 +32,8 @@ function progressbar() {
   var progressbar = $("#progressbar")
   var progressbarValue = progressbar.find( ".ui-progressbar-value" )
   progressbar.progressbar( "option", "value", false )
-  progressbarValue.css({"background": "#1ab394"})
+  // progressbarValue.css({"background": "#1ab394"})
+  progressbarValue.css({"background": "#00bfff"})
   $("#progressbar").show()
 }
 
