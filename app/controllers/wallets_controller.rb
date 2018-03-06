@@ -5,6 +5,7 @@ class WalletsController < ApplicationController
   # after fetching balance and after initializing the balance cookie.
   
   STELLAR_API = "https://horizon.stellar.org".freeze
+  COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
   NATIVE_ASSET = "native".freeze
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   
@@ -51,9 +52,8 @@ class WalletsController < ApplicationController
     session[:seed] = @seed = random.seed
   end
 
-  def get_data_from_stellar_api(endpoint)
+  def get_data_from_api(url)
     # TODO handle API url down
-    url = STELLAR_API + endpoint
     response = HTTParty.get(url)
     JSON.parse(response.body)
   end
@@ -61,7 +61,8 @@ class WalletsController < ApplicationController
   def get_balances()
     address = session[:address]
     endpoint = "/accounts/#{address}"
-    body = get_data_from_stellar_api(endpoint)
+    url = STELLAR_API + endpoint
+    body = get_data_from_api(url)
 
     body['status'] == 404 ? body['status'] : body['balances']
   end
@@ -111,11 +112,27 @@ class WalletsController < ApplicationController
       endpoint += "&order=desc"
     end
   end
+
+  def set_trade_aggregation_endpoint(balance)
+    current_time = (Time.now.to_f * 1000).to_i
+    start_time = current_time - 86400000
+    end_time = start_time + (86400000*2)
+        
+    endpoint = "/trade_aggregations?"
+    endpoint += "base_asset_type=" + balance["asset_type"]
+    endpoint += "&base_asset_code=" + balance["asset_code"]
+    endpoint += "&base_asset_issuer=" + balance["asset_issuer"]
+    endpoint += "&counter_asset_type=#{NATIVE_ASSET}"
+    endpoint += "&start_time=" + start_time
+    endpoint += "&end_time=" + end_time
+    endpoint += "&resolution= " + 86400000
+  end
   
   def get_transactions
     endpoint = set_transactions_endpoint()
+    url = STELLAR_API + endpoint
 
-    body = get_data_from_stellar_api(endpoint)
+    body = get_data_from_api(url)
 
     # Set links for previous and next buttons
     url = body['_links']['next']
@@ -128,19 +145,46 @@ class WalletsController < ApplicationController
   end
 
   def index
-    @balances = get_balances()
+    balances = get_balances()
     
-    session[:balances] = @balances
+    session[:balances] = balances
 
     # Reset previous and next button links of transactions page,
     # when user visits home page
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
 
+    @balances = get_usd_price(balances)
+
     if @balances == 404
       redirect_to inactive_account_path
       return
     end
+  end
+
+  def get_lumen_price
+    endpoint = "/ticker/stellar"
+    url = COINMARKETCAP_API + endpoint
+    get_data_from_api(url)
+  end
+
+  def get_usd_price(balances)
+    balances.each do |balance|
+      if balance["asset_type"] != NATIVE_ASSET        
+        endpoint = set_trade_aggregation_endpoint(balance)
+        url = STELLAR_API + endpoint
+        trade_aggregations = get_data_from_stellar_api(url)
+
+        close_price = trade_aggregations["_embedded"]["records"]["close"]
+
+        lumen_price = get_lumen_price()
+
+        usd_price = close_price * lumen_price
+
+        balance["usd_price"] = usd_price
+      end
+    end
+
   end
 
   def inactive_account
@@ -159,8 +203,9 @@ class WalletsController < ApplicationController
 
   def get_assets
     endpoint = set_assets_endpoint()
+    url = STELLAR_API + endpoint
 
-    body = get_data_from_stellar_api(endpoint)
+    body = get_data_from_api(url)
     
     # Set links for previous and next buttons
     url = body['_links']['next']
@@ -193,12 +238,6 @@ class WalletsController < ApplicationController
         "Lumens" :
         "#{balance['asset_code']}, #{balance['asset_issuer']}"
     }
-  end
-
-  def fund_new_account
-    @to_address = params[:to_address]
-    @from_address = params[:from_address]
-    @amount = params[:amount]
   end
 
   def success
