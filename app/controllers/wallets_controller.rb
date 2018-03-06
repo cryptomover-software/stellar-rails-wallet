@@ -62,9 +62,19 @@ class WalletsController < ApplicationController
     address = session[:address]
     endpoint = "/accounts/#{address}"
     url = STELLAR_API + endpoint
-    body = get_data_from_api(url)
+    result = get_data_from_api(url)
 
-    body['status'] == 404 ? body['status'] : body['balances']
+    balances = result['status'] == 404 ? result['status'] : result['balances']
+    # balances = 404
+
+    redirect_to inactive_account_path if balances == 404
+
+    balances = get_usd_price(balances)
+    session[:balances] = balances
+
+    respond_to do |format|
+      format.json {render json: balances}
+    end
   end
 
   def set_cursor(url, cookie, type)
@@ -113,19 +123,14 @@ class WalletsController < ApplicationController
     end
   end
 
-  def set_trade_aggregation_endpoint(balance)
-    current_time = (Time.now.to_f * 1000).to_i
-    start_time = current_time - 86400000
-    end_time = start_time + (86400000*2)
-        
-    endpoint = "/trade_aggregations?"
+  def set_trades_endpoint(balance)        
+    endpoint = "/trades?"
     endpoint += "base_asset_type=" + balance["asset_type"]
     endpoint += "&base_asset_code=" + balance["asset_code"]
     endpoint += "&base_asset_issuer=" + balance["asset_issuer"]
     endpoint += "&counter_asset_type=#{NATIVE_ASSET}"
-    endpoint += "&start_time=" + start_time
-    endpoint += "&end_time=" + end_time
-    endpoint += "&resolution= " + 86400000
+    endpoint += "&limit=1"
+    endpoint += "&order=desc"
   end
   
   def get_transactions
@@ -145,43 +150,37 @@ class WalletsController < ApplicationController
   end
 
   def index
-    balances = get_balances()
-    
-    session[:balances] = balances
-
-    # Reset previous and next button links of transactions page,
-    # when user visits home page
+    # # Reset previous and next button links of transactions page,
+    # # when user visits home page
     session[:next_cursor] = nil
-    session[:prev_cursor] = nil
-
-    @balances = get_usd_price(balances)
-
-    if @balances == 404
-      redirect_to inactive_account_path
-      return
-    end
+    session[:prev_cursor] = nil    
   end
 
-  def get_lumen_price
+  def get_lumen_price_in_usd
     endpoint = "/ticker/stellar"
     url = COINMARKETCAP_API + endpoint
-    get_data_from_api(url)
+    lumen_data = get_data_from_api(url)
+    lumen_data[0]["price_usd"].to_f
   end
 
   def get_usd_price(balances)
+    # Formula: (counter_price / base_price ) * lumen_usd_price
+    
     balances.each do |balance|
       if balance["asset_type"] != NATIVE_ASSET        
-        endpoint = set_trade_aggregation_endpoint(balance)
+        endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
-        trade_aggregations = get_data_from_stellar_api(url)
+        trade = get_data_from_api(url)
 
-        close_price = trade_aggregations["_embedded"]["records"]["close"]
+        counter_price = trade["_embedded"]["records"].first["counter_amount"].to_f
+        base_price = trade["_embedded"]["records"].first["base_amount"].to_f
+        lumen_usd_price = get_lumen_price_in_usd()
 
-        lumen_price = get_lumen_price()
-
-        usd_price = close_price * lumen_price
-
+        usd_price = (counter_price/base_price)*lumen_usd_price
         balance["usd_price"] = usd_price
+      else
+        lumen_usd_price = get_lumen_price_in_usd()
+        balance["usd_price"] = lumen_usd_price
       end
     end
 

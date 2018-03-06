@@ -131,7 +131,7 @@ function send_money() {
            console.log(result_code)
 
            if (result_code == 'op_no_destination') {
-             fund_new_account(sourcePublicKey, receiverPublicKey, amount)
+             //fund_new_account(sourcePublicKey, receiverPublicKey, amount)
            } else if (result_code == 'op_no_trust') {
              document.location.href = '/trust_asset?failed=true&address='+ receiverPublicKey + '&asset_code=' + asset_code + '&asset_issuer=' + asset_issuer
            } else {
