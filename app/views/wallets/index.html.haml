@@ -12,8 +12,12 @@
               = session[:address]
           .col-md-12.col-lg-1
             %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
+        %br
+        #progressbar
+          .progress-label
+            Fetching Data from API. Please Wait...
         .table-responsive.balance-table
-          %table.table.table-striped
+          %table#balances-tbl.table.table-striped
             %thead
               %tr
                 %th 
@@ -22,20 +26,35 @@
                 %th Balance
                 %th USD Value
             %tbody
-              - @balances.each do |balance|
-                %tr
-                  %td
-                    %i.fas.fa-usd
-                  %td
-                    = balance["asset_code"] || "Lumens"
-                  %td
-                    = balance["asset_issuer"]
-                  %td
-                    = balance["balance"]
-                  %td
-                    1.00 $
+              -# - @balances.each do |balance|
+              -#   %tr
+              -#     %td
+              -#       %i.fas.fa-usd
+              -#     %td
+              -#       = balance["asset_code"] || "Lumens"
+              -#     %td
+              -#       = balance["asset_issuer"]
+              -#     %td
+              -#       = balance["balance"]
+              -#     %td
+              -#       = balance["usd_price"]
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 
 :javascript
   new Clipboard('#copy_address')
+  progressbar()
+  $.ajax({
+    url: "/get_balances",
+  }).done(function(balances) {
+    $("#progressbar").hide()
+    var row = ""
+    $.each(balances , function(index, balance) {
+      if (balance["asset_type"] == "native") {
+        row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
+      } else {
+        row = $("<tr><td><i class='fas fa-usd'></td><td>"+balance["asset_code"]+"</td><td>"+balance["asset_issuer"]+"</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
+      }
+      $("#balances-tbl").append(row)
+    })
+  })
