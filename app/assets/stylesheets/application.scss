@@ -45,6 +45,7 @@ html {
 }
 
 body {
+    margin-bottom: 60px;
     //margin-bottom: 100px;
     /* min-height: 100%;
        position: absolute; */
@@ -139,7 +140,7 @@ nav.navbar.navbar-expand-lg {
     margin-top: 10px;
     word-wrap: break-word;
 }
-.balance-table {
+#balance-table {
     td,th {
         text-align: center;
     }
@@ -177,7 +178,7 @@ nav.navbar.navbar-expand-lg {
 .ui-slider-handle {
     display: none;
 }
-.footer {
+footer {
     background:
         radial-gradient(black 15%, transparent 16%) 0 0,
         radial-gradient(black 15%, transparent 16%) 8px 8px,
@@ -186,6 +187,11 @@ nav.navbar.navbar-expand-lg {
     background-color:#282828;
     background-size:16px 16px;
     color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
 }
 
 #login {
