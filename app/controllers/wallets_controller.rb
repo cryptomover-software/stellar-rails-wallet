@@ -8,6 +8,7 @@ class WalletsController < ApplicationController
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
   NATIVE_ASSET = "native".freeze
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
+  UNDETERMINED_PRICE = "undetermined".freeze
   
   def dashboard
   end
@@ -65,8 +66,8 @@ class WalletsController < ApplicationController
     result = get_data_from_api(url)
 
     balances = result['status'] == 404 ? result['status'] : result['balances']
-
-    balances = get_usd_price(balances) if balances != 404
+    
+    balances = set_usd_price(balances) if balances != 404
     session[:balances] = balances
 
     respond_to do |format|
@@ -138,10 +139,10 @@ class WalletsController < ApplicationController
 
     # Set links for previous and next buttons
     url = body['_links']['next']
-    set_cursor(url, 'next')
+    set_cursor(url, 'next', nil)
 
     url = body['_links']['prev']
-    set_cursor(url, 'prev')
+    set_cursor(url, 'prev', nil)
     
     body['_embedded']['records'].present? ? body['_embedded']['records'] : []
   end
@@ -160,27 +161,33 @@ class WalletsController < ApplicationController
     lumen_data[0]["price_usd"].to_f
   end
 
-  def get_usd_price(balances)
+  def calculate_usd_price(record, lumen_usd_price)
+    if record
+      counter_price = record["counter_amount"].to_f
+      base_price = record["base_amount"].to_f
+
+      (counter_price/base_price)*lumen_usd_price
+    else
+      UNDETERMINED_PRICE
+    end
+  end
+  
+  def set_usd_price(balances)
     # Formula: (counter_price / base_price ) * lumen_usd_price
+    lumen_usd_price = get_lumen_price_in_usd()
     
     balances.each do |balance|
-      if balance["asset_type"] != NATIVE_ASSET        
+      if balance["asset_type"] == NATIVE_ASSET        
+        balance["usd_price"] = lumen_usd_price
+      else
         endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
         trade = get_data_from_api(url)
+        record = trade["_embedded"]["records"].first
 
-        counter_price = trade["_embedded"]["records"].first["counter_amount"].to_f
-        base_price = trade["_embedded"]["records"].first["base_amount"].to_f
-        lumen_usd_price = get_lumen_price_in_usd()
-
-        usd_price = (counter_price/base_price)*lumen_usd_price
-        balance["usd_price"] = usd_price
-      else
-        lumen_usd_price = get_lumen_price_in_usd()
-        balance["usd_price"] = lumen_usd_price
+        balance["usd_price"] = calculate_usd_price(record, lumen_usd_price)
       end
     end
-
   end
 
   def inactive_account
