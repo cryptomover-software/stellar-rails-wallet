@@ -1,5 +1,5 @@
-.ibox.float-e-margins
-  .ibox-title
+.card
+  .card-header
     %h1 Transactions
     %br
       Address
@@ -14,26 +14,25 @@
         %button{class: "btn btn-primary", id: "last-btn"} Last
       .next
         %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
-  .ibox-content
-    .table-responsive
-      %table.table.table-striped
-        %thead
+  .card-body
+    %table.table.table-striped.table-responsive
+      %thead
+        %tr
+          %th Asset Code
+          %th Asset Type
+          %th Asset Issuer
+          %th TOML URL
+      %tbody
+        - @assets.each do |asset|
           %tr
-            %th Asset Code
-            %th Asset Type
-            %th Asset Issuer
-            %th TOML URL
-        %tbody
-          - @assets.each do |asset|
-            %tr
-              %td
-                = asset['asset_code']
-              %td
-                = asset['asset_type']
-              %td
-                = asset['asset_issuer']
-              %td
-                = asset['_links']['toml']['href']
+            %td
+              = asset['asset_code']
+            %td
+              = asset['asset_type']
+            %td
+              = asset['asset_issuer']
+            %td
+              = asset['_links']['toml']['href']
 
 :javascript
   $("#next-btn").click(function() {

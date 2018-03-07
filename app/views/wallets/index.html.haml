@@ -1,43 +1,28 @@
-.row
-  .col-lg-12
-    .ibox.float-e-margins
-      .ibox-title
-        / <span class="label label-warning pull-right">Data has changed</span>
-        %h5 Portfolio Exposure
-      .ibox-content
-        .row
-          .col-md-12.col-lg-11
-            Your Address:
-            .address#source-public-key
-              = session[:address]
-          .col-md-12.col-lg-1
-            %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
-        %br
-        #progressbar
-          .progress-label
-            Fetching Data from API. Please Wait...
-        .table-responsive.balance-table
-          %table#balances-tbl.table.table-striped
-            %thead
-              %tr
-                %th 
-                %th Coin
-                %th Issuer
-                %th Balance
-                %th USD Value
-            %tbody
-              -# - @balances.each do |balance|
-              -#   %tr
-              -#     %td
-              -#       %i.fas.fa-usd
-              -#     %td
-              -#       = balance["asset_code"] || "Lumens"
-              -#     %td
-              -#       = balance["asset_issuer"]
-              -#     %td
-              -#       = balance["balance"]
-              -#     %td
-              -#       = balance["usd_price"]
+.card
+  .card-header
+    / <span class="label label-warning pull-right">Data has changed</span>
+    %h5 Portfolio Exposure
+  .card-body
+    .row
+      .col-md-12.col-lg-11
+        Your Address:
+        .address#source-public-key
+          = session[:address]
+      .col-md-12.col-lg-1
+        %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
+    %br
+    #progressbar
+      .progress-label
+        Fetching Data from API. Please Wait...
+      %table#balances-tbl.table.table-striped.table-responsive
+        %thead
+          %tr
+            %th Icon
+            %th Coin
+            %th Issuer
+            %th Balance
+            %th USD Value
+        %tbody
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 

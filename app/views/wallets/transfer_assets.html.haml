@@ -1,14 +1,13 @@
-.transactionbox
-  .ibox
-    .ibox-title
-      %h1 Send Lumens/Assets
-      %br
-      From Account
-      %br
-      .address
-        = session[:address]
-    .ibox-content
-      = render partial: "shared/transfer_assets_form"
+.card
+  .card-header
+    %h1 Send Lumens/Assets
+    %br
+    From Account
+    %br
+    .address
+      = session[:address]
+      .card-body
+    = render partial: "shared/transfer_assets_form"
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 

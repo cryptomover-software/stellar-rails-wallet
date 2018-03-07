@@ -1,5 +1,5 @@
-.ibox.float-e-margins
-  .ibox-title
+.card
+  .card-header
     %h1 Transactions
     %br
       Address
@@ -14,17 +14,16 @@
         %button{class: "btn btn-primary", id: "last-btn"} Last
       .next
         %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_cursor]} Next >>
-  .ibox-content
-    .table-responsive
-      %table.table.table-striped
-        %thead
-          %tr
-            %th Transaction ID
-            %th Time
-            %th Asset Code
-            %th From
-            %th To
-            %th Amount
+  .card-body
+    %table.table.table-striped.table-responsive
+      %thead
+        %tr
+          %th Transaction ID
+          %th Time
+          %th Asset Code
+          %th From
+          %th To
+          %th Amount
         %tbody
           - @transactions.each do |transaction|
             %tr
