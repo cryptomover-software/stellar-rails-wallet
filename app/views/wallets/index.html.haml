@@ -48,11 +48,11 @@
     url: "/get_balances",
   }).done(function(balances) {
     if (balances == 404) {
-      console.log("redirecting...")
       document.location.href = "/inactive_account"
     } else {
       $("#progressbar").hide()
       var row = ""
+      $("#balances-tbl tbody").remove()
       $.each(balances, function(index, balance) {
         if (balance["asset_type"] == "native") {
           row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balance["balance"]+"</td><td>"+balance["usd_price"]+"</td></tr>")
