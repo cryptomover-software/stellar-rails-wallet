@@ -1,23 +1,20 @@
-.row.border-bottom.white-bg
-  %nav.navbar.navbar-static-top{:role => "navigation"}
-    .navbar-header
-      %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
-        %i.fa.fa-reorder
-      = link_to image_tag("logo.png"), "https://www.cryptomover.com", class: "navbar-brand", target: "_blank"
-    #navbar.navbar-collapse.collapse
-      - if session[:address].present?
-        %ul.nav.navbar-nav
-          %li
-            %a{"aria-expanded" => "false", :href => portfolio_path, :role => "button"} Portfolio
-          %li
-            = link_to "Send", send_money_path
-          %li
-            = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button"
-          %li
-            = link_to "Assets", trust_asset_path
-      - if session[:address].present?
-        %ul.nav.navbar-top-links.navbar-right
-          %li
-            %a{:href => "/logout"}
-              %i.fa.fa-sign-out
-              Log out
+%nav.navbar.navbar-expand-lg
+  = link_to image_tag("logo.png"), "https://www.cryptomover.com", class: "navbar-brand", target: "_blank"
+  %button.navbar-toggler{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+  #navbar.navbar-collapse.collapse
+    - if session[:address].present?
+      %ul.navbar-nav
+        %li.nav-item.active
+          %a{class: "nav-link", "aria-expanded" => "false", :href => portfolio_path, :role => "button"} Portfolio
+        %li.nav-item
+          = link_to "Send", send_money_path, class: "nav-link"
+        %li.nav-item
+          = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button", class: "nav-link"
+        %li.nav-item
+          = link_to "Assets", trust_asset_path, class: "nav-link"
+    - if session[:address].present?
+      %ul.navbar-nav.ml-auto
+        %li
+          %a{:href => "/logout", class: "nav-link"}
+            %i.fa.fa-sign-out
+            Log out
