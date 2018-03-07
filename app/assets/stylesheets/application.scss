@@ -17,51 +17,6 @@
 @import "font-awesome-sprockets";
 @import "font-awesome";
 
-// Google Fonts
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en");
-
-// Bootstra
-//@import "bootstrap-sprockets";
-@import "bootstrap";
-
-// Variables, Mixins
-@import "base/variables";
-@import "base/mixins";
-
-// INSPINIA Theme Elements
-@import "base/typography";
-@import "base/navigation";
-@import "base/top_navigation";
-@import "base/buttons";
-@import "base/badges_labels";
-@import "base/elements";
-@import "base/sidebar";
-@import "base/base";
-@import "base/pages";
-@import "base/chat";
-@import "base/metismenu";
-@import "base/spinners";
-
-// Landing page
-@import "base/landing";
-
-// RTL Support
-@import "base/rtl";
-
-// For demo only - config box style
-@import "base/theme-config";
-
-// INSPINIA Skins
-@import "base/skins";
-@import "base/md-skin";
-
-// Media query style
-@import "base/media";
-
-// Custom style
-// Your custom style to override base style
-@import "base/custom";
-
 // Clear layout on print mode
 @media print {
     nav.navbar-static-side {
@@ -94,9 +49,9 @@ body {
     /* min-height: 100%;
        position: absolute; */
 }
-nav.navbar.navbar-static-top {
+nav.navbar.navbar-expand-lg {
     // background-color: #C1C1C1;
-    background-color: $navy;
+    background-color: #51504E;
 }
 #navbar {
     a:link, a:hover, a:visited {
@@ -108,15 +63,19 @@ nav.navbar.navbar-static-top {
     }
     @media(min-width: 750px) {
         ul {
-            margin-top: 8px;
-            font-size: 18px;
+            /* margin-top: 8px;
+               font-size: 18px; */
         }   
     }
 }
+.navbar-toggler {
+    background-color: skyblue;
+    color: skyblue;
+}
 .navbar-brand {
     color: white;
-    height: 100%;
-    width: 100%;
+    /* height: 100%;
+       width: 100%; */
 
     a {
         padding: 0;
@@ -211,7 +170,7 @@ nav.navbar.navbar-static-top {
     height: 100%;
     font-weight: bold;
     text-shadow: 1px 1px 0 #fff;
-    color: $navy;
+    color: #51504E;
     font-size: 20px;
     text-align: center;
 }
