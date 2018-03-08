@@ -23,7 +23,9 @@
 //= require_tree .
 
 $(document).ready(function() {
-
+  $("table").on("click", ".short-address", function() {
+    $(this).css("maxWidth", "100%")
+  })
 });
 
 function progressbar() {    
