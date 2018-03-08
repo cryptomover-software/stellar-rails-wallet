@@ -19,17 +19,17 @@
 @import "font-awesome";
 
 // Clear layout on print mode
-@media print {
-    nav.navbar-static-side {
-        display: none;
-    }
+/* @media print {
+   nav.navbar-static-side {
+   display: none;
+   }
 
-    body { overflow: visible !important; }
+   body { overflow: visible !important; }
 
-    #page-wrapper {
-        margin: 0;
-    }
-}
+   #page-wrapper {
+   margin: 0;
+   }
+   } */
 
 #page-wrapper {  
     // background-color: #D7DDDC;
@@ -50,6 +50,8 @@ body {
     //margin-bottom: 100px;
     min-height: 100%;
     /*   position: absolute; */
+    background-image: image-url("rocket.png");
+    background-repeat: repeat repeat;
 }
 nav.navbar.navbar-expand-lg {
     // background-color: #C1C1C1;
