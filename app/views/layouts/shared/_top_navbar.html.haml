@@ -5,11 +5,11 @@
     - if session[:address].present?
       %ul.navbar-nav
         %li.nav-item.active
-          %a{class: "nav-link", "aria-expanded" => "false", :href => portfolio_path, :role => "button"} Portfolio
+          = link_to "Portfolio", "#", class: "nav-link", id: "portfolio-menu"
         %li.nav-item
           = link_to "Send", send_money_path, class: "nav-link"
         %li.nav-item
-          = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button", class: "nav-link"
+          = link_to "Transactions", transactions_path, class: "nav-link"
         %li.nav-item
           = link_to "Assets", trust_asset_path, class: "nav-link"
     - if session[:address].present?
