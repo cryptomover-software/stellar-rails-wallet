@@ -116,7 +116,6 @@ function send_money() {
          .build()
 
        // Sign this transaction with the secret key
-       console.log("signing")
        transaction.sign(sourceKeypair)
 
        server.submitTransaction(transaction)

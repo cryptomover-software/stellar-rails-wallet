@@ -29,7 +29,7 @@
 
 :javascript
   new Clipboard('#copy_address')
-  console.log("callling ajax")
+
   $.ajax({
     url: "/get_balances",
   }).done(function(balances) {
@@ -38,17 +38,13 @@
     } else {
       //$("#progressbar").hide()
       var row = ""
-      console.log("removing tbody")
       $("#balances-tbl tbody").remove()
 
-      console.log(balances[0]["asset_type"])
       if(balances.length == 1) {
-        console.log("zero")
         row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+balances[0]["usd_price"]+"</td></tr>")
         $("#balances-tbl").append(row)
       } else {
         for(i=0;i < balances.length;i++) {
-          console.log(i)
           if (balances[i]["asset_type"] == "native") {
             row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
           } else {
