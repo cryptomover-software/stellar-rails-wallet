@@ -183,11 +183,17 @@ nav.navbar.navbar-expand-md {
     word-wrap: break-word;
     display: inline;
 }
+.short-address {
+    max-width: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .inactive-prompt {
     margin-top: 10px;
     word-wrap: break-word;
 }
-#balance-table {
+table {
     td,th {
         text-align: center;
     }

@@ -52,7 +52,7 @@
           if (balances[i]["asset_type"] == "native") {
             row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
           } else {
-            row = $("<tr><td><i class='fas fa-usd'></td><td>"+balances[i]["asset_code"]+"</td><td>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
+            row = $("<tr><td><i class='fas fa-usd'></td><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
           }
           $("#balances-tbl").append(row)
         }
