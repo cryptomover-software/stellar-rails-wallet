@@ -22,10 +22,7 @@
 //= require_tree .
 
 $(document).ready(function() {
-  $("#portfolio-menu").click(function() {
-    console.log("redirectingn portfoilo")
-    document.location.href='/portfolio'
-  })
+
 });
 
 function progressbar() {    

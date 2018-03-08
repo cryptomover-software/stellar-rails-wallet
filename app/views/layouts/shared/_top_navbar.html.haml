@@ -4,8 +4,10 @@
   #navbar.navbar-collapse.collapse
     - if session[:address].present?
       %ul.navbar-nav
-        %li.nav-item.active
-          = link_to "Portfolio", "#", class: "nav-link", id: "portfolio-menu"
+        %li.nav-item
+          %span.nav-link#portfolio-menu
+            Portfolio
+          -# = link_to "Portfolio", "#", class: "nav-link", id: "portfolio-menu"
         %li.nav-item
           = link_to "Send", send_money_path, class: "nav-link"
         %li.nav-item
