@@ -1,38 +1,35 @@
-.card
-  .card-header
-    %h1 Transactions
-    %br
-      Address
-      .address
-        = session[:address]
-    #assets-nav
-      .prev
-        %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
-      .first
-        %button{class: "btn btn-brown", id: "first-btn"} First
-      .last
-        %button{class: "btn btn-brown", id: "last-btn"} Last
-      .next
-        %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
-  .card-body
-    %table.table.table-striped.table-responsive
-      %thead
-        %tr
-          %th Asset Code
-          %th Asset Type
-          %th Asset Issuer
-          %th TOML URL
-      %tbody
-        - @assets.each do |asset|
+#browse-assets-card
+  .card
+    .card-header
+      %h1 Assets List
+    .card-body
+      #assets-nav
+        .prev
+          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
+        .first
+          %button{class: "btn btn-brown", id: "first-btn"} First
+        .last
+          %button{class: "btn btn-brown", id: "last-btn"} Last
+        .next
+          %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
+      %table.table.table-striped.table-responsive
+        %thead
           %tr
-            %td
-              = asset['asset_code']
-            %td
-              = asset['asset_type']
-            %td
-              = asset['asset_issuer']
-            %td
-              = asset['_links']['toml']['href']
+            %th Asset Code
+            %th Asset Type
+            %th Asset Issuer
+            %th TOML URL
+        %tbody
+          - @assets.each do |asset|
+            %tr
+              %td
+                = asset['asset_code']
+              %td
+                = asset['asset_type']
+              %td
+                = asset['asset_issuer']
+              %td
+                = asset['_links']['toml']['href']
 
 :javascript
   $("#next-btn").click(function() {

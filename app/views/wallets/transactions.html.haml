@@ -1,45 +1,47 @@
-.card
-  .card-header
-    %h1 Transactions
-    %br
-      Address
-      .address
-        = session[:address]
-    #history-nav
-      .prev
-        %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
-      .first
-        %button{class: "btn btn-brown", id: "first-btn"} First
-      .last
-        %button{class: "btn btn-brown", id: "last-btn"} Last
-      .next
-        %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_cursor]} Next >>
-  .card-body
-    .table-responsive
-      %table.table.table-striped.table-sm
-        %thead
-          %tr
-            %th Transaction ID
-            %th Time
-            %th Asset Code
-            %th From
-            %th To
-            %th Amount
-          %tbody
-            - @transactions.each do |transaction|
-              %tr
-                %td
-                  = transaction['id']
-                %td
-                  = transaction['created_at']
-                %td
-                  = transaction['asset_code'] || 'XLM'
-                %td.short-address
-                  = transaction['from']
-                %td.short-address
-                  = transaction['to']
-                %td
-                  = transaction['amount']
+#transactions-card
+  .card
+    .card-header
+      .row
+        .col-md-6.text-left
+          %h1 Transactions
+        .col-md-6.text-left.mt-3
+          .address
+            = session[:address]
+    .card-body
+      #history-nav
+        .prev
+          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
+        .first
+          %button{class: "btn btn-brown", id: "first-btn"} First
+        .last
+          %button{class: "btn btn-brown", id: "last-btn"} Last
+        .next
+          %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_cursor]} Next >>
+      .table-responsive
+        %table.table.table-striped.table-sm
+          %thead
+            %tr
+              %th Transaction ID
+              %th Time
+              %th Asset Code
+              %th From
+              %th To
+              %th Amount
+            %tbody
+              - @transactions.each do |transaction|
+                %tr
+                  %td
+                    = transaction['id']
+                  %td
+                    = transaction['created_at']
+                  %td
+                    = transaction['asset_code'] || 'XLM'
+                  %td.short-address
+                    = transaction['from']
+                  %td.short-address
+                    = transaction['to']
+                  %td
+                    = transaction['amount']
 
 :javascript
   $("#next-btn").click(function() {

@@ -1,12 +1,12 @@
 .card#transfer-assets-card
   .card-header
     %h1 Send Lumens/Assets
-    %br
+  .card-body
     From Account
     %br
     .address
       = session[:address]
-  .card-body
+    %hr
     = render partial: "shared/transfer_assets_form"
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}

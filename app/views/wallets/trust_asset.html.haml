@@ -1,11 +1,10 @@
 .card#trust-asset-card
   .card-header
-    %h1 Trust Asset
-    %span
-      %big
-        Not Sure About Asset Code and Issuer?
-    .mt-1
-      %button{class: "btn btn-brown", id: "browse-assets"} Browse All Assets
+    .row
+      .col-md-6.text-left
+        %h1 Trust Asset
+      .col-md-6.browse-assets-btn-container.mt-2
+        %button{class: "btn btn-brown", id: "browse-assets"} Browse All Assets
   .card-body
     .form-group
       .form-label
