@@ -15,6 +15,8 @@
  *= require_self
  */
 
+@import "bootstrap";
+
 @import "font-awesome-sprockets";
 @import "font-awesome";
 
@@ -89,7 +91,7 @@ fieldset[disabled] .btn-brown.active {
     color: #51504E; 
     background-color: #FFFFFF; 
 }
-nav.navbar.navbar-expand-lg {
+nav.navbar.navbar-expand-md {
     // background-color: #C1C1C1;
     background-color: #51504E;
 }

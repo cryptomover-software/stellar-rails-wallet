@@ -1,10 +1,11 @@
-%nav.navbar.navbar-expand-lg
+%nav.navbar.navbar-expand-md
   = link_to image_tag("logo.png"), "https://www.cryptomover.com", class: "navbar-brand", target: "_blank"
   %button.navbar-toggler{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
   #navbar.navbar-collapse.collapse
     - if session[:address].present?
       %ul.navbar-nav
         %li.nav-item
+          -# TODO Fix mulitple ajax on redirection
           %span.nav-link#portfolio-menu
             Portfolio
           -# = link_to "Portfolio", "#", class: "nav-link", id: "portfolio-menu"

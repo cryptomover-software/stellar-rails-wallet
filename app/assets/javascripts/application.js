@@ -15,7 +15,8 @@
 //= require jquery-ui
 //= require components
 //= require turbolinks
-// require bootstrap
+//= require popper
+//= require bootstrap
 //= require chartjs/Chart.min.js
 //= require iCheck/icheck.min.js
 //= require pace.min
