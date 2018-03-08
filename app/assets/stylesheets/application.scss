@@ -31,15 +31,6 @@
    }
    } */
 
-#page-wrapper {  
-    // background-color: #D7DDDC;
-    background-image: image-url("rocket.png");
-    background-repeat: repeat repeat;
-}
-/* .passwordBox{
-   max-width: 750px;
-   } */
-
 html {
     position: relative;
     min-height: 100%;
@@ -62,13 +53,13 @@ nav.navbar.navbar-expand-lg {
         color: white;
 
         @media(min-width: 750px) {
-            /* font-size: 20px; */
+            font-size: 20px;
         }
     }
     @media(min-width: 750px) {
         ul {
-            /* margin-top: 8px;
-               font-size: 18px; */
+            margin-top: 8px;
+            font-size: 18px;
         }   
     }
 }
@@ -80,7 +71,6 @@ nav.navbar.navbar-expand-lg {
     color: white;
     /* height: 100%;
        width: 100%; */
-
     a {
         padding: 0;
         margin: 0;
@@ -90,10 +80,6 @@ nav.navbar.navbar-expand-lg {
         width: 150px;
     }
 }
-.navbar {
-
-}
-
 #content {
     height: 100%;
 }
@@ -101,11 +87,11 @@ nav.navbar.navbar-expand-lg {
 #content > section:nth-of-type(odd) {
     background-color: #EAEAEA;
 }
-
-/* .navbar-brand {
-   margin-top: -20px;
-   } */
-
+.card {
+    @media(min-width: 750px) {
+        margin: 0 15% 0 15%;      
+    }
+}
 .logo-scrolled {
     width: 270px;
     height: 80px;
@@ -198,10 +184,10 @@ footer {
 }
 
 #login {
-    @media(min-width: 750px) {
-        width: 60%;      
-    }
-    margin: 0 auto;
+    /* @media(min-width: 750px) {
+       width: 60%;      
+       }
+       margin: 0 auto; */
 }
 #login-btn {
     /* margin: 0 auto;
