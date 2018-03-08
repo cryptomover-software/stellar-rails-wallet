@@ -111,7 +111,9 @@ nav.navbar.navbar-expand-md {
     }
     span {
         color: white;
-        margin-top: 2px;
+        @media(min-width: 750px) {
+            font-size: 20px;
+        }
     }
 }
 .navbar-toggler {
