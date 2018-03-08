@@ -7,13 +7,13 @@
         = session[:address]
     #assets-nav
       .prev
-        %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
+        %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
       .first
-        %button{class: "btn btn-primary", id: "first-btn"} First
+        %button{class: "btn btn-brown", id: "first-btn"} First
       .last
-        %button{class: "btn btn-primary", id: "last-btn"} Last
+        %button{class: "btn btn-brown", id: "last-btn"} Last
       .next
-        %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
+        %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
   .card-body
     %table.table.table-striped.table-responsive
       %thead

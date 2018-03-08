@@ -1,11 +1,11 @@
-.card
+.card#trust-asset-card
   .card-header
     %h1 Trust Asset
     %span
       %big
         Not Sure About Asset Code and Issuer?
     .mt-1
-      %button{class: "btn btn-primary", id: "browse-assets"} Browse All Assets
+      %button{class: "btn btn-brown", id: "browse-assets"} Browse All Assets
   .card-body
     .form-group
       .form-label
@@ -37,7 +37,7 @@
         .col
           .text-right
             %button{type: "button", class: "btn btn-danger", id: "trust-btn"} Trust Asset
-            = link_to "Cancel", root_path, class: "btn btn-primary", id: "cancel-btn"
+            = link_to "Cancel", root_path, class: "btn btn-brown", id: "cancel-btn"
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
   

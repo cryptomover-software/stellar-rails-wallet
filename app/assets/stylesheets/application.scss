@@ -44,6 +44,51 @@ body {
     background-image: image-url("rocket.png");
     background-repeat: repeat repeat;
 }
+.btn-brown { 
+    color: #FFFFFF; 
+    background-color: #51504E; 
+    border-color: #51504E; 
+} 
+
+.btn-brown:hover, 
+.btn-brown:focus, 
+.btn-brown:active, 
+.btn-brown.active, 
+.open .dropdown-toggle.btn-brown { 
+    color: #FFFFFF; 
+    background-color: #51504E; 
+    border-color: #51504E; 
+} 
+
+.btn-brown:active, 
+.btn-brown.active, 
+.open .dropdown-toggle.btn-brown { 
+    background-image: none; 
+} 
+
+.btn-brown.disabled, 
+.btn-brown[disabled], 
+fieldset[disabled] .btn-brown, 
+.btn-brown.disabled:hover, 
+.btn-brown[disabled]:hover, 
+fieldset[disabled] .btn-brown:hover, 
+.btn-brown.disabled:focus, 
+.btn-brown[disabled]:focus, 
+fieldset[disabled] .btn-brown:focus, 
+.btn-brown.disabled:active, 
+.btn-brown[disabled]:active, 
+fieldset[disabled] .btn-brown:active, 
+.btn-brown.disabled.active, 
+.btn-brown[disabled].active, 
+fieldset[disabled] .btn-brown.active { 
+    background-color: #51504E; 
+    border-color: #51504E; 
+} 
+
+.btn-brown .badge { 
+    color: #51504E; 
+    background-color: #FFFFFF; 
+}
 nav.navbar.navbar-expand-lg {
     // background-color: #C1C1C1;
     background-color: #51504E;
@@ -87,9 +132,14 @@ nav.navbar.navbar-expand-lg {
 #content > section:nth-of-type(odd) {
     background-color: #EAEAEA;
 }
-.card {
+#portfolio-card {
+    @media(min-width: 750px){
+        margin: 0 5% 0 5%;
+    }
+}
+#transfer-assets-card, #login-card, #trust-asset-card {
     @media(min-width: 750px) {
-        margin: 0 15% 0 15%;      
+        margin: 0 10% 0 10%;      
     }
 }
 .logo-scrolled {
