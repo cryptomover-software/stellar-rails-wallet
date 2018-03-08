@@ -7,38 +7,39 @@
         = session[:address]
     #history-nav
       .prev
-        %button{class: "btn btn-primary", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
+        %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
       .first
-        %button{class: "btn btn-primary", id: "first-btn"} First
+        %button{class: "btn btn-brown", id: "first-btn"} First
       .last
-        %button{class: "btn btn-primary", id: "last-btn"} Last
+        %button{class: "btn btn-brown", id: "last-btn"} Last
       .next
-        %button{class: "btn btn-primary", id: "next-btn", "data-next": session[:next_cursor]} Next >>
+        %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_cursor]} Next >>
   .card-body
-    %table.table.table-striped.table-responsive
-      %thead
-        %tr
-          %th Transaction ID
-          %th Time
-          %th Asset Code
-          %th From
-          %th To
-          %th Amount
-        %tbody
-          - @transactions.each do |transaction|
-            %tr
-              %td
-                = transaction['id']
-              %td
-                = transaction['created_at']
-              %td
-                = transaction['asset_code'] || 'XLM'
-              %td
-                = transaction['from']
-              %td
-                = transaction['to']
-              %td
-                = transaction['amount']
+    .table-responsive
+      %table.table.table-striped.table-sm
+        %thead
+          %tr
+            %th Transaction ID
+            %th Time
+            %th Asset Code
+            %th From
+            %th To
+            %th Amount
+          %tbody
+            - @transactions.each do |transaction|
+              %tr
+                %td
+                  = transaction['id']
+                %td
+                  = transaction['created_at']
+                %td
+                  = transaction['asset_code'] || 'XLM'
+                %td
+                  = transaction['from']
+                %td
+                  = transaction['to']
+                %td
+                  = transaction['amount']
 
 :javascript
   $("#next-btn").click(function() {
