@@ -16,7 +16,14 @@
       %hr
       .text-center
         %button.btn.btn-brown.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
-        -# %p.text-muted.text-center
+    #login-footer.card-footer.text-center
+      = link_to "https://t.me/cryptomover", target: "_blank" do
+        %i.fab.fa-telegram.fa-3x
+      %i.fab.fa-twitter.fa-3x
+      = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
+        %i.fab.fa-github.fa-3x
+
+      -# %p.text-muted.text-center
         -#   %small Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
         -# %form.m-t{:role => "form"}
         -#   .form-group
