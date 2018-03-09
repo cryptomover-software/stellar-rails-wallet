@@ -166,7 +166,8 @@ class WalletsController < ApplicationController
       counter_price = record["counter_amount"].to_f
       base_price = record["base_amount"].to_f
 
-      (counter_price/base_price)*lumen_usd_price
+      price = (counter_price/base_price)*lumen_usd_price
+      price.round(2)
     else
       UNDETERMINED_PRICE
     end
@@ -178,7 +179,7 @@ class WalletsController < ApplicationController
     
     balances.each do |balance|
       if balance["asset_type"] == NATIVE_ASSET        
-        balance["usd_price"] = lumen_usd_price
+        balance["usd_price"] = lumen_usd_price.round(2)
       else
         endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
