@@ -2,9 +2,9 @@
   .card
     .card-header
       .row
-        .col-md-6.text-left
+        .col-md-3.text-left
           %h1 Transactions
-        .col-md-6.text-left.mt-3
+        .col-md-9.right-col.mt-3
           .address
             = session[:address]
     .card-body
@@ -23,6 +23,7 @@
             %tr
               %th Transaction ID
               %th Time
+              %th Type
               %th Asset Code
               %th From
               %th To
@@ -34,6 +35,8 @@
                     = transaction['id']
                   %td
                     = transaction['created_at']
+                  %td
+                    = transaction['type']
                   %td
                     = transaction['asset_code'] || 'XLM'
                   %td.short-address
