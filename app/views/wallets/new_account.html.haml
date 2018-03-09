@@ -1,32 +1,28 @@
-.card#new-account-card
-  .card-header
-    %h1 New Stellar Account Details
-  .card-body
-    %ol
-      %li The seed controls 100% of your fund and CAN NOT be recovered if lost. Make sure to backup it offline securely and never lose it.
-      %li The account will NOT BE active upon creation. It needs to be funded for at least 1 XLM.
-      %li You are not recommended to send XLM directly from exchange to this address unless you are sure that the exchange is able to fund non-existing accounts.
-    .row
-      .col-lg-12
-        %span This is your new public stellar address:
-        %br
-        .address
-          = @address
-        %br
-        %br
-        %span This is your secret stellar seed:
-        %br
-        .address
-          = @seed
-        .alert.alert-danger.text-center.mt-3
-          %b This account doesn't exist on the network. To create this account, send it at least 1 Lumen (XLM) to fulfill the
-          = succeed "." do
-            %a{:href => "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance"} minimum balance.
-            %br
-            OR 
-            %br
-            %a{:href => "/stellar_subscribe"} Subscribe
-            to our news and we will send you 2 Lumens
-      .col-md-12.text-center
-        = link_to "Go back to wallet", portfolio_path, class: "btn btn-brown"
-        = link_to "Fund Now", send_money_path, class: "btn btn-danger"
+#new-account-card
+  .card
+    .card-header
+      %h1 New Stellar Account Details
+    .card-body
+      %ol
+        %li The seed controls 100% of your fund and CAN NOT be recovered if lost. Make sure to backup it offline securely and never lose it.
+        %li The account will NOT BE active upon creation. It needs to be funded for at least 1 XLM.
+        %li You are not recommended to send XLM directly from exchange to this address unless you are sure that the exchange is able to fund non-existing accounts.
+      .row
+        .col-lg-12
+          %span This is your new public stellar address:
+          %br
+          .address
+            = @address
+          %br
+          %br
+          %span This is your secret stellar seed:
+          %br
+          .address
+            = @seed
+          .alert.alert-danger.text-center.mt-3
+            %b This account doesn't exist on the network. To create this account, send it at least 1 Lumen (XLM) to fulfill the
+            = link_to "minumum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
+            \.
+        .col-md-12.text-center
+          = link_to "Go to Wallet", portfolio_path, class: "btn btn-brown"
+          = link_to "Log Out", logout_path, class: "btn btn-info"
