@@ -36,11 +36,22 @@
     / Footer
     %footer.footer
       .container
-        %strong
-          Copyright
-          ©
-          = link_to "Cryptomover", "https://www.cryptomover.com"
-          , Hong Kong 2017-2018
+        .row
+          .col-md-9
+            %strong
+              Copyright ©
+              = link_to "Cryptomover", "https://www.cryptomover.com"
+              , Hong Kong 2017-2018
+          .col-md-3.social
+            - if session[:address].present?
+              = link_to "https://medium.com/cryptomover", target: "_blank" do
+                %i.fab.fa-medium.fa-2x
+              = link_to "https://t.me/cryptomover", target: "_blank" do
+                %i.fab.fa-telegram.fa-2x
+              = link_to "https://twitter.com/cryptomover", target: "_blank" do
+                %i.fab.fa-twitter.fa-2x
+              = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
+                %i.fab.fa-github.fa-2x
       / End page wrapper
       / End wrapper
     / Include javascript per-controller - vendor plugins
