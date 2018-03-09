@@ -137,6 +137,12 @@ nav.navbar.navbar-expand-md {
         width: 150px;
     }
 }
+.right-col {
+    text-align: left;
+    @media(min-width: 750px) {
+        text-align: right;
+    }
+}
 #content {
     height: 100%;
 }
