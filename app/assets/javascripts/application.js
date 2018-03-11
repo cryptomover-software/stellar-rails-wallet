@@ -16,16 +16,14 @@
 //= require components
 //= require turbolinks
 //= require popper
-//= require bootstrap
-//= require chartjs/Chart.min.js
-//= require iCheck/icheck.min.js
+//= require bootstrap.min
+// require chartjs/Chart.min.js
+// require iCheck/icheck.min.js
 //= require pace.min
 //= require_tree .
 
 $(document).ready(function() {
-  $("table").on("click", ".short-address", function() {
-    $(this).css("maxWidth", "100%")
-  })
+  
 });
 
 function progressbar() {    

@@ -18,7 +18,7 @@
         .next
           %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_cursor]} Next >>
       .table-responsive
-        %table.table.table-striped.table-sm
+        %table#transactions-tbl.table.table-striped.table-sm
           %thead
             %tr
               %th Transaction ID
@@ -47,6 +47,10 @@
                     = transaction['amount']
 
 :javascript
+  $("#transactions-tbl").on("click", ".short-address", function() {
+    $(this).css("maxWidth", "100%")
+  })
+  
   $("#next-btn").click(function() {
     console.log("next...")
     var cursor = $(this).data("next")

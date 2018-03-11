@@ -1,6 +1,5 @@
 .card#portfolio-card
   .card-header
-    / <span class="label label-warning pull-right">Data has changed</span>
     %h1 Portfolio Exposure
   .card-body
     .row
@@ -30,6 +29,10 @@
 :javascript
   new Clipboard('#copy_address')
 
+  $("#balances-tbl").on("click", ".short-address", function() {
+    $(this).css("maxWidth", "100%")
+  })
+  
   $.ajax({
     url: "/get_balances",
   }).done(function(balances) {
