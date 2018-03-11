@@ -37,6 +37,26 @@ function progressbar() {
   // progressbarValue.css({"background": "#1ab394"})
   progressbarValue.css({"background": "#00bfff"})
   $("#progressbar").show()
+  $("#progressbar").focus()
+}
+
+function initiate_fund_new_account() {
+  console.log("initiating fund transfer")
+  $("#progressbar").hide()
+
+  $("#secret-seed").prop("disabled", false)
+  $("#target-account").prop("disabled", false)
+  $("#amount-to-send").prop("disabled", false)
+  $("#asset-type").prop("disabled", false)
+  $("input[name=memotype]").removeAttr("disabled")
+  $("input[name=fund-new]").removeAttr("disabled")
+  $("#memo").prop("disabled", false)
+  $("#send_money").show()
+  $("#cancel-btn").show()
+
+  $("#layout-alert").show()
+  $("#layout-alert").html("Target account is not active Yet. Select Fund New Account option to activate it by sending 1 XLM.")
+  $("#layout-alert").focus()
 }
 
 function send_money() {
@@ -46,11 +66,11 @@ function send_money() {
   StellarSdk.Network.usePublicNetwork()
   // StellarSdk.Network.useTestNetwork()
 
-  var sourceSecretKey = document.getElementById('secret-seed').value
+  var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
 
-  var receiverPublicKey = document.getElementById('target-account').value
+  var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
 
-  var amount = document.getElementById('amount-to-send').value
+  var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
   var memo_type = $("input[name=memotype]:checked").val()
 
@@ -121,7 +141,7 @@ function send_money() {
            // console.log(JSON.stringify(transactionResult, null, 2))
            // console.log('\nSuccess! View the transaction at: ')
            // console.log(transactionResult._links.transaction.href)
-           var message = 'Amount ' + amount + ' transferred to ' + receiverPublicKey + ' successfully.'
+           var message = 'Amount ' + amount + ' ' + asset_code + ' transferred to ' + receiverPublicKey + ' successfully.'
            document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
          })
          .catch(function(err) {
@@ -132,7 +152,7 @@ function send_money() {
            console.log(result_code)
 
            if (result_code == 'op_no_destination') {
-             //fund_new_account(sourcePublicKey, receiverPublicKey, amount)
+             initiate_fund_new_account()
            } else if (result_code == 'op_no_trust') {
              document.location.href = '/trust_asset?failed=true&address='+ receiverPublicKey + '&asset_code=' + asset_code + '&asset_issuer=' + asset_issuer
            } else {
@@ -143,7 +163,7 @@ function send_money() {
      .catch(function(e) {
        console.log(e.message.detail)
        console.error(e)
-       document.location.href = '/failed?error_description=' + e.message.detail
+       // document.location.href = '/failed?error_description=' + e.message.detail
      })
   }
 } // send money function end
@@ -188,11 +208,11 @@ function fund_new_account() {
     StellarSdk.Network.usePublicNetwork()
     // StellarSdk.Network.useTestNetwork()
 
-    var secretString = document.getElementById('secret-seed').value
+    var secretString = document.getElementById('secret-seed').value.replace(/\s/g,'')
     var sourceKeypair = StellarSdk.Keypair.fromSecret(secretString)
     var sourcePublicKey = sourceKeypair.publicKey()
-    var target_account = document.getElementById('target-account').value
-    var amount = document.getElementById('amount-to-send').value
+    var target_account = document.getElementById('target-account').value.replace(/\s/g,'')
+    var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
     
     server.accounts()
       .accountId(sourcePublicKey)
