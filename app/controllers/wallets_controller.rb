@@ -28,7 +28,7 @@ class WalletsController < ApplicationController
       # session[:seed] = pair.seed
       session.clear
 
-      if verify_recaptcha == true
+      if verify_recaptcha
         # TODO validate correct stellar public key
         session[:address] = params[:public_key].delete(' ')
       

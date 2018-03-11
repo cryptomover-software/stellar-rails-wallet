@@ -13,7 +13,6 @@
     #progressbar
       .progress-label
         Fetching Data. Please Wait...
-
     .table-responsive
       %table#balances-tbl.table.table-striped
         %thead
@@ -28,8 +27,6 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 
 :javascript
-  progressbar()
-  
   new Clipboard('#copy_address')
 
   $("#balances-tbl").on("click", ".short-address", function() {

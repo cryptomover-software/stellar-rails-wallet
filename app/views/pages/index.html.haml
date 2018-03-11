@@ -9,6 +9,7 @@
           %label
             Enter your Stellar Public Stellar Key
           %input#public-key.form-control.form-control-lg{name: "public_key", placeholder: "Enter Public Key", required: "true", type: "text"}/
+
         .mb-2
           = recaptcha_tags
         .form-inline.pull-right
@@ -26,6 +27,7 @@
         %i.fab.fa-twitter.fa-3x
       = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
         %i.fab.fa-github.fa-3x
+
 
       -# %p.text-muted.text-center
         -#   %small Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
