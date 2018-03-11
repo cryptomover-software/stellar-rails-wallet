@@ -8,6 +8,7 @@ class WalletsController < ApplicationController
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
   NATIVE_ASSET = "native".freeze
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
+  INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
   UNDETERMINED_PRICE = "undetermined".freeze
   
   def dashboard
@@ -27,10 +28,15 @@ class WalletsController < ApplicationController
       # session[:seed] = pair.seed
       session.clear
 
-      # TODO validate correct stellar public key
-      session[:address] = params[:public_key].delete(' ')
+      if verify_recaptcha == true
+        # TODO validate correct stellar public key
+        session[:address] = params[:public_key].delete(' ')
       
-      redirect_to portfolio_path
+        redirect_to portfolio_path
+      else
+        flash[:notice] = INVALID_CAPTCHA
+        redirect_to root_path
+      end
     rescue
       flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path

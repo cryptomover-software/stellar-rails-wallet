@@ -18,7 +18,7 @@
       %table#balances-tbl.table.table-striped
         %thead
           %tr
-            %th Icon
+            -# %th Icon
             %th Coin
             %th Issuer
             %th Balance
@@ -47,14 +47,14 @@
       $("#balances-tbl tbody").remove()
 
       if(balances.length == 1) {
-        row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+balances[0]["usd_price"]+"</td></tr>")
+        row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+balances[0]["usd_price"]+"</td></tr>")
         $("#balances-tbl").append(row)
       } else {
         for(i=0;i < balances.length;i++) {
           if (balances[i]["asset_type"] == "native") {
-            row = $("<tr><td><i class='fas fa-usd'></td><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
+            row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
           } else {
-            row = $("<tr><td><i class='fas fa-usd'></td><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
+            row = $("<tr><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
           }
           $("#balances-tbl").append(row)
         }

@@ -9,10 +9,11 @@
           %label
             Enter your Stellar Public Stellar Key
           %input#public-key.form-control.form-control-lg{name: "public_key", placeholder: "Enter Public Key", required: "true", type: "text"}/
+        .mb-2
+          = recaptcha_tags
         .form-inline.pull-right
           %button#login-btn.btn.btn-brown{type: "submit"} Login
           = link_to "New User? Create New Stellar Account.", new_account_path, class: "btn"
-
       %hr
       .text-center
         %button.btn.btn-brown.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
