@@ -54,9 +54,14 @@ class WalletsController < ApplicationController
   end
 
   def new_account
-    random = Stellar::KeyPair.random
-    session[:address] = @address = random.address
-    session[:seed] = @seed = random.seed
+    if verify_recaptcha
+      random = Stellar::KeyPair.random
+      session[:address] = @address = random.address
+      session[:seed] = @seed = random.seed
+    else
+      flash[:notice] = INVALID_CAPTCHA
+      redirect_to root_path
+    end
   end
 
   def get_data_from_api(url)
