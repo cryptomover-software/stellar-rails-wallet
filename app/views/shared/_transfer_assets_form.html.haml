@@ -36,11 +36,11 @@
     Transaction fee of 0.00001 XLM will be charged for each transaction
   .container-fluid
     .row
-      .col.text-center
+      .col-md-12.text-center
         #progressbar
           .progress-label
             Processing. Please Wait...
-      .col
+      .col-md-12
         .text-right
           %button{type: "button", class: "btn btn-danger", id: "send_money"} Send Money
           = link_to "Cancel", root_path, class: "btn btn-brown", id: "cancel-btn"

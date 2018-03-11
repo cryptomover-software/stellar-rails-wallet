@@ -10,8 +10,9 @@
       .col-md-12.col-lg-1
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
     %br
-    #progressbar.progress{style: "height: 0px;"}
-      .progress-bar.progress-bar-striped.progress-bar-animated{"aria-valuemax" => "100", "aria-valuemin" => "0", "aria-valuenow" => "100", :role => "progressbar", :style => "width: 100%"}
+    #progressbar
+      .progress-label
+        Fetching Data. Please Wait...
 
     .table-responsive
       %table#balances-tbl.table.table-striped
@@ -27,6 +28,8 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 
 :javascript
+  progressbar()
+  
   new Clipboard('#copy_address')
 
   $("#balances-tbl").on("click", ".short-address", function() {
@@ -39,7 +42,7 @@
     if (balances == 404) {
       document.location.href = "/inactive_account"
     } else {
-      //$("#progressbar").hide()
+      $("#progressbar").hide()
       var row = ""
       $("#balances-tbl tbody").remove()
 
