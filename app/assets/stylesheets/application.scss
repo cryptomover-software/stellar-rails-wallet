@@ -195,7 +195,12 @@ nav.navbar.navbar-expand-md {
     width: 270px;
     height: 80px;
 }
-
+.fee-prompt {
+    text-align: left;
+    @media(min-width: 750px) {
+        text-align: right;
+    }
+}
 .center-table
 {
     margin: 0 auto;
