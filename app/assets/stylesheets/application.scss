@@ -406,3 +406,26 @@ footer {
         text-align: right;
     }
 }
+.blur-text{
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+}
+.unblur-text{
+    -webkit-filter: blur(0px);
+    -moz-filter: blur(0px);
+    -o-filter: blur(0px);
+    -ms-filter: blur(0px);
+    filter: blur(0px);
+    width: 100px;
+    height: 100px;
+    background-color: white;
+}
+#hide-seed {
+    display: none;
+}

@@ -8,21 +8,48 @@
         %li The account will NOT BE active upon creation. It needs to be funded for at least 1 XLM.
         %li You are not recommended to send XLM directly from exchange to this address unless you are sure that the exchange is able to fund non-existing accounts.
       .row
-        .col-lg-12
+        .col-md-12
           %span This is your new public stellar address:
-          %br
-          .address
-            = @address
-          %br
-          %br
+        .col-md-12
+          .row
+            .col-md-12.text-left.mt-2
+              .address
+                = @address
+            .col-md-12
+              %button{type: "button", class: "btn btn-brown", "data-clipboard-target": ".address", id: "copy_address"} Copy
+      .row
+        .col-md-12
           %span This is your secret stellar seed:
-          %br
-          .address
-            = @seed
+        .col-md-12
+          .row
+            .col-md-12.mt-2
+              #secret-seed.address.secret-seed.blur-text
+                = @seed
+            .col-md-12.mt-1
+              %button{type: "button", class: "btn btn-brown", id: "show-seed"} Show
+              %button{type: "button", class: "btn btn-brown", id: "hide-seed"} Hide
+              %button{type: "button", class: "btn btn-brown", "data-clipboard-target": ".secret-seed", id: "copy_seed"} Copy
           .alert.alert-danger.text-center.mt-3
             %b This account doesn't exist on the network. To create this account, send it at least 1 Lumen (XLM) to fulfill the
             = link_to "minumum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
             \.
+      .row
         .col-md-12.text-center
           = link_to "Go to Wallet", portfolio_path, class: "btn btn-brown"
           = link_to "Log Out", logout_path, class: "btn btn-info"
+
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
+
+:javascript
+  new Clipboard('#copy_address')
+  new Clipboard("#copy_seed")
+  $("#show-seed").click(function() {
+    $("#secret-seed").removeClass("blur-text").addClass("unblur-text")
+    $(this).hide()
+    $("#hide-seed").show()
+  })
+  $("#hide-seed").click(function() {
+    $("#secret-seed").removeClass("unblur-text").addClass("blur-text")
+    $(this).hide()
+    $("#show-seed").show()
+  })
