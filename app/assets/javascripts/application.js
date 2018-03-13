@@ -179,7 +179,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            // console.log(JSON.stringify(transactionResult, null, 2))
            // console.log('\nSuccess! View the transaction at: ')
            // console.log(transactionResult._links.transaction.href)
-           var message = 'Amount ' + amount + ' ' + asset_code + ' transferred to ' + receiverPublicKey + ' successfully.'
+           var message = 'Amount ' + amount + ' ' + asset + ' transferred to ' + receiverPublicKey + ' successfully.'
            document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
          })
          .catch(function(err) {
@@ -192,7 +192,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            if (result_code == 'op_no_destination') {
              initiate_fund_new_account()
            } else if (result_code == 'op_no_trust') {
-             var message = "The target address " + receiverPublicKey + " do not trust asset " + asset_code + "."
+             var message = "The target address " + receiverPublicKey + " do not trust asset " + asset + "."
              document.location.href = '/failed?error_description=' + message
            } else {
              // document.location.href = '/failed?error_description=' + result_code
