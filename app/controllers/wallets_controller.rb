@@ -47,15 +47,10 @@ class WalletsController < ApplicationController
   end
 
   def trezor_wallet
-    # value = "00f75a9eebb91ad041351415105f89f6243fd98693e00a1f91ac804fcbffd85d"
     value = params[:value]
     seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
     pair = Stellar::KeyPair.from_raw_seed(seed)
-    puts "##################"
-    puts "SEEEEED"
-    puts pair
-    puts pair.address
-    puts pair.seed
+
     session.clear
     session[:address] = pair.address
     session[:seed] = pair.seed
@@ -143,11 +138,14 @@ class WalletsController < ApplicationController
     
     endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
+    endpoint += "&asset_code=#{params[:asset_code]}" if params[:asset_code]
+    endpoint += "&asset_issuer=#{params[:asset_issuer]}" if params[:asset_issuer]
+    
     if params[:order] == 'asc'
       endpoint += "&order=asc"
     else
       endpoint += "&order=desc"
-    end
+    end      
   end
 
   def set_trades_endpoint(balance)        
@@ -161,7 +159,7 @@ class WalletsController < ApplicationController
   end
   
   def get_transactions
-    endpoint = set_transactions_endpoint()
+    endpoint = set_transactions_endpoint()    
     url = STELLAR_API + endpoint
 
     body = get_data_from_api(url)

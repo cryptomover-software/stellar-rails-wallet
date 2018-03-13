@@ -224,6 +224,8 @@ nav.navbar.navbar-expand-md {
     word-wrap: break-word;
 }
 table {
+    margin: 0 auto;
+    width: 100%;
     td,th {
         text-align: center;
     }
@@ -436,4 +438,15 @@ footer {
 }
 #result {
     display: none;
+}
+#assets-filter {
+    width: 100%;
+    @media(min-width: 750px) {
+        width: 60%;
+    }
+    margin: 0 auto;
+    text-align: center;
+    label {
+        margin: 0 10px 0 10px;
+    }
 }
