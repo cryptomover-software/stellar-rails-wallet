@@ -1,8 +1,10 @@
 class WalletsController < ApplicationController
-  before_action :user_must_login, except: [:login, :new_account]
+  before_action :user_must_login, except: [:login, :new_account, :trezor_wallet]
   before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
+
+  # before_action :check_session_expiry, except: [:login, :trezor_wallet, :logout, :new_account, :inactive_account]
   
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
@@ -31,6 +33,7 @@ class WalletsController < ApplicationController
       if verify_recaptcha
         # TODO validate correct stellar public key
         session[:address] = params[:public_key].delete(' ')
+        session[:expires_at] = 5.minutes.from_now
       
         redirect_to portfolio_path
       else
@@ -41,6 +44,24 @@ class WalletsController < ApplicationController
       flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path
     end
+  end
+
+  def trezor_wallet
+    # value = "00f75a9eebb91ad041351415105f89f6243fd98693e00a1f91ac804fcbffd85d"
+    value = params[:value]
+    seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
+    pair = Stellar::KeyPair.from_raw_seed(seed)
+    puts "##################"
+    puts "SEEEEED"
+    puts pair
+    puts pair.address
+    puts pair.seed
+    session.clear
+    session[:address] = pair.address
+    session[:seed] = pair.seed
+    session[:expires_at] = 5.minutes.from_now
+      
+    redirect_to portfolio_path
   end
 
   def logout
@@ -54,14 +75,11 @@ class WalletsController < ApplicationController
   end
 
   def new_account
-    if verify_recaptcha
-      random = Stellar::KeyPair.random
-      session[:address] = @address = random.address
-      session[:seed] = @seed = random.seed
-    else
-      flash[:notice] = INVALID_CAPTCHA
-      redirect_to root_path
-    end
+    session.clear
+
+    random = Stellar::KeyPair.random
+    session[:address] = @address = random.address
+    @seed = random.seed
   end
 
   def get_data_from_api(url)

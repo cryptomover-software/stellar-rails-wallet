@@ -429,3 +429,8 @@ footer {
 #hide-seed {
     display: none;
 }
+#trezor-btn {
+    a:link, a:hover, a:visited {
+        color: white;
+    }
+}

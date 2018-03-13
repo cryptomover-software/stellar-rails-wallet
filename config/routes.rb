@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   root 'pages#index'
 
   get 'login', to: 'wallets#login'
+  get 'trezor_wallet_login', to: 'pages#trezor_wallet_login'
+  get 'trezor_wallet', to: 'wallets#trezor_wallet'
   get 'logout', to: 'wallets#logout'
   get 'forgot_password', to: 'pages#forgot_password'
   # post 'login', to: 'pages#login'
@@ -23,11 +25,8 @@ Rails.application.routes.draw do
   get 'success', to: 'wallets#success'
   get 'failed', to: 'wallets#failed'
   
-  get 'stellar_subscribe', to: 'pages#stellar_subscribe'
-  post 'stellar_subscribe', to: 'pages#stellar_subscribe'
-
-  #get 'transfer_amount', to: 'wallets#transfer_amount'
-  post 'transfer_amount', to: 'wallets#transfer_amount'
+  # get 'stellar_subscribe', to: 'pages#stellar_subscribe'
+  # post 'stellar_subscribe', to: 'pages#stellar_subscribe'
 
   # post '/shopify/checkout_create', to: 'shopify#checkout_create'
 end

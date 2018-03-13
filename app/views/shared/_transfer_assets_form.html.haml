@@ -14,7 +14,7 @@
   .form-group
     .form-label
       Type your Secret Key
-    %input.form-control{id: "secret-seed", type: "password", placeholder: "Your Secret Key", required: true}
+    %input.form-control{id: "secret-seed", type: "password", placeholder: "Your Secret Key", required: true, value: session[:seed]}
   Memo Type
   .form-check.form-check-inline
     %label.radio-inline

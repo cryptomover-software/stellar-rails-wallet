@@ -8,7 +8,7 @@
         .form-group
           %label
             Enter your Stellar Public Stellar Key
-          %input#public-key.form-control.form-control-lg{name: "public_key", placeholder: "Enter Public Key", required: "true", type: "text"}/
+          %input#public-key.form-control.form-control-lg{name: "public_key", placeholder: "Enter Public Key", type: "text"}/
 
         .mb-2
           = recaptcha_tags
@@ -17,7 +17,7 @@
           = link_to "New User? Create New Stellar Account.", new_account_path, class: "btn"
       %hr
       .text-center
-        %button.btn.btn-brown.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
+        = link_to "Trezor Login", trezor_wallet_login_path, class: "btn btn-info block full-width m-b"
     #login-footer.card-footer.text-center
       = link_to "https://medium.com/cryptomover", target: "_blank" do
         %i.fab.fa-medium.fa-3x
@@ -27,45 +27,3 @@
         %i.fab.fa-twitter.fa-3x
       = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
         %i.fab.fa-github.fa-3x
-
-
-      -# %p.text-muted.text-center
-        -#   %small Now you can use your trezor to store your XLM and cryptomover supported tokens. The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
-        -# %form.m-t{:role => "form"}
-        -#   .form-group
-        -#     %label Path:
-        -#     %input#path{:value => "m/49'/10'/0'"}/
-        -#     %label Key:
-        -#     %input#key{:value => "My key"}/
-        -#     %br
-        -#     .text-center
-        -#       // %a.btn.btn-sm.btn-primary.btn-block{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
-        -#       %button.btn.btn-brown.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
-          
-//%script{:src => "https://connect.trezor.io/4/connect.js"}
-:javascript
-  function trezorCipherKeyValue() {
-    var path = document.getElementById("path").value;
-    var key = document.getElementById("key").value;
-    var value = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136';
-            
-    var encrypt = true;
-    var ask_on_encrypt = false;
-    var ask_on_decrypt = false;
-            
-    //var resultEl = document.getElementById("result");
-            
-    TrezorConnect.closeAfterFailure(false);
-    TrezorConnect.cipherKeyValue(path, key, value, encrypt, ask_on_encrypt, ask_on_decrypt, function (response) {
-      if (response.success) {
-        //resultEl.innerHTML = response.value;
-        $('#login_seed').val(response.value);
-        $('#login_tab').val('true');
-        $('#login_form').submit();
-      } else {
-        //resultEl.innerHTML = "";
-        // resultEl.appendChild(document.createTextNode("Error: " + response.error));
-      }
-      //document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
-    });
-  }
