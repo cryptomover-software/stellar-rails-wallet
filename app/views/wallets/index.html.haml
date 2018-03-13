@@ -17,7 +17,6 @@
       %table#balances-tbl.table.table-striped
         %thead
           %tr
-            -# %th Icon
             %th Coin
             %th Issuer
             %th Balance
@@ -25,6 +24,7 @@
         %tbody
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"}
 
 :javascript
   progressbar()
@@ -45,14 +45,19 @@
       $("#balances-tbl tbody").remove()
 
       if(balances.length == 1) {
-        row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+balances[0]["usd_price"]+"</td></tr>")
+        // special case of only one asset in account
+        var usd_price = numeral(balances[0]["usd_price"]).format('$0,0.00')
+        row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+usd_price+"</td></tr>")
         $("#balances-tbl").append(row)
       } else {
+        // multiple assets in accounts
         for(i=0;i < balances.length;i++) {
           if (balances[i]["asset_type"] == "native") {
-            row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
+            var usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00')
+            row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+usd_price+"</td></tr>")
           } else {
-            row = $("<tr><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+balances[i]["usd_price"]+"</td></tr>")
+            var usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00')
+            row = $("<tr><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+usd_price+"</td></tr>")
           }
           $("#balances-tbl").append(row)
         }
