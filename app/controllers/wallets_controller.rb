@@ -225,8 +225,9 @@ class WalletsController < ApplicationController
     lumen_usd_price = get_lumen_price_in_usd()
     
     balances.each do |balance|
-      if balance["asset_type"] == NATIVE_ASSET        
-        balance["usd_price"] = lumen_usd_price.round(2)
+      if balance["asset_type"] == NATIVE_ASSET
+        usd_price = lumen_usd_price * balance["balance"].to_f
+        balance["usd_price"] = usd_price.round(2)
       else
         endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
