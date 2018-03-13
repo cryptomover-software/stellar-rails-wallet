@@ -9,6 +9,7 @@ class WalletsController < ApplicationController
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
   NATIVE_ASSET = "native".freeze
+  STELLAR_ASSET = "XLM".freeze
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
   UNDETERMINED_PRICE = "undetermined".freeze
@@ -83,6 +84,25 @@ class WalletsController < ApplicationController
     JSON.parse(response.body)
   end
 
+  def get_balance
+    # Return Balance of Singe Asset
+    asset_code = params[:code]
+    balances = session[:balances]
+
+    if asset_code == STELLAR_ASSET
+      asset_code = NATIVE_ASSET
+      asset_balance = balances.select{|key| key["asset_type"] == asset_code}
+      balance = asset_balance.first["balance"]
+    else
+      asset_balance = balances.select{|key| key["asset_code"] == asset_code}
+      balance = asset_balance.first["balance"]
+    end
+
+    respond_to do |format|
+      format.json {render json: balance.to_f}
+    end
+  end
+  
   def get_balances()
     address = session[:address]
     endpoint = "/accounts/#{address}"
@@ -263,11 +283,10 @@ class WalletsController < ApplicationController
     # TODO refresh assets and balances without visiting home page
     @balances = session[:balances]
 
-    @assets = @balances.map{
+    @assets = @balances.map {
       |balance|
       balance["asset_type"] == NATIVE_ASSET ?
-        "Lumens" :
-        "#{balance['asset_code']}, #{balance['asset_issuer']}"
+        "Lumens" : "#{balance['asset_code']}, #{balance['asset_issuer']}"
     }
   end
 

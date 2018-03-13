@@ -59,6 +59,52 @@ function initiate_fund_new_account() {
   $("#layout-alert").focus()
 }
 
+function hide_form_controls() {
+    $("#secret-seed").prop("disabled", true)
+    $("#target-account").prop("disabled", true)
+    $("#amount-to-send").prop("disabled", true)
+    $("#asset-type").prop("disabled", true)
+    $("input[name=memotype]").attr("disabled", "disabled")
+    $("input[name=fund-new]").attr("disabled", "disabled")
+    $("#memo").prop("disabled", true)
+    $("#send_money").hide()
+    $("#cancel-btn").hide()
+}
+
+function get_balance(asset_code) {
+  var balance = 0.0
+
+  $.ajax({
+    async: false,
+    method: "GET",
+    url: "/get_balance",
+    data: {code: asset_code}
+  }).done(function(result) {
+    balance = parseFloat(result)
+    console.log("got result")
+    console.log(result)
+  }).fail(function(e){
+    console.log("error")
+    console.log(e)
+  })
+  return balance
+}
+
+function amount_not_within_limit(amount, asset) {
+  console.log(asset)
+  console.log(asset.code)
+
+  balance = get_balance(asset.code)
+  console.log("got balance")
+  console.log(balance)
+
+  if (parseFloat(amount) < parseFloat(balance)) {
+    return false
+  } else {
+    return true
+  }
+}
+
 function send_money() {
   // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
   var server = new StellarSdk.Server('https://horizon.stellar.org')
@@ -96,9 +142,16 @@ function send_money() {
     $("#layout-alert").show()
 
     $("#layout-alert").html("Please Enter All Details.")
+    amount_not_within_limit(amount, asset)
+  
+  } else if (amount_not_within_limit(amount, asset)) {
+    $("#layout-alert").show()
+
+    $("#layout-alert").html("Amount you entered exceeds your balance.")
   } else {
     $("#layout-alert").hide()
-
+    hide_form_controls()
+    progressbar()
     // Derive Keypair object and public key (that starts with a G) from the secret
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
 

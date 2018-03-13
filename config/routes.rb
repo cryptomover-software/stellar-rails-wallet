@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   get 'dashboard', to: 'wallets#dashboard'
   get 'portfolio', to: 'wallets#index'
   get 'get_balances', to: 'wallets#get_balances'
+  get 'get_balance', to: 'wallets#get_balance'
 
   get 'transactions', to: 'wallets#transactions'
   get 'trust_asset', to: 'wallets#trust_asset'
