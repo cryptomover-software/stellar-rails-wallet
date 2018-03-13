@@ -68,6 +68,7 @@
     TrezorConnect.closeAfterFailure(false);
     TrezorConnect.cipherKeyValue(path, key, value, encrypt, ask_on_encrypt, ask_on_decrypt, function (response) {
       if (response.success) {
+        $(resultEl).hide()
         console.log(response)
         //resultEl.innerHTML = response.value;
         // $('#login_seed').val(response.value);
@@ -77,6 +78,7 @@
       } else {
         console.log(response)
         // resultEl.innerHTML = "";
+        $(resultEl).show()
         resultEl.appendChild(document.createTextNode("Error: " + response.error));
       }
       // console.log(response)
