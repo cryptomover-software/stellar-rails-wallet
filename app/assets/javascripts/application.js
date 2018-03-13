@@ -81,7 +81,7 @@ function amount_not_within_limit(amount) {
   }
 }
 
-function send_money() {
+function process_transfer(fund_account) {
   // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
   var server = new StellarSdk.Server('https://horizon.stellar.org')
 
@@ -127,6 +127,17 @@ function send_money() {
     $("#layout-alert").hide()
     hide_form_controls()
     progressbar()
+    if (fund_account) {
+      send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+    }
+    else {
+      fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+    }
+  }
+}
+
+function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
+
     // Derive Keypair object and public key (that starts with a G) from the secret
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
 
@@ -194,19 +205,19 @@ function send_money() {
        console.error(e)
        // document.location.href = '/failed?error_description=' + e.message.detail
      })
-  }
+  }//if condition
 } // send money function end
 
 // fund new account block start
 //var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
 
-  function submit_transaction(server, transaction, target_account, amount) {    
+  function submit_transaction(server, transaction, receiverPublicKey, amount) {    
     server.submitTransaction(transaction)
       .then(function(transactionResult) {
         // console.log(JSON.stringify(transactionResult, null, 2))
         // console.log('\nSuccess! View the transaction at: ')
         //console.log(transactionResult._links.transaction.href)
-        document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + target_account + ', Funded with amount ' + amount + ' and Activated.'
+        document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
       })
       .catch(function(err) {
         console.log('An error has occured:')
@@ -215,44 +226,46 @@ function send_money() {
       })
   }
   
-  function build_transaction(secretString, sourcePublicKey, sequence, target_account, amount) {
+  function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount) {
 
     var account = new StellarSdk.Account(sourcePublicKey, sequence)
 
     var transaction = new StellarSdk.TransactionBuilder(account)
       .addOperation(StellarSdk.Operation.createAccount({
-        destination: target_account,
+        destination: receiverPublicKey,
         startingBalance: amount
       }))
       .build()
 
-    transaction.sign(StellarSdk.Keypair.fromSecret(secretString))
+    transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey))
     return transaction
   }
 
-function fund_new_account() {
-    // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-    var server = new StellarSdk.Server('https://horizon.stellar.org')
+function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
+    var set_memo = StellarSdk.Memo.text(memo)
 
-    StellarSdk.Network.usePublicNetwork()
-    // StellarSdk.Network.useTestNetwork()
+    if (memo_type == 'id') {
+      set_memo = StellarSdk.Memo.id(memo)
+    } else if (memo_type == 'hash') {
+      set_memo = StellarSdk.Memo.hash(memo)
+    } else if (memo_type == 'return') {
+      set_memo = StellarSdk.Memo.return(memo)
+    } else {
+      set_memo = StellarSdk.Memo.text(memo)
+    }
 
-    var secretString = document.getElementById('secret-seed').value.replace(/\s/g,'')
-    var sourceKeypair = StellarSdk.Keypair.fromSecret(secretString)
+    var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
     var sourcePublicKey = sourceKeypair.publicKey()
-    var target_account = document.getElementById('target-account').value.replace(/\s/g,'')
-    var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
     
     server.accounts()
       .accountId(sourcePublicKey)
       .call()
       .then(function(accountResult) {
-        var transaction = build_transaction(secretString, sourcePublicKey, accountResult.sequence, target_account, amount)
-        submit_transaction(server, transaction, target_account, amount)
+        var transaction = build_transaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount)
+        submit_transaction(server, transaction, receiverPublicKey, amount)
       })
       .catch(function (err) {
         console.log(err)
         document.location.href = '/failed?error_description=' + err.message.detail
       })
-}
-// fund new account block end
+} // fund new account block end

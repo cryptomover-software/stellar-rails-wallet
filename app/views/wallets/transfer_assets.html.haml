@@ -46,11 +46,11 @@
     $("#memo").prop("disabled", false)
   })
 
-  $('#send_money').click(function(event) {    
+  $('#send_money').click(function(event) {
+    var fund_account = false
     if ($("#fund-new-chk").is(":checked")) {
-      fund_new_account()
-    } else {
-      send_money()
+      fund_account = true
     }
+    process_transfer(fund_account)
     
   }) // btn click end
