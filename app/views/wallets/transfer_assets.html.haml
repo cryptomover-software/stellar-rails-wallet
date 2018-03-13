@@ -11,32 +11,45 @@
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 
-:javascript  
+:javascript
+  $(document).ready(function() {
+    var selectedValue = $(this).val()
+    var asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+
+    $.ajax({
+      method: "GET",
+      url: "/get_balance",
+      data: {code: "XLM"}
+    }).done(function(result) {
+      $("#available-balance").text(result + " Lumens")
+    })
+  })
+  
+  
+  $('#asset-type').change(function() {
+    var selectedValue = $(this).val()
+    var asset_code = "XLM"
+    if (selectedValue != "Lumens") {
+      asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+    }
+
+    $.ajax({
+      method: "GET",
+      url: "/get_balance",
+      data: {code: asset_code}
+    }).done(function(result) {
+      $("#available-balance").text(result + " " + asset_code)
+    })
+  })
+  
   $("input[name=memotype]").click(function() {
     $("#memo").prop("disabled", false)
   })
-  
-  function hide_form_controls() {
-    $("#secret-seed").prop("disabled", true)
-    $("#target-account").prop("disabled", true)
-    $("#amount-to-send").prop("disabled", true)
-    $("#asset-type").prop("disabled", true)
-    $("input[name=memotype]").attr("disabled", "disabled")
-    $("input[name=fund-new]").attr("disabled", "disabled")
-    $("#memo").prop("disabled", true)
-    $("#send_money").hide()
-    $("#cancel-btn").hide()
-  }
 
-  $('#send_money').click(function(event) {
-    hide_form_controls()
-    progressbar()
-    
+  $('#send_money').click(function(event) {    
     if ($("#fund-new-chk").is(":checked")) {
-      console.log("selected")
       fund_new_account()
     } else {
-      console.log("not selected")
       send_money()
     }
     

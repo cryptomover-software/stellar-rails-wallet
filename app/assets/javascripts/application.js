@@ -71,32 +71,8 @@ function hide_form_controls() {
     $("#cancel-btn").hide()
 }
 
-function get_balance(asset_code) {
-  var balance = 0.0
-
-  $.ajax({
-    async: false,
-    method: "GET",
-    url: "/get_balance",
-    data: {code: asset_code}
-  }).done(function(result) {
-    balance = parseFloat(result)
-    console.log("got result")
-    console.log(result)
-  }).fail(function(e){
-    console.log("error")
-    console.log(e)
-  })
-  return balance
-}
-
-function amount_not_within_limit(amount, asset) {
-  console.log(asset)
-  console.log(asset.code)
-
-  balance = get_balance(asset.code)
-  console.log("got balance")
-  console.log(balance)
+function amount_not_within_limit(amount) {
+  balance = $("#available-balance").text().split(" ")[0]
 
   if (parseFloat(amount) < parseFloat(balance)) {
     return false
@@ -140,14 +116,13 @@ function send_money() {
 
   if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
     $("#layout-alert").show()
-
     $("#layout-alert").html("Please Enter All Details.")
-    amount_not_within_limit(amount, asset)
+    return
   
-  } else if (amount_not_within_limit(amount, asset)) {
+  } else if (amount_not_within_limit(amount)) {
     $("#layout-alert").show()
-
     $("#layout-alert").html("Amount you entered exceeds your balance.")
+    return
   } else {
     $("#layout-alert").hide()
     hide_form_controls()
