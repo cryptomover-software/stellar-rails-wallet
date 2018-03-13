@@ -154,7 +154,8 @@ function send_money() {
            if (result_code == 'op_no_destination') {
              initiate_fund_new_account()
            } else if (result_code == 'op_no_trust') {
-             document.location.href = '/trust_asset?failed=true&address='+ receiverPublicKey + '&asset_code=' + asset_code + '&asset_issuer=' + asset_issuer
+             var message = "The target address " + receiverPublicKey + " do not trust asset " + asset_code + "."
+             document.location.href = '/failed?error_description=' + message
            } else {
              // document.location.href = '/failed?error_description=' + result_code
            }
