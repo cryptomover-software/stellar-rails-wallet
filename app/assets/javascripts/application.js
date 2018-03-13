@@ -128,10 +128,9 @@ function process_transfer(fund_account) {
     hide_form_controls()
     progressbar()
     if (fund_account) {
-      send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
-    }
-    else {
       fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+    } else {
+      send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
     }
   }
 }
@@ -205,7 +204,6 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
        console.error(e)
        // document.location.href = '/failed?error_description=' + e.message.detail
      })
-  }//if condition
 } // send money function end
 
 // fund new account block start
@@ -226,7 +224,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
       })
   }
   
-  function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount) {
+  function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo) {
 
     var account = new StellarSdk.Account(sourcePublicKey, sequence)
 
@@ -235,37 +233,62 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
         destination: receiverPublicKey,
         startingBalance: amount
       }))
+      .addMemo(memo)
       .build()
 
     transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey))
     return transaction
   }
 
+function already_funded(server, receiverPublicKey) {
+  console.log("starting server call")
+  var status_code = 200
+  server.accounts()
+    .accountId(receiverPublicKey)
+    .call()
+    .then(function(accountResult) {
+    }).catch(function (err) {
+      status_code = err["message"]["status"]
+    })
+
+  if (parseInt(status_code) == 404) {
+    return false
+  } else {
+    return true
+  }
+}
+
 function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
-    var set_memo = StellarSdk.Memo.text(memo)
-
-    if (memo_type == 'id') {
-      set_memo = StellarSdk.Memo.id(memo)
-    } else if (memo_type == 'hash') {
-      set_memo = StellarSdk.Memo.hash(memo)
-    } else if (memo_type == 'return') {
-      set_memo = StellarSdk.Memo.return(memo)
-    } else {
-      set_memo = StellarSdk.Memo.text(memo)
-    }
-
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
     var sourcePublicKey = sourceKeypair.publicKey()
-    
-    server.accounts()
-      .accountId(sourcePublicKey)
-      .call()
-      .then(function(accountResult) {
-        var transaction = build_transaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount)
-        submit_transaction(server, transaction, receiverPublicKey, amount)
-      })
-      .catch(function (err) {
-        console.log(err)
-        document.location.href = '/failed?error_description=' + err.message.detail
-      })
+
+    if (already_funded(server, receiverPublicKey)) {
+      var message = "Account is Already Active. Account Address: " + receiverPublicKey
+      document.location.href = '/failed?error_description=' + message
+      return
+    } else {
+      var set_memo = StellarSdk.Memo.text(memo)
+
+      if (memo_type == 'id') {
+        set_memo = StellarSdk.Memo.id(memo)
+      } else if (memo_type == 'hash') {
+        set_memo = StellarSdk.Memo.hash(memo)
+      } else if (memo_type == 'return') {
+        set_memo = StellarSdk.Memo.return(memo)
+      } else {
+        set_memo = StellarSdk.Memo.text(memo)
+      }
+
+      server.accounts()
+        .accountId(sourcePublicKey)
+        .call()
+        .then(function(accountResult) {
+          var transaction = build_transaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo)
+          submit_transaction(server, transaction, receiverPublicKey, amount)
+        })
+        .catch(function (err) {
+          console.log(err)
+          document.location.href = '/failed?error_description=' + err.message.detail
+        })
+    }
 } // fund new account block end
