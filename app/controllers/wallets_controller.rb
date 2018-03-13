@@ -208,12 +208,14 @@ class WalletsController < ApplicationController
     lumen_data[0]["price_usd"].to_f
   end
 
-  def calculate_usd_price(record, lumen_usd_price)
+  def calculate_usd_price(record, lumen_usd_price, balance)
     if record
       counter_price = record["counter_amount"].to_f
       base_price = record["base_amount"].to_f
+      asset_price_in_lumen = counter_price/base_price
+      quantity = balance["balance"].to_f
 
-      price = (counter_price/base_price)*lumen_usd_price
+      price = (asset_price_in_lumen * lumen_usd_price) * (quantity)
       price.round(2)
     else
       UNDETERMINED_PRICE
@@ -226,7 +228,9 @@ class WalletsController < ApplicationController
     
     balances.each do |balance|
       if balance["asset_type"] == NATIVE_ASSET
-        usd_price = lumen_usd_price * balance["balance"].to_f
+        quantity = balance["balance"].to_f
+        usd_price = lumen_usd_price * quantity
+        
         balance["usd_price"] = usd_price.round(2)
       else
         endpoint = set_trades_endpoint(balance)
@@ -234,7 +238,7 @@ class WalletsController < ApplicationController
         trade = get_data_from_api(url)
         record = trade["_embedded"]["records"].first
 
-        balance["usd_price"] = calculate_usd_price(record, lumen_usd_price)
+        balance["usd_price"] = calculate_usd_price(record, lumen_usd_price, balance)
       end
     end
   end
