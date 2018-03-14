@@ -3,21 +3,23 @@
     .card-header
       %h1
         Trezor Login
-    .card-body        
-      .alert.alert-danger
-        This Trezor Login will work, once SatoshiLabs accept our Pull Request to whitelist our domain.
+    .card-body
       %p.text-muted.text-center
         Now you can use Trezor to store your XLM and Cryptomover supported tokens.
       #result.text-center.alert.alert-danger
       %form.m-t.text-center{:role => "form"}
         .form-group
           %label Path:
-          %input#path{value: "m/49'/10'/0'"}/
+          %input#path{value: "m/49'/10'/0'"}
+          .text-muted
+            Each unique path indicates single asset.
         .form-group
           %label Key:
           %input#key{placeholder: "Type your Key Here", type: "password"}/
+          .text-muted
+            Use strong key and keep it safe. Do not lose it.
         .text-center#trezor-btn
-          %button.btn.btn-brown{onclick: "trezorLogin(); return false;"} Login With Trezor
+          %button.btn.btn-brown{onclick: "trezorLogin(); return false;"} Login
           = link_to "Cancel", root_path, class: "btn btn-default"
 
       %p
