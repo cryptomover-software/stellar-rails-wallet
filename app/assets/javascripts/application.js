@@ -198,16 +198,21 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
              var message = "The target address " + receiverPublicKey + " do not trust asset " + asset.code + "."
              document.location.href = '/failed?error_description=' + message
            } else {
-             // document.location.href = '/failed?error_description=' + result_code
+             document.location.href = '/failed?error_description=' + "Unkown Error. Please Check Network Connection."
            }
          }) // submit transaction end
      })
      .catch(function(e) {
        console.log(e.message.detail)
        console.error(e)
-       // document.location.href = '/failed?error_description=' + e.message.detail
+       if (e.message.detail == undefined) {
+         document.location.href = '/failed?error_description=' + e
+       } else {
+         document.location.href = '/failed?error_description=' + e.message.detail
+       }
      }) // load account end
 } // send money function end
+
 // ***
 // fund new account block start
 function submit_transaction(server, transaction, receiverPublicKey, amount) {    
