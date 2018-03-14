@@ -3,8 +3,6 @@ class WalletsController < ApplicationController
   before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account, :success, :failed]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
-
-  # before_action :check_session_expiry, except: [:login, :trezor_wallet, :logout, :new_account, :inactive_account]
   
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
@@ -23,22 +21,11 @@ class WalletsController < ApplicationController
 
   def login
     begin
-      # if not params[:raw] == "true"
-      #   seed = params[:seed].scan(/../).collect { |c| c.to_i(16).chr }.join
-      #   pair = Stellar::KeyPair.from_raw_seed(seed)
-      # else
-      #   pair = Stellar::KeyPair.from_seed(params[:seed])
-      # end
-      # pair = Stellar::KeyPair.from_seed(params[:seed])
-
-      # session[:address] = pair.address
-      # session[:seed] = pair.seed
       session.clear
 
       if verify_recaptcha
         # TODO validate correct stellar public key
         session[:address] = params[:public_key].delete(' ')
-        session[:expires_at] = 5.minutes.from_now
       
         redirect_to portfolio_path
       else
@@ -59,7 +46,6 @@ class WalletsController < ApplicationController
     session.clear
     session[:address] = pair.address
     session[:seed] = pair.seed
-    session[:expires_at] = 5.minutes.from_now
       
     redirect_to portfolio_path
   end
@@ -226,6 +212,7 @@ class WalletsController < ApplicationController
     end
   end
   
+
   def set_usd_price(balances)
     # Formula: (counter_price / base_price ) * lumen_usd_price
     lumen_usd_price = get_lumen_price_in_usd()
@@ -309,6 +296,8 @@ class WalletsController < ApplicationController
   
   def user_must_login
     if not session[:address].present?
+      session.clear
+      flash[:notice] = "User Not Logged In OR Session Expired."
       redirect_to root_path
     end
   end
