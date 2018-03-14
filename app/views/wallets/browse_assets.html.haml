@@ -20,8 +20,8 @@
           %button{class: "btn btn-brown", id: "last-btn"} Last
         .next
           %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
-      .container-fluid
-        %table#assets-tbl.table.table-striped.table-responsive
+      .table-responsive
+        %table#assets-tbl.table.table-striped
           %thead
             %tr
               %th Asset Code
