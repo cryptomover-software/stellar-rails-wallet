@@ -34,14 +34,12 @@ function progressbar() {
   var progressbar = $("#progressbar")
   var progressbarValue = progressbar.find( ".ui-progressbar-value" )
   progressbar.progressbar( "option", "value", false )
-  // progressbarValue.css({"background": "#1ab394"})
   progressbarValue.css({"background": "#00bfff"})
   $("#progressbar").show()
   $("#progressbar").focus()
 }
 
 function initiate_fund_new_account() {
-  console.log("initiating fund transfer")
   $("#progressbar").hide()
 
   $("#secret-seed").prop("disabled", false)
@@ -82,8 +80,6 @@ function amount_not_within_limit(amount) {
 }
 
 function check_memo_size(memo, memo_type) {
-  console.log(memo)
-  console.log(memo_type)
   var set_memo = "Memo"
   var memo_data = []
 
@@ -97,13 +93,11 @@ function check_memo_size(memo, memo_type) {
     } else {
       set_memo = StellarSdk.Memo.text(memo)
     }
-    console.log("success")
-    console.log(set_memo)
     memo_data = [false, set_memo]
   } catch(error) {
+    console.log(error)
     memo_data = [true, error.message]
   }
-  console.log(memo_data)
   return memo_data
 }
 
@@ -119,7 +113,7 @@ function process_transfer(fund_account) {
 
   var memo_type = $("input[name=memotype]:checked").val()
   var memo_input = document.getElementById('memo').value
-  var memo_data = check_memo_size(memo, memo_type)
+  var memo_data = check_memo_size(memo_input, memo_type)
   var memo = memo_data[1]
   var memo_size_exceeds_limit = memo_data[0]
 
@@ -149,7 +143,7 @@ function process_transfer(fund_account) {
     return
   } else if (memo_size_exceeds_limit) {
     $("#layout-alert").show()
-    $("#layout-alert").html("Please type correct Memo. Memo length exceeds limit.")
+    $("#layout-alert").html("Memo Error: " + memo)
     return
   } else {
     $("#layout-alert").hide()
@@ -181,10 +175,9 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            asset: asset,
            // Lumens are divisible to seven digits past the decimal.
            // They are represented in JS Stellar SDK in string format
-           amount: amount,
-         })) // TODO Memo
+           amount: amount
+         }))
          .addMemo(memo)
-         // .addMemo(StellarSdk.Memo.text('Hello world!'))
          .build()
 
        // Sign this transaction with the secret key
@@ -203,7 +196,6 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            console.log(err)
 
            var result_code = err.data.extras.result_codes.operations[0]
-           console.log(result_code)
 
            if (result_code == 'op_no_destination') {
              initiate_fund_new_account()
@@ -262,7 +254,6 @@ function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverP
 } // build_transaction end
 
 function already_funded(server, receiverPublicKey) {
-  console.log("starting server call")
   var status_code = 200
   server.accounts()
     .accountId(receiverPublicKey)
