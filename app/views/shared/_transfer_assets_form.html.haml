@@ -6,9 +6,10 @@
   - if @balances.present?
     .form-label
       Asset Type
+    .form-inline
       = select_tag :asset_name, options_for_select(@assets, selected: "Lumens"), class: "form-control", id: "asset-type"
-      .text-muted.mt-1
-        Available Balance:
+      .text-muted.mt-1.ml-3
+        Balance:
         %span#available-balance
           Fetching...
   .form-group
