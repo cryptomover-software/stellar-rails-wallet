@@ -167,8 +167,10 @@ class WalletsController < ApplicationController
     
     if params[:order] == 'asc'
       endpoint += "&order=asc"
-    else
+    elsif params[:order] == 'desc'
       endpoint += "&order=desc"
+    else
+      endpoint
     end      
   end
 
@@ -286,9 +288,6 @@ class WalletsController < ApplicationController
   def browse_assets
     begin
       @assets = get_assets()
-
-      return @assets.reverse if params[:order] == 'asc_order'
-
       return @assets
     rescue StandardError # => e
       # puts e
