@@ -20,5 +20,5 @@
         = link_to "Help", help_path, class: "nav-link"
       - if session[:address].present?
         %li
-          = link_to logout_path do
+          = link_to logout_path, class: "nav-link" do
             Log Out
