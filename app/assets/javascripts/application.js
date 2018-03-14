@@ -81,25 +81,49 @@ function amount_not_within_limit(amount) {
   }
 }
 
+function check_memo_size(memo, memo_type) {
+  console.log(memo)
+  console.log(memo_type)
+  var set_memo = "Memo"
+  var memo_data = []
+
+  try {
+    if (memo_type == 'id') {
+      set_memo = StellarSdk.Memo.id(memo)
+    } else if (memo_type == 'hash') {
+      set_memo = StellarSdk.Memo.hash(memo)
+    } else if (memo_type == 'return') {
+      set_memo = StellarSdk.Memo.return(memo)
+    } else {
+      set_memo = StellarSdk.Memo.text(memo)
+    }
+    console.log("success")
+    console.log(set_memo)
+    memo_data = [false, set_memo]
+  } catch(error) {
+    memo_data = [true, error.message]
+  }
+  console.log(memo_data)
+  return memo_data
+}
+
 function process_transfer(fund_account) {
   // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
   var server = new StellarSdk.Server('https://horizon.stellar.org')
-
   StellarSdk.Network.usePublicNetwork()
   // StellarSdk.Network.useTestNetwork()
 
   var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
-
   var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
-
   var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
   var memo_type = $("input[name=memotype]:checked").val()
-
-  var memo = document.getElementById('memo').value
+  var memo_input = document.getElementById('memo').value
+  var memo_data = check_memo_size(memo, memo_type)
+  var memo = memo_data[1]
+  var memo_size_exceeds_limit = memo_data[0]
 
   var asset_tag = document.getElementById('asset-type')
-
   var asset = asset_tag.options[asset_tag.selectedIndex].text
 
   if (asset == "Lumens") {
@@ -123,6 +147,10 @@ function process_transfer(fund_account) {
     $("#layout-alert").show()
     $("#layout-alert").html("Amount you entered exceeds your balance.")
     return
+  } else if (memo_size_exceeds_limit) {
+    $("#layout-alert").show()
+    $("#layout-alert").html("Please type correct Memo. Memo length exceeds limit.")
+    return
   } else {
     $("#layout-alert").hide()
     hide_form_controls()
@@ -142,18 +170,6 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
 
     var sourcePublicKey = sourceKeypair.publicKey()
 
-    var set_memo = StellarSdk.Memo.text(memo)
-
-    if (memo_type == 'id') {
-      set_memo = StellarSdk.Memo.id(memo)
-    } else if (memo_type == 'hash') {
-      set_memo = StellarSdk.Memo.hash(memo)
-    } else if (memo_type == 'return') {
-      set_memo = StellarSdk.Memo.return(memo)
-    } else {
-      set_memo = StellarSdk.Memo.text(memo)
-    }
-
     server.loadAccount(sourcePublicKey)
      .then(function(account) {
        var transaction = new StellarSdk.TransactionBuilder(account)
@@ -167,7 +183,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            // They are represented in JS Stellar SDK in string format
            amount: amount,
          })) // TODO Memo
-         .addMemo(set_memo)
+         .addMemo(memo)
          // .addMemo(StellarSdk.Memo.text('Hello world!'))
          .build()
 
@@ -272,18 +288,6 @@ function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, me
       document.location.href = '/failed?error_description=' + message
       return
     } else {
-      var set_memo = StellarSdk.Memo.text(memo)
-
-      if (memo_type == 'id') {
-        set_memo = StellarSdk.Memo.id(memo)
-      } else if (memo_type == 'hash') {
-        set_memo = StellarSdk.Memo.hash(memo)
-      } else if (memo_type == 'return') {
-        set_memo = StellarSdk.Memo.return(memo)
-      } else {
-        set_memo = StellarSdk.Memo.text(memo)
-      }
-
       server.accounts()
         .accountId(sourcePublicKey)
         .call()
