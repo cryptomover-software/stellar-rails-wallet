@@ -432,8 +432,10 @@ footer {
     display: none;
 }
 #trezor-btn {
-    a:link, a:hover, a:visited {
-        color: white;
+    button {   
+      a:link, a:hover, a:visited {
+          color: white;
+      }
     }
 }
 #result {
@@ -448,5 +450,11 @@ footer {
     text-align: center;
     label {
         margin: 0 10px 0 10px;
+    }
+}
+#help-card {
+    margin: 0 auto;
+    @media(min-width: 750px) {
+        width: 50%;
     }
 }

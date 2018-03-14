@@ -16,7 +16,6 @@
 
       %p.text-muted.text-center
         Now you can use Trezor to store your XLM and Cryptomover supported tokens.
-        -# The key is set by the customer as any string. A unique key and a unique Bip32 path specify a unique stellar account.
       #result.text-center.alert.alert-danger
       %form.m-t.text-center{:role => "form"}
         .form-group
@@ -26,11 +25,8 @@
           %label Key:
           %input#key{placeholder: "Type your Key Here", type: "password"}/
         .text-center#trezor-btn
-          -# %a.btn.btn-brown{:onclick => "trezorCipherKeyValue();return false;"} Login with Trezor
-          %button.btn.btn-brown{onclick: "trezorCipherKeyValue()"} Login With Trezor
-      //%button.btn.btn-brown.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
-      -# .text-center
-      -#   %button.btn.btn-brown.block.full-width.m-b{:type => "submit", disabled: true} Trezor Support Coming Soon
+          %button.btn.btn-brown{onclick: "trezorCipherKeyValue(); return true;"} Login With Trezor
+          = link_to "Cancel", root_path, class: "btn btn-default"
 
       %p
         %small.text-muted
