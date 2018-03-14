@@ -21,18 +21,12 @@
     #wrapper
       / Main view
       - if flash[:notice].present?
-        .alert.alert-danger
+        .alert.alert-danger.text-center
           = flash[:notice]
-      .alert.alert-danger.text-center
-        WORK IN PROGRESS!
-        %br
-        %b
-          This wallet is still in development. Minor bugs might appear.
-          %br
-          Please use this wallet for testing purpose only.
       #layout-alert.alert.alert-danger
       .pace
       = yield
+    / End wrapper
     / Footer
     %footer.footer
       .container
@@ -51,12 +45,6 @@
                 %i.fab.fa-twitter.fa-2x
               = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
                 %i.fab.fa-github.fa-2x
-      / End page wrapper
-      / End wrapper
-    / Include javascript per-controller - vendor plugins
-    / Include javascript per-view
-    / For demo purpose we include javascript in view but you can easily start SeedProject and organize it with Rails asset pipeline as you want
-    = yield :javascript
 :javascript
   $("#layout-alert").hide()
   
