@@ -1,6 +1,6 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account]
+  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account, :success, :failed]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
 
@@ -8,11 +8,15 @@ class WalletsController < ApplicationController
   
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
+  
   NATIVE_ASSET = "native".freeze
   STELLAR_ASSET = "XLM".freeze
+  
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
   UNDETERMINED_PRICE = "undetermined".freeze
+  HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
+  HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
   
   def dashboard
   end

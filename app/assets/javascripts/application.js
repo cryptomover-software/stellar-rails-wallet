@@ -179,7 +179,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            // console.log(JSON.stringify(transactionResult, null, 2))
            // console.log('\nSuccess! View the transaction at: ')
            // console.log(transactionResult._links.transaction.href)
-           var message = 'Amount ' + amount + ' ' + asset + ' transferred to ' + receiverPublicKey + ' successfully.'
+           var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.'
            document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
          })
          .catch(function(err) {
@@ -191,54 +191,54 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
 
            if (result_code == 'op_no_destination') {
              initiate_fund_new_account()
+           } else if (result_code == 'op_underfunded') {
+             var message = "You do not have enough balance."
+             document.location.href = '/failed?error_description=' + message
            } else if (result_code == 'op_no_trust') {
-             var message = "The target address " + receiverPublicKey + " do not trust asset " + asset + "."
+             var message = "The target address " + receiverPublicKey + " do not trust asset " + asset.code + "."
              document.location.href = '/failed?error_description=' + message
            } else {
              // document.location.href = '/failed?error_description=' + result_code
            }
-         })
+         }) // submit transaction end
      })
      .catch(function(e) {
        console.log(e.message.detail)
        console.error(e)
        // document.location.href = '/failed?error_description=' + e.message.detail
-     })
+     }) // load account end
 } // send money function end
-
+// ***
 // fund new account block start
-//var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-
-  function submit_transaction(server, transaction, receiverPublicKey, amount) {    
-    server.submitTransaction(transaction)
-      .then(function(transactionResult) {
-        // console.log(JSON.stringify(transactionResult, null, 2))
-        // console.log('\nSuccess! View the transaction at: ')
-        //console.log(transactionResult._links.transaction.href)
-        document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
-      })
-      .catch(function(err) {
-        console.log('An error has occured:')
-        console.log(err)
-        document.location.href = '/failed?error_description=' + err.message
-      })
-  }
+function submit_transaction(server, transaction, receiverPublicKey, amount) {    
+  server.submitTransaction(transaction)
+    .then(function(transactionResult) {
+      // console.log(JSON.stringify(transactionResult, null, 2))
+      // console.log('\nSuccess! View the transaction at: ')
+      //console.log(transactionResult._links.transaction.href)
+      document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
+    })
+    .catch(function(err) {
+      console.log('An error has occured:')
+      console.log(err)
+      document.location.href = '/failed?error_description=' + err.message
+    })
+} // submit_transaction end
   
-  function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo) {
+function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo) {
+  var account = new StellarSdk.Account(sourcePublicKey, sequence)
 
-    var account = new StellarSdk.Account(sourcePublicKey, sequence)
+  var transaction = new StellarSdk.TransactionBuilder(account)
+    .addOperation(StellarSdk.Operation.createAccount({
+      destination: receiverPublicKey,
+      startingBalance: amount
+    }))
+    .addMemo(memo)
+    .build()
 
-    var transaction = new StellarSdk.TransactionBuilder(account)
-      .addOperation(StellarSdk.Operation.createAccount({
-        destination: receiverPublicKey,
-        startingBalance: amount
-      }))
-      .addMemo(memo)
-      .build()
-
-    transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey))
-    return transaction
-  }
+  transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey))
+  return transaction
+} // build_transaction end
 
 function already_funded(server, receiverPublicKey) {
   console.log("starting server call")
@@ -256,7 +256,7 @@ function already_funded(server, receiverPublicKey) {
   } else {
     return true
   }
-}
+} // already_funded end
 
 function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
