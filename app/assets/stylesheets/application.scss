@@ -212,6 +212,7 @@ nav.navbar.navbar-expand-md {
     font-weight: bold;
     word-wrap: break-word;
     display: inline;
+    overflow: hidden;
 }
 .short-address {
     max-width: 70px;
@@ -418,8 +419,8 @@ footer {
     -o-filter: blur(3px);
     -ms-filter: blur(3px);
     filter: blur(3px);
-    width: 100px;
-    height: 100px;
+    width: auto;
+    height: auto;
     background-color: #ccc;
 }
 .unblur-text{
@@ -428,12 +429,17 @@ footer {
     -o-filter: blur(0px);
     -ms-filter: blur(0px);
     filter: blur(0px);
-    width: 100px;
-    height: 100px;
+    width: auto;
+    height: auto;
     background-color: white;
 }
 #hide-seed {
     display: none;
+}
+#new-account-details {
+    button {
+        margin: 10px  0 0 15px;
+    }
 }
 #trezor-btn {
     button {   

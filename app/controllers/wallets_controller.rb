@@ -201,10 +201,10 @@ class WalletsController < ApplicationController
   end
 
   def index
-    # # Reset previous and next button links of transactions page,
-    # # when user visits home page
+    # Reset previous and next button links of transactions page,
+    # when user visits home page
     session[:next_cursor] = nil
-    session[:prev_cursor] = nil    
+    session[:prev_cursor] = nil
   end
 
   def get_lumen_price_in_usd
