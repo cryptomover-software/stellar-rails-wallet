@@ -1,0 +1,79 @@
+#help-card
+  .card
+    .card-header
+      %h1
+        Wallet Help
+    .card-body
+      = link_to "Back", root_path
+      %h2
+        How to use Cryptomover Stellar Wallet?
+      %hr
+      %h5
+        %u
+          Security
+      %big
+        %p
+          We do not store your Secret Seed anywhere, except if you are login using Trezor wallet. You will have to type it each time you want to do a transaction which requires a Secret Seed.
+      %h5
+        %u
+          Portfolio
+      %big
+        %ul
+          %li
+            Afetr you login using your Public Stellar Key, you will be redirect to Portfolio page.
+          %li
+            Portfolio page will automatically fetch your balance. Wait for it to load.
+          %li
+            Use Copy button to copy your public address to your Clipboard.
+          %li
+            Portfolio page shows four columns, Coin, Issuer, Balance and its value in USD.
+          %li
+            Clicking on Issuer address will expand it to show full address.
+      %h5
+        %u
+          Send
+      %big
+        %ul
+          %li
+            Use this page to transfer money from your account to other accounts as well as to activate new accounts.
+          %li
+            All values are compulsory.
+          %li
+            Memo value should follow size and format rules of its type
+          %li
+            Select
+            %b
+              Fund New Account
+            checkbox if you want to activate new account.
+      %h5
+        %u
+          Transactions
+      %big
+        %ul
+          %li
+            This page lists all your transaction history.
+          %li
+            Amount is in respective asset unit.
+      %h5
+        %u
+          Asets
+      %big
+        %ul
+          %li
+            Use this page to trust new assets so that you can send and receive them.
+          %li
+            All fileds are compulsory.
+          %li
+            Use Browse assets to search for assets.
+      %p.text-center.text-muted
+        Credit: Rocket Background Logo from
+        = link_to "The Noun Project", "https://www.thenounproject.com", target: "_blank"
+    #login-footer.card-footer.text-center
+      = link_to "https://medium.com/cryptomover", target: "_blank" do
+        %i.fab.fa-medium.fa-3x
+      = link_to "https://t.me/cryptomover", target: "_blank" do
+        %i.fab.fa-telegram.fa-3x
+      = link_to "https://twitter.com/cryptomover", target: "_blank" do
+        %i.fab.fa-twitter.fa-3x
+      = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
+        %i.fab.fa-github.fa-3x

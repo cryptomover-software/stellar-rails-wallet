@@ -8,6 +8,9 @@ class PagesController < ApplicationController
   def trezor_wallet_login
   end
 
+  def help
+  end
+
   # def stellar_subscribe
   #   if request.post?
   #     @account = Account.new(params.require(:account).permit(:email, :public_address, :seed))

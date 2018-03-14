@@ -15,9 +15,10 @@
           = link_to "Transactions", transactions_path, class: "nav-link"
         %li.nav-item
           = link_to "Assets", trust_asset_path, class: "nav-link"
-    - if session[:address].present?
-      %ul.navbar-nav.ml-auto
+    %ul.navbar-nav.ml-auto
+      %li
+        = link_to "Help", help_path, class: "nav-link"
+      - if session[:address].present?
         %li
-          -# %a{:href => "/logout", class: "nav-link"}
           = link_to logout_path do
             Log Out
