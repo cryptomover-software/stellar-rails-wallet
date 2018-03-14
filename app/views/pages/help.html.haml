@@ -20,13 +20,13 @@
       %big
         %ul
           %li
-            Afetr you login using your Public Stellar Key, you will be redirect to Portfolio page.
+            After you login using your Public Stellar Key, you will be redirected to Portfolio page.
           %li
             Portfolio page will automatically fetch your balance. Wait for it to load.
           %li
             Use Copy button to copy your public address to your Clipboard.
           %li
-            Portfolio page shows four columns, Coin, Issuer, Balance and its value in USD.
+            Portfolio page shows four columns, Coin, Issuer, Balance and its total USD value.
           %li
             Clicking on Issuer address will expand it to show full address.
       %h5
@@ -35,11 +35,12 @@
       %big
         %ul
           %li
-            Use this page to transfer money from your account to other accounts as well as to activate new accounts.
+            Use this page to transfer assets from your account to other accounts as well as to activate new accounts.
           %li
             All values are compulsory.
           %li
-            Memo value should follow size and format rules of its type
+            Memo value should follow size and format rules of its type as described here:
+            = link_to "https://www.stellar.org/developers/guides/concepts/transactions.html#memo", "https://www.stellar.org/developers/guides/concepts/transactions.html#memo", target: "_blank"
           %li
             Select
             %b
@@ -62,18 +63,19 @@
           %li
             Use this page to trust new assets so that you can send and receive them.
           %li
-            All fileds are compulsory.
+            All fields are compulsory.
           %li
             Use Browse assets to search for assets.
       %p.text-center.text-muted
         Credit: Rocket Background Logo from
         = link_to "The Noun Project", "https://www.thenounproject.com", target: "_blank"
-    #login-footer.card-footer.text-center
-      = link_to "https://medium.com/cryptomover", target: "_blank" do
-        %i.fab.fa-medium.fa-3x
-      = link_to "https://t.me/cryptomover", target: "_blank" do
-        %i.fab.fa-telegram.fa-3x
-      = link_to "https://twitter.com/cryptomover", target: "_blank" do
-        %i.fab.fa-twitter.fa-3x
-      = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
-        %i.fab.fa-github.fa-3x
+    - if not session[:address]
+      #login-footer.card-footer.text-center
+        = link_to "https://medium.com/cryptomover", target: "_blank" do
+          %i.fab.fa-medium.fa-3x
+        = link_to "https://t.me/cryptomover", target: "_blank" do
+          %i.fab.fa-telegram.fa-3x
+        = link_to "https://twitter.com/cryptomover", target: "_blank" do
+          %i.fab.fa-twitter.fa-3x
+        = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
+          %i.fab.fa-github.fa-3x
