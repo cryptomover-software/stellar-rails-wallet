@@ -3,8 +3,8 @@ Rails.application.routes.draw do
   root 'pages#index'
 
   get 'login', to: 'wallets#login'
-  # get 'trezor_wallet_login', to: 'pages#trezor_wallet_login'
-  # get 'trezor_wallet', to: 'wallets#trezor_wallet'
+  get 'trezor_wallet_login', to: 'pages#trezor_wallet_login'
+  get 'trezor_wallet', to: 'wallets#trezor_wallet'
 
   get 'logout', to: 'wallets#logout'
   get 'forgot_password', to: 'pages#forgot_password'

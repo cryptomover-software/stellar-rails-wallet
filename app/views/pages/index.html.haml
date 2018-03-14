@@ -15,9 +15,9 @@
         .form-inline.pull-right
           %button#login-btn.btn.btn-brown{type: "submit"} Login
           = link_to "New User? Create New Stellar Account.", new_account_path, class: "btn"
-      -# %hr
-      -# .text-center
-      -#   = link_to "Trezor Login", trezor_wallet_login_path, class: "btn btn-info block full-width m-b"
+      %hr
+      .text-center
+        = link_to "Trezor Login", trezor_wallet_login_path, class: "btn btn-info block full-width m-b"
     #login-footer.card-footer.text-center
       = link_to "https://medium.com/cryptomover", target: "_blank" do
         %i.fab.fa-medium.fa-3x
