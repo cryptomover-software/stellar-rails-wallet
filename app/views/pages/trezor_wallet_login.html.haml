@@ -3,17 +3,9 @@
     .card-header
       %h1
         Trezor Login
-    .card-body
-      %ol
-        %li
-          Trezor Hardware wallet generates the secret seed of your Stellar Account.
-        %li
-          Create a secure password below in 'Key' Input box, and keep it safe do not lose it.
-        %li
-          Each path holds a single asset for example Stellar or Bitcoin or Ethereum etc.
-        %li
-          A unique key and a unique Bip32 path makes a unique Stellar account.
-
+    .card-body        
+      .alert.alert-danger
+        This Trezor Login will work, once SatoshiLabs accept our Pull Request to whitelist our domain.
       %p.text-muted.text-center
         Now you can use Trezor to store your XLM and Cryptomover supported tokens.
       #result.text-center.alert.alert-danger
@@ -25,7 +17,7 @@
           %label Key:
           %input#key{placeholder: "Type your Key Here", type: "password"}/
         .text-center#trezor-btn
-          %button.btn.btn-brown{onclick: "trezorCipherKeyValue(); return true;"} Login With Trezor
+          %button.btn.btn-brown{onclick: "trezorLogin(); return false;"} Login With Trezor
           = link_to "Cancel", root_path, class: "btn btn-default"
 
       %p
@@ -47,16 +39,25 @@
           
 %script{:src => "https://connect.trezor.io/4/connect.js"}
 
-:javascript  
-  function trezorCipherKeyValue() {
+:javascript
+  function trezorLogin() {
     var path = document.getElementById("path").value;
     var key = document.getElementById("key").value;
+
+    if (path.length > 0 && key.length > 0) {
+      $("#layout-alert").hide()
+      trezorCipherKeyValue(path, key)
+    } else {
+      $("#layout-alert").show()
+      $("#layout-alert").html("All values are required.")
+    }
+  }
+  
+  function trezorCipherKeyValue(path, key) {
     var value = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136';
-    console.log(path)
-    console.log(key)
             
     var encrypt = true;
-    var ask_on_encrypt = false;
+    var ask_on_encrypt = true;
     var ask_on_decrypt = false;
             
     var resultEl = document.getElementById("result");
@@ -66,18 +67,13 @@
       if (response.success) {
         $(resultEl).hide()
         console.log(response)
-        //resultEl.innerHTML = response.value;
-        // $('#login_seed').val(response.value);
-        // $('#login_tab').val('true');
-        // $('#login_form').submit();
         document.location.href = '/trezor_wallet?value=' + response.value
       } else {
         console.log(response)
-        // resultEl.innerHTML = "";
         $(resultEl).show()
         resultEl.appendChild(document.createTextNode("Error: " + response.error));
       }
-      // console.log(response)
+      console.log(response)
       // document.getElementById("response").innerHTML = JSON.stringify(response, undefined, 2);
     });
   }

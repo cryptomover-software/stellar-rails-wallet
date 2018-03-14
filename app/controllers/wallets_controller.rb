@@ -1,6 +1,6 @@
 class WalletsController < ApplicationController
-  before_action :user_must_login, except: [:login, :new_account]
-  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account, :success, :failed]
+  before_action :user_must_login, except: [:login, :new_account, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account, :success, :failed, :trezor_wallet]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
   
@@ -39,17 +39,17 @@ class WalletsController < ApplicationController
     end
   end
 
-  # def trezor_wallet
-  #   value = params[:value]
-  #   seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
-  #   pair = Stellar::KeyPair.from_raw_seed(seed)
+  def trezor_wallet
+    value = params[:value]
+    seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
+    pair = Stellar::KeyPair.from_raw_seed(seed)
 
-  #   session.clear
-  #   session[:address] = pair.address
-  #   session[:seed] = pair.seed
+    session.clear
+    session[:address] = pair.address
+    session[:seed] = pair.seed
       
-  #   redirect_to portfolio_path
-  # end
+    redirect_to portfolio_path
+  end
 
   def logout
     session.clear
@@ -201,10 +201,10 @@ class WalletsController < ApplicationController
   end
 
   def index
-    # # Reset previous and next button links of transactions page,
-    # # when user visits home page
+    # Reset previous and next button links of transactions page,
+    # when user visits home page
     session[:next_cursor] = nil
-    session[:prev_cursor] = nil    
+    session[:prev_cursor] = nil
   end
 
   def get_lumen_price_in_usd
