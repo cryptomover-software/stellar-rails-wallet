@@ -1,103 +1,56 @@
-.passwordBox.ibox
-  .ibox-title
+.card#transfer-assets-card
+  .card-header
     %h1 Send Lumens/Assets
-  .ibox-content
+  .card-body
+    From Account
+    %br
+    .address
+      = session[:address]
+    %hr
     = render partial: "shared/transfer_assets_form"
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 
 :javascript
-  function progressbar() {
-    $("#secret-seed").prop("disabled", true)
-    $("#target-account").prop("disabled", true)
-    $("#amount-to-send").prop("disabled", true)
-    $("#asset-type").prop("disabled", true)
-    $("#progressbar").show()
-    
-    $("#progressbar").progressbar({
-      value: false
-    });
+  $(document).ready(function() {
+    var selectedValue = $(this).val()
+    var asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
 
-    var progressbar = $("#progressbar")
-    var progressbarValue = progressbar.find( ".ui-progressbar-value" )
-    progressbar.progressbar( "option", "value", false )
-    progressbarValue.css({"background": "#1ab394"})
-    $("#send_money").hide()
-    $("#cancel-btn").hide()
-  }
+    $.ajax({
+      method: "GET",
+      url: "/get_balance",
+      data: {code: "XLM"}
+    }).done(function(result) {
+      $("#available-balance").text(result + " Lumens")
+    })
+  })
   
-  function fund_new_account(sourcePublicKey, receiverPublicKey, amount) {
-    document.location.href = "/fund_new_account?from_address=" + sourcePublicKey + "&to_address=" + receiverPublicKey + "&amount=" + amount
-  }
+  
+  $('#asset-type').change(function() {
+    var selectedValue = $(this).val()
+    var asset_code = "XLM"
+    if (selectedValue != "Lumens") {
+      asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+    }
+
+    $.ajax({
+      method: "GET",
+      url: "/get_balance",
+      data: {code: asset_code}
+    }).done(function(result) {
+      $("#available-balance").text(result + " " + asset_code)
+    })
+  })
+  
+  $("input[name=memotype]").click(function() {
+    $("#memo").prop("disabled", false)
+  })
 
   $('#send_money').click(function(event) {
-    var sourceSecretKey = document.getElementById('secret-seed').value
-    var receiverPublicKey = document.getElementById('target-account').value
-    var amount = document.getElementById('amount-to-send').value
-
-    if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
-      $("#layout-alert").show()
-      $("#layout-alert").html("Please Enter All Details.")
-    } else {
-      $("#layout-alert").hide()
-      progressbar()
-      
-      // Derive Keypair object and public key (that starts with a G) from the secret
-      var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
-      var sourcePublicKey = sourceKeypair.publicKey()
-      
-      // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-      var server = new StellarSdk.Server('https://horizon.stellar.org')
-
-      StellarSdk.Network.usePublicNetwork()
-      // StellarSdk.Network.useTestNetwork()
-
-      console.log("loadAccount...")
-
-      server.loadAccount(sourcePublicKey)
-       .then(function(account) {
-         var transaction = new StellarSdk.TransactionBuilder(account)
-           // Add a payment operation to the transaction
-           .addOperation(StellarSdk.Operation.payment({
-             destination: receiverPublicKey,
-             // The term native asset refers to lumens
-             asset: StellarSdk.Asset.native(),
-             // Lumens are divisible to seven digits past the decimal.
-             // They are represented in JS Stellar SDK in string format
-             amount: amount,
-           }))
-           // .addMemo(StellarSdk.Memo.text('Hello world!'))
-           .build()
-
-         // Sign this transaction with the secret key
-         console.log("signing")
-         transaction.sign(sourceKeypair)
-
-         server.submitTransaction(transaction)
-           .then(function(transactionResult) {
-             // console.log(JSON.stringify(transactionResult, null, 2))
-             // console.log('\nSuccess! View the transaction at: ')
-             // console.log(transactionResult._links.transaction.href)
-             document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href
-           })
-           .catch(function(err) {
-             console.log('An error has occured:')
-             console.log(err)
-
-             var result_code = err.data.extras.result_codes.operations[0]
-             console.log(result_code)
-
-             if (result_code == 'op_no_destination') {
-               fund_new_account(sourcePublicKey, receiverPublicKey, amount)
-             } else {
-               document.location.href = '/failed?error_description=' + result_code
-             }
-           })
-       })
-       .catch(function(e) {
-         console.log(e.message.detail)
-         console.error(e)
-         document.location.href = '/failed?error_description=' + e.message.detail
-       })
-    }  
+    var fund_account = false
+    if ($("#fund-new-chk").is(":checked")) {
+      fund_account = true
+    }
+    process_transfer(fund_account)
+    
   }) // btn click end

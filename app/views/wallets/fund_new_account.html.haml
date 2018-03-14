@@ -1,14 +1,20 @@
-.passwordBox.ibox
-  .ibox-title
-    %h1 Fund New Stellar Account
-    - if @to_address.present?
-      %p.alert.alert-danger
-        Target account
-        %b
-          = @to_address
-        is not active yet. Do you want to tranfer initial Lumens to it, from your own account, to activate it?
-  .ibox-content
-    = render partial: "shared/transfer_assets_form"
+.transactionbox
+  .ibox
+    .ibox-title
+      %h1 Fund New Stellar Account
+      From Account
+      %br
+      .address
+        = session[:address]
+      %br
+      - if @to_address.present?
+        %p.alert.alert-danger
+          Target account
+          %b
+            = @to_address
+          is not active yet. Do you want to tranfer initial Lumens to it, from your own account, to activate it?
+    .ibox-content
+      = render partial: "shared/transfer_assets_form"
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 

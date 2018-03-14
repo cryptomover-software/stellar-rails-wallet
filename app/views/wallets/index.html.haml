@@ -1,35 +1,71 @@
-.row
-  .col-lg-12
-    .ibox.float-e-margins
-      .ibox-title
-        / <span class="label label-warning pull-right">Data has changed</span>
-        %h5 Portfolio Exposure
-      .ibox-content
-        .row
-          .col-md-12.col-lg-11
-            Your Address:
-            .address#source-public-key
-              = session[:address]
-          .col-md-12.col-lg-1
-            %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
-        .table-responsive.balance-table
-          %table.table.table-striped
-            %thead
-              %tr
-                %th Number
-                %th Coin
-                %th Balance
-            %tbody
-              - @balances.each_with_index do |balance, index|
-                %tr
-                  %td
-                    = index + 1
-                  %td
-                    = balance["asset_code"] || "Lumens"
-                  %td
-                    = balance["balance"]
+.card#portfolio-card
+  .card-header
+    %h1 Portfolio Exposure
+  .card-body
+    .row
+      .col-md-12.col-lg-11
+        Your Address:
+        .address#source-public-key
+          = session[:address]
+      .col-md-12.col-lg-1
+        %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
+    %br
+    #progressbar
+      .progress-label
+        Fetching Data...
+    .table-responsive
+      %table#balances-tbl.table.table-striped
+        %thead
+          %tr
+            %th Coin
+            %th Issuer
+            %th Balance
+            %th USD Value
+        %tbody
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"}
 
 :javascript
+  progressbar()
   new Clipboard('#copy_address')
+
+  $("#balances-tbl").on("click", ".short-address", function() {
+    $(this).css("maxWidth", "100%")
+  })
+  
+  $.ajax({
+    url: "/get_balances",
+  }).done(function(balances) {
+    if (balances == 404) {
+      document.location.href = "/inactive_account"
+      
+    } else if (balances == "account_error") {
+      document.location.href = "/failed?error_description=Something Wrong with your account. Please check with Stellar Support or Contact Cryptomover Support."
+    } else if (balances == undefined) {
+      document.location.href = "/failed?error_description=Unable to reach Stellar Server. Check Network Connection Or Try again later."
+    } else {
+      $("#progressbar").hide()
+      var row = ""
+      $("#balances-tbl tbody").remove()
+
+      if(balances.length == 1) {
+        // special case of only one asset in account
+        var usd_price = numeral(balances[0]["usd_price"]).format('$0,0.00')
+        row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+usd_price+"</td></tr>")
+        $("#balances-tbl").append(row)
+      } else {
+        // multiple assets in accounts
+        for(i=0;i < balances.length;i++) {
+          if (balances[i]["asset_type"] == "native") {
+            var usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00')
+            row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+usd_price+"</td></tr>")
+          } else {
+            var usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00')
+            row = $("<tr><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+usd_price+"</td></tr>")
+          }
+          $("#balances-tbl").append(row)
+        }
+      }
+    }
+  })

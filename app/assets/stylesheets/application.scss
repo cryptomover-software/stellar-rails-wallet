@@ -10,73 +10,28 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require jquery-ui
  *= require_tree "." 
  *= require_self
- *= require font-awesome
  */
 
-// Google Fonts
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&lang=en");
-
-// Bootstra
-//@import "bootstrap-sprockets";
 @import "bootstrap";
 
-// Variables, Mixins
-@import "base/variables";
-@import "base/mixins";
-
-// INSPINIA Theme Elements
-@import "base/typography";
-@import "base/navigation";
-@import "base/top_navigation";
-@import "base/buttons";
-@import "base/badges_labels";
-@import "base/elements";
-@import "base/sidebar";
-@import "base/base";
-@import "base/pages";
-@import "base/chat";
-@import "base/metismenu";
-@import "base/spinners";
-
-// Landing page
-@import "base/landing";
-
-// RTL Support
-@import "base/rtl";
-
-// For demo only - config box style
-@import "base/theme-config";
-
-// INSPINIA Skins
-@import "base/skins";
-@import "base/md-skin";
-
-// Media query style
-@import "base/media";
-
-// Custom style
-// Your custom style to override base style
-@import "base/custom";
+// @import "font-awesome-sprockets";
+// @import "font-awesome";
 
 // Clear layout on print mode
-@media print {
-    nav.navbar-static-side {
-        display: none;
-    }
+/* @media print {
+   nav.navbar-static-side {
+   display: none;
+   }
 
-    body { overflow: visible !important; }
+   body { overflow: visible !important; }
 
-    #page-wrapper {
-        margin: 0;
-    }
-}
-
-
-.passwordBox{
-    max-width: 750px;
-}
+   #page-wrapper {
+   margin: 0;
+   }
+   } */
 
 html {
     position: relative;
@@ -84,14 +39,110 @@ html {
 }
 
 body {
+    margin-bottom: 100px;
+    @media(min-width: 750px) {
+        margin-bottom: 60px;
+    }
     //margin-bottom: 100px;
-    /* min-height: 100%;
-       position: absolute; */
+    min-height: 100%;
+    /*   position: absolute; */
+    background-image: image-url("rocket.png");
+    background-repeat: repeat repeat;
 }
-.navbar {
+.btn-brown { 
+    color: #FFFFFF; 
+    background-color: #51504E; 
+    border-color: #51504E; 
+} 
 
+.btn-brown:hover, 
+.btn-brown:focus, 
+.btn-brown:active, 
+.btn-brown.active, 
+.open .dropdown-toggle.btn-brown { 
+    color: #FFFFFF; 
+    background-color: #51504E; 
+    border-color: #51504E; 
+} 
+
+.btn-brown:active, 
+.btn-brown.active, 
+.open .dropdown-toggle.btn-brown { 
+    background-image: none; 
+} 
+
+.btn-brown.disabled, 
+.btn-brown[disabled], 
+fieldset[disabled] .btn-brown, 
+.btn-brown.disabled:hover, 
+.btn-brown[disabled]:hover, 
+fieldset[disabled] .btn-brown:hover, 
+.btn-brown.disabled:focus, 
+.btn-brown[disabled]:focus, 
+fieldset[disabled] .btn-brown:focus, 
+.btn-brown.disabled:active, 
+.btn-brown[disabled]:active, 
+fieldset[disabled] .btn-brown:active, 
+.btn-brown.disabled.active, 
+.btn-brown[disabled].active, 
+fieldset[disabled] .btn-brown.active { 
+    background-color: #51504E; 
+    border-color: #51504E; 
+} 
+
+.btn-brown .badge { 
+    color: #51504E; 
+    background-color: #FFFFFF; 
 }
+nav.navbar.navbar-expand-md {
+    // background-color: #C1C1C1;
+    background-color: #51504E;
+}
+#navbar {
+    a:link, a:hover, a:visited {
+        color: white;
 
+        @media(min-width: 750px) {
+            font-size: 20px;
+        }
+    }
+    @media(min-width: 750px) {
+        ul {
+            margin-top: 8px;
+            font-size: 18px;
+        }   
+    }
+    span {
+        cursor: pointer;
+        color: white;
+        @media(min-width: 750px) {
+            font-size: 20px;
+        }
+    }
+}
+.navbar-toggler {
+    background-color: skyblue;
+    color: skyblue;
+}
+.navbar-brand {
+    color: white;
+    /* height: 100%;
+       width: 100%; */
+    a {
+        padding: 0;
+        margin: 0;
+    }
+    
+    img {
+        width: 150px;
+    }
+}
+.right-col {
+    text-align: left;
+    @media(min-width: 750px) {
+        text-align: right;
+    }
+}
 #content {
     height: 100%;
 }
@@ -99,11 +150,31 @@ body {
 #content > section:nth-of-type(odd) {
     background-color: #EAEAEA;
 }
+#login-footer {
+    i {
+        padding-left: 20px;
+    }
+    a:link, a:hover, a:visited {
+        color: #51504E;
+    }
+    color: #51504E;
+}
 
-/* .navbar-brand {
-   margin-top: -20px;
-   } */
-
+#portfolio-card, #browse-assets-card, #transactions-card {
+    @media(min-width: 750px){
+        margin: 0 5% 0 5%;
+    }
+}
+#login-card, #new-account-card, #success-card, #failed-card {
+    @media(min-width: 750px) {
+        margin: 0 20% 0 20%;
+    }
+}
+#transfer-assets-card, #trust-asset-card {
+    @media(min-width: 750px) {
+        margin: 0 10% 0 10%;      
+    }
+}
 .logo-scrolled {
     width: 270px;
     height: 80px;
@@ -120,7 +191,12 @@ body {
     width: 270px;
     height: 80px;
 }
-
+.fee-prompt {
+    text-align: left;
+    @media(min-width: 750px) {
+        text-align: right;
+    }
+}
 .center-table
 {
     margin: 0 auto;
@@ -137,11 +213,19 @@ body {
     word-wrap: break-word;
     display: inline;
 }
+.short-address {
+    max-width: 70px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 .inactive-prompt {
     margin-top: 10px;
     word-wrap: break-word;
 }
-.balance-table {
+table {
+    margin: 0 auto;
+    width: 100%;
     td,th {
         text-align: center;
     }
@@ -167,13 +251,214 @@ body {
 }
 .progress-label {
     position: absolute;
-    left: 50%;
     top: 4px;
-    // font-weight: bold;
-    // text-shadow: 1px 1px 0 #fff;
-    color: white;
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
+    text-shadow: 1px 1px 0 #fff;
+    color: #51504E;
     font-size: 20px;
+    text-align: center;
 }
 .ui-slider-handle {
     display: none;
+}
+footer {
+    a:link, a:visited, a:hover {
+        color: orange;
+    }
+    
+    background:
+        radial-gradient(black 15%, transparent 16%) 0 0,
+        radial-gradient(black 15%, transparent 16%) 8px 8px,
+        radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 0 1px,
+        radial-gradient(rgba(255,255,255,.1) 15%, transparent 20%) 8px 9px;
+    background-color:#282828;
+    background-size:16px 16px;
+    color: white;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100px;
+    line-height: 30px;
+
+    @media(min-width: 750px) {
+        height: 60px;
+        line-height: 60px;
+    }    
+
+    .social {
+        margin-top: 10px;
+        i {
+            padding-left: 10px;
+        }
+        color: white;
+        a:link, a:visited, a:hover {
+            color: white;
+        }
+    }
+}
+
+#history-nav, #assets-nav {
+    margin: 10px 0 10px 0;
+    text-align: center;
+    .prev, .next, .first, .last {
+        text-align: center;
+        display: inline-block;
+    }
+}
+
+// Pace Atom Start
+.pace {
+    -webkit-pointer-events: none;
+    pointer-events: none;
+
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+
+    -webkit-perspective: 12rem;
+    -moz-perspective: 12rem;
+    -ms-perspective: 12rem;
+    -o-perspective: 12rem;
+    perspective: 12rem;
+
+    z-index: 2000;
+    position: fixed;
+    height: 6rem;
+    width: 6rem;
+    margin: auto;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.pace.pace-inactive .pace-progress {
+    display: none;
+}
+
+.pace .pace-progress {
+    position: fixed;
+    z-index: 2000;
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 6rem;
+    width: 6rem !important;
+    line-height: 6rem;
+    font-size: 2rem;
+    border-radius: 50%;
+    background: rgba(34, 153, 221, 0.8);
+    color: #fff;
+    font-family: "Helvetica Neue", sans-serif;
+    font-weight: 100;
+    text-align: center;
+
+    -webkit-animation: pace-theme-center-circle-spin linear infinite 2s;
+    -moz-animation: pace-theme-center-circle-spin linear infinite 2s;
+    -ms-animation: pace-theme-center-circle-spin linear infinite 2s;
+    -o-animation: pace-theme-center-circle-spin linear infinite 2s;
+    animation: pace-theme-center-circle-spin linear infinite 2s;
+
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    -o-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.pace .pace-progress:after {
+    content: attr(data-progress-text);
+    display: block;
+}
+
+@-webkit-keyframes pace-theme-center-circle-spin {
+    from { -webkit-transform: rotateY(0deg) }
+    to { -webkit-transform: rotateY(360deg) }
+}
+
+@-moz-keyframes pace-theme-center-circle-spin {
+    from { -moz-transform: rotateY(0deg) }
+    to { -moz-transform: rotateY(360deg) }
+}
+
+@-ms-keyframes pace-theme-center-circle-spin {
+    from { -ms-transform: rotateY(0deg) }
+    to { -ms-transform: rotateY(360deg) }
+}
+
+@-o-keyframes pace-theme-center-circle-spin {
+    from { -o-transform: rotateY(0deg) }
+    to { -o-transform: rotateY(360deg) }
+}
+
+@keyframes pace-theme-center-circle-spin {
+    from { transform: rotateY(0deg) }
+    to { transform: rotateY(360deg) }
+}
+
+// Pace Atom End
+.transactionbox {
+    margin: 0 auto;
+    @media(min-width: 750px) {
+        width: 50%;
+    }
+}
+.browse-assets-btn-container {
+    text-align: left;
+    @media(min-width: 750px) {
+        text-align: right;
+    }
+}
+.blur-text{
+    -webkit-filter: blur(3px);
+    -moz-filter: blur(3px);
+    -o-filter: blur(3px);
+    -ms-filter: blur(3px);
+    filter: blur(3px);
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+}
+.unblur-text{
+    -webkit-filter: blur(0px);
+    -moz-filter: blur(0px);
+    -o-filter: blur(0px);
+    -ms-filter: blur(0px);
+    filter: blur(0px);
+    width: 100px;
+    height: 100px;
+    background-color: white;
+}
+#hide-seed {
+    display: none;
+}
+#trezor-btn {
+    button {   
+      a:link, a:hover, a:visited {
+          color: white;
+      }
+    }
+}
+#result {
+    display: none;
+}
+#assets-filter {
+    width: 100%;
+    @media(min-width: 750px) {
+        width: 60%;
+    }
+    margin: 0 auto;
+    text-align: center;
+    label {
+        margin: 0 10px 0 10px;
+    }
+}
+#help-card {
+    margin: 0 auto;
+    @media(min-width: 750px) {
+        width: 50%;
+    }
 }

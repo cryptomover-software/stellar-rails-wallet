@@ -5,8 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem 'bootstrap-sass'
-gem 'font-awesome-rails'
+gem 'bootstrap', '~> 4.0.0'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.2'
@@ -15,7 +14,7 @@ gem 'sqlite3'
 # Use Puma as the app server
 gem 'puma'
 # Use SCSS for stylesheets
-gem 'sass-rails', '~> 5.0'
+gem 'sass-rails' # , '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -41,6 +40,7 @@ group :development, :test do
   # Adds support for Capybara system testing and selenium driver
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
+  gem 'pry'
 end
 
 group :development do
@@ -61,7 +61,6 @@ gem 'httparty'
 gem 'haml'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-# gem 'webpacker', '~> 2.0'
-# gem 'react-rails'
-# gem 'pg'
 gem 'mina'
+# gem 'font-awesome-sass', '~> 5.0.6'
+gem "recaptcha", require: "recaptcha/rails"

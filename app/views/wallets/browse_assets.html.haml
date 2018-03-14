@@ -1,0 +1,116 @@
+#browse-assets-card
+  .card
+    .card-header
+      %h1 Assets List
+    .card-body
+      #assets-filter
+        .form-inline.text-center
+          %label Asset Code
+          %input#asset-code.form-control.mb-2.mr-sm-2{type: "text", placeholder: "Type Asset Code"}
+          %label Asset Issuer
+          %input#asset-issuer.form-control.mb-2.mr-sm-2{type: "text", placeholder: "Type Asset Issuer"}
+
+          %button#filter-assets.btn.btn-brown.mb-2{type: "submit"} Filter
+      #assets-nav
+        .prev
+          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
+        .first
+          %button{class: "btn btn-brown", id: "first-btn"} First
+        .last
+          %button{class: "btn btn-brown", id: "last-btn"} Last
+        .next
+          %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
+      .container-fluid
+        %table#assets-tbl.table.table-striped.table-responsive
+          %thead
+            %tr
+              %th Asset Code
+              %th Asset Type
+              %th Asset Issuer
+              %th Action
+              %th TOML URL
+          %tbody
+            - @assets.each do |asset|
+            - asset_code = asset['asset_code']
+            - asset_type = asset['asset_type']
+            - asset_issuer = asset['asset_issuer']
+            - url = asset['_links']['toml']['href']
+              %tr
+                %td
+                  = asset_code
+                %td
+                  = asset_type
+                %td
+                  = asset_issuer
+                %td
+                  %button{class: "btn btn-brown trust-btn", "data-asset-code": asset_code, "data-asset-issuer": asset_issuer} Trust
+                %td
+                  = url
+
+:javascript  
+  $("#filter-assets").click(function() {
+    var asset_code = $("#asset-code").val()
+    var asset_issuer = $("#asset-issuer").val()
+
+    var params = ""
+    if (asset_code.length > 0) {
+      params += 'asset_code=' + asset_code
+    } else if (asset_issuer.length > 0) {
+      params += '&asset_issuer=' + asset_issuer
+    }
+    console.log(params)
+
+    document.location.href = '/assets?'+params
+  })
+  
+  $("#assets-tbl").on("click", ".short-address", function(e) {
+    $(this).css("maxWidth", "100%")
+  })
+  
+  $(".trust-btn").click(function() {
+    var asset_code = $(this).data("asset-code")
+    var asset_issuer = $(this).data("asset-issuer")
+    document.location.href = '/trust_asset?asset_code='+asset_code+'&asset_issuer='+asset_issuer
+  })
+  
+  $("#next-btn").click(function() {
+    var params = window.location.href.split('?')[1]
+    var cursor = $(this).data("next")
+    if (params) {
+      params = '&cursor=' + cursor + params
+    } else {
+      params = '&cursor=' + cursor
+    }
+    document.location.href = '/assets?'+ params
+  })
+  $("#prev-btn").click(function() {
+    var params = window.location.href.split('?')[1]
+    var cursor = $(this).data("prev")
+
+    if (params) {
+      params = '&cursor=' + cursor + params
+    } else {
+      params = '&cursor=' + cursor
+    }
+    
+    document.location.href = '/assets?order=asc'+ params
+  })
+  $('#first-btn').click(function() {
+    var params = window.location.href.split('?')[1]
+
+    if (params) {
+      document.location.href = '/assets?' + params
+    } else {
+      document.location.href = '/assets'
+    }
+  })
+  $('#last-btn').click(function() {
+    var params = window.location.href.split('?')[1]
+
+    if (params) {
+      document.location.href = '/assets?order=desc' + params
+    } else {
+      document.location.href = '/assets?order=desc'
+    }
+
+  })

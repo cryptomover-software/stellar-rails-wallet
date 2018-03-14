@@ -1,23 +1,24 @@
-.row.border-bottom.white-bg
-  %nav.navbar.navbar-static-top{:role => "navigation"}
-    .navbar-header
-      %button.navbar-toggle.collapsed{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
-        %i.fa.fa-reorder
-      %a.navbar-brand{:href => root_path} Cryptomover
-    #navbar.navbar-collapse.collapse
+%nav.navbar.navbar-expand-md
+  = link_to image_tag("logo.png"), "https://www.cryptomover.com", class: "navbar-brand", target: "_blank"
+  %button.navbar-toggler{"aria-controls" => "navbar", "aria-expanded" => "false", "data-target" => "#navbar", "data-toggle" => "collapse", :type => "button"}
+  #navbar.navbar-collapse.collapse
+    - if session[:address].present?
+      %ul.navbar-nav
+        %li.nav-item
+          -# TODO Fix mulitple ajax on redirection
+          %span.nav-link#portfolio-menu
+            Portfolio
+          -# = link_to "Portfolio", "#", class: "nav-link", id: "portfolio-menu"
+        %li.nav-item
+          = link_to "Send", send_money_path, class: "nav-link"
+        %li.nav-item
+          = link_to "Transactions", transactions_path, class: "nav-link"
+        %li.nav-item
+          = link_to "Assets", trust_asset_path, class: "nav-link"
+    %ul.navbar-nav.ml-auto
+      %li
+        = link_to "Help", help_path, class: "nav-link"
       - if session[:address].present?
-        %ul.nav.navbar-nav
-          %li
-            %a{"aria-expanded" => "false", :href => portfolio_path, :role => "button"} Portfolio
-          %li
-            = link_to "Send", send_money_path
-          %li
-            = link_to "Fund New Account", fund_new_account_path
-          %li
-            = link_to "Transactions", transactions_path, aria_expanded: "false", role: "button"
-      - if session[:address].present?
-        %ul.nav.navbar-top-links.navbar-right
-          %li
-            %a{:href => "/logout"}
-              %i.fa.fa-sign-out
-              Log out
+        %li
+          = link_to logout_path, class: "nav-link" do
+            Log Out

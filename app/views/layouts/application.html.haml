@@ -8,39 +8,47 @@
     %title Cryptomover
     / Include style per-controller - vendor plugins
     / Main css styles
-    %link{href: "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css", rel: "stylesheet"}
-    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
+    %link{href: "https://use.fontawesome.com/releases/v5.0.8/css/all.css", rel: "stylesheet"}
     / Main javascript files
     = javascript_include_tag 'application', 'data-turbolinks-track': true
-    %script{src: "https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"}
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
     = csrf_meta_tags
 
       
   %body.top-navigation
+    = render 'layouts/shared/top_navbar'
     / Wrapper
     #wrapper
-      / Page wraper
-      #page-wrapper{:class => "gray-bg #{@extra_class}"}
-        / Page wrapper
-        = render 'layouts/shared/top_navbar'
-        / Main view
-        - if flash[:notice].present?
-          .alert.alert-danger
-            = flash[:notice]
-        #layout-alert.alert.alert-danger
-        = yield
-        / Footer
-        .footer
-          .pull-right
-            Cryptomover
-          %div
-            %strong Copyright
-            © Cryptomover, Hong Kong 2017-2018
-      / End page wrapper
-      / End wrapper
-    / Include javascript per-controller - vendor plugins
-    / Include javascript per-view
-    / For demo purpose we include javascript in view but you can easily start SeedProject and organize it with Rails asset pipeline as you want
-    = yield :javascript
+      / Main view
+      - if flash[:notice].present?
+        .alert.alert-danger.text-center
+          = flash[:notice]
+      #layout-alert.alert.alert-danger
+      .pace
+      = yield
+    / End wrapper
+    / Footer
+    %footer.footer
+      .container
+        .row
+          .col-md-9
+            %strong
+              Developed By
+              = link_to "Cryptomover", "https://www.cryptomover.com"
+          .col-md-3.social
+            - if session[:address].present?
+              = link_to "https://medium.com/cryptomover", target: "_blank" do
+                %i.fab.fa-medium.fa-2x
+              = link_to "https://t.me/cryptomover", target: "_blank" do
+                %i.fab.fa-telegram.fa-2x
+              = link_to "https://twitter.com/cryptomover", target: "_blank" do
+                %i.fab.fa-twitter.fa-2x
+              = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
+                %i.fab.fa-github.fa-2x
 :javascript
   $("#layout-alert").hide()
+  
+  $("#portfolio-menu").click(function() {
+    console.log("redirectingn portfoilo")
+    document.location.href='/portfolio'
+  })

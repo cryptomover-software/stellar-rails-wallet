@@ -6,9 +6,24 @@
     = session[:address]
   %hr  
   .inactive-prompt
-    Send Minimum 1 XLM to this address to Activate it.
+    Send Minimum
+    %b
+      1 XLM
+    to this address,
+    %br
+    from another active
+    %b
+      Stellar Account
+    %br
+    OR
+    %br
+    from
+    %b
+      Exchange
+    to Activate it.
     %br
     %br
-    = link_to "Go To Wallet", portfolio_path, class: "btn btn-primary"
-    %br
-    Contact support [at] cryptomover dot com for help.
+    = link_to "Go To Wallet", portfolio_path, class: "btn btn-brown"
+    = link_to "Log Out", logout_path, class: "btn btn-warning"
+    -# %br
+    -# Contact support [at] cryptomover dot com for help.

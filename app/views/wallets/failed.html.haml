@@ -1,8 +1,9 @@
-.ibox
-  .ibox-title
-    .failed
-      %h1 FAILED!
-  .ibox-content.text-center
-    Transaction failed with following error.
-    %br
-    = params[:error_description]
+#failed-card
+  .card
+    .card-header
+      .failed
+        %h1 FAILED!
+    .card-body.text-center
+      Transaction failed with following error:
+      %br
+      = params[:error_description]
