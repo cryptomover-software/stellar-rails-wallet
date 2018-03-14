@@ -39,6 +39,11 @@
   }).done(function(balances) {
     if (balances == 404) {
       document.location.href = "/inactive_account"
+      
+    } else if (balances == "account_error") {
+      document.location.href = "/failed?error_description=Something Wrong with your account. Please check with Stellar Support or Contact Cryptomover Support."
+    } else if (balances == undefined) {
+      document.location.href = "/failed?error_description=Unable to reach Stellar Server. Check Network Connection Or Try again later."
     } else {
       $("#progressbar").hide()
       var row = ""

@@ -15,6 +15,7 @@ class WalletsController < ApplicationController
   UNDETERMINED_PRICE = "undetermined".freeze
   HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
   HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
+  ACCOUNT_ERROR = "account_error"
   
   def dashboard
   end
@@ -69,8 +70,16 @@ class WalletsController < ApplicationController
   end
 
   def get_data_from_api(url)
-    # TODO handle API url down
     response = HTTParty.get(url)
+
+    case response.code
+      # when 200
+      when 404
+        return 404
+      when 500...600
+        return ACCOUNT_ERROR
+    end
+
     JSON.parse(response.body)
   end
 
@@ -97,15 +106,20 @@ class WalletsController < ApplicationController
     address = session[:address]
     endpoint = "/accounts/#{address}"
     url = STELLAR_API + endpoint
-    result = get_data_from_api(url)
+    session[:balances] = balances = 404
 
-    balances = result['status'] == 404 ? result['status'] : result['balances']
-    
-    balances = set_usd_price(balances) if balances != 404
-    session[:balances] = balances
+    begin
+      balances = get_data_from_api(url)
 
-    respond_to do |format|
-      format.json {render json: balances}
+      balances = set_usd_price(balances["balances"]) if (balances != 404) && (balances != ACCOUNT_ERROR)
+      session[:balances] = balances if balances != ACCOUNT_ERROR
+      
+      respond_to do |format|
+        format.json {render json: balances}
+      end
+    rescue StandardError # => e
+      # puts e
+      render js: "document.location.href='/failed?error_description=#{HTTPARTY_STANDARD_ERROR}'"  
     end
   end
 
@@ -237,14 +251,19 @@ class WalletsController < ApplicationController
   def inactive_account
   end
 
-  def transactions    
-    @transactions = get_transactions()
+  def transactions
+    begin
+      @transactions = get_transactions()
 
-    return @transactions.reverse if params[:order] == 'asc_order'
+      return @transactions.reverse if params[:order] == 'asc_order'
 
-    respond_to do |format|
-      format.html { @transactions }
-      format.json { render json: body['_embedded']['records']}
+      respond_to do |format|
+        format.html { @transactions }
+        format.json { render json: body['_embedded']['records']}
+      end
+    rescue StandardError # => e
+      # puts e
+      redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
     end
   end
 
@@ -265,11 +284,16 @@ class WalletsController < ApplicationController
   end
 
   def browse_assets
-    @assets = get_assets()
+    begin
+      @assets = get_assets()
 
-    return @assets.reverse if params[:order] == 'asc_order'
+      return @assets.reverse if params[:order] == 'asc_order'
 
-    return @assets
+      return @assets
+    rescue StandardError # => e
+      # puts e
+      redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+    end
   end
   
   def trust_asset
