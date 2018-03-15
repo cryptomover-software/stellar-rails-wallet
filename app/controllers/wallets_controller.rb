@@ -27,12 +27,15 @@ class WalletsController < ApplicationController
       redirect_to root_path and return if not verify_recaptcha
       
       flash.clear
-      # TODO validate correct stellar public key
-      session[:address] = params[:public_key].delete(' ')
-      session[:fetching_balances] = FETCHING_BALANCES
+      address = params[:public_key].delete(' ')
+      # Failure to generate key pair indicates invalid Public Key.
+      Stellar::KeyPair.from_address(address)
+
+      session[:address] = address
       
       redirect_to portfolio_path
     rescue
+      session.clear
       flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path
     end
