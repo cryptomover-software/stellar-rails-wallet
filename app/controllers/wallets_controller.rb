@@ -24,7 +24,7 @@ class WalletsController < ApplicationController
     begin
       session.clear
       flash[:notice] = INVALID_CAPTCHA
-      redirect_to root_path if not verify_recaptcha
+      redirect_to root_path and return if not verify_recaptcha
       
       flash.clear
       # TODO validate correct stellar public key
