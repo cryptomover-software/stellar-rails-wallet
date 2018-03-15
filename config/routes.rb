@@ -9,7 +9,6 @@ Rails.application.routes.draw do
   get 'logout', to: 'wallets#logout'
   get 'forgot_password', to: 'pages#forgot_password'
 
-  get 'dashboard', to: 'wallets#dashboard'
   get 'portfolio', to: 'wallets#index'
   get 'get_balances', to: 'wallets#get_balances'
   get 'get_balance', to: 'wallets#get_balance'

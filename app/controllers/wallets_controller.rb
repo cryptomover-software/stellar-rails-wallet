@@ -16,9 +16,6 @@ class WalletsController < ApplicationController
   HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
   HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
   ACCOUNT_ERROR = "account_error"
-  
-  def dashboard
-  end
 
   def login
     begin
@@ -32,7 +29,6 @@ class WalletsController < ApplicationController
       Stellar::KeyPair.from_address(address)
 
       session[:address] = address
-      
       redirect_to portfolio_path
     rescue
       session.clear
