@@ -1,6 +1,6 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account, :success, :failed, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :inactive_account, :success, :failed, :trezor_wallet]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
   
@@ -23,16 +23,15 @@ class WalletsController < ApplicationController
   def login
     begin
       session.clear
-
-      if verify_recaptcha
-        # TODO validate correct stellar public key
-        session[:address] = params[:public_key].delete(' ')
+      flash[:notice] = INVALID_CAPTCHA
+      redirect_to root_path if not verify_recaptcha
       
-        redirect_to portfolio_path
-      else
-        flash[:notice] = INVALID_CAPTCHA
-        redirect_to root_path
-      end
+      flash.clear
+      # TODO validate correct stellar public key
+      session[:address] = params[:public_key].delete(' ')
+      session[:fetching_balances] = FETCHING_BALANCES
+      
+      redirect_to portfolio_path
     rescue
       flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path
