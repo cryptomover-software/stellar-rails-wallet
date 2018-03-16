@@ -17,15 +17,15 @@
     .form-group
       .form-label
         Asset Code
-      %input.form-control{id: "asset-code", placeholder: "Asset Code", required: true, type: "text", value: params[:asset_code]}/
+      %input.form-control{id: "asset-code", required: true, type: "text", value: params[:asset_code]}/
     .form-group
       .form-label
         Asset Issuer
-      %input.form-control{id: "asset-issuer", placeholder: "Asset Issuer", required: true, type: "text", value: params[:asset_issuer]}/
+      %input.form-control{id: "asset-issuer", required: true, type: "text", value: params[:asset_issuer]}/
     .form-group
       .form-label
         Limit
-      %input.form-control{id: "limit", placeholder: "Amount Limit", required: true, type: "number"}/        
+      %input.form-control{id: "limit", required: true, type: "number"}/
     %hr
     .fee-prompt.mb-2.mt-2
       Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
@@ -55,54 +55,25 @@
     $('#trust-btn').hide()
     $('#cancel-btn').hide()
   }
-  //$(document).ready(function() {
+
   $('#trust-btn').click(function(){
-    console.log("trusting...")
     hide_form_controls()
     progressbar()
-    var server = new StellarSdk.Server('https://horizon.stellar.org')
-
-    var asset_code = document.getElementById('asset-code').value
-    var asset_issuer = document.getElementById('asset-issuer').value
+    var assetCode = document.getElementById('asset-code').value
+    var assetIssuer = document.getElementById('asset-issuer').value
     var limit = document.getElementById('limit').value
-
-    var asset = new StellarSdk.Asset(asset_code, asset_issuer)
-
     var sourcePublicKey = document.getElementById('source-account').value
     var sourceSecretKey = document.getElementById('secret-seed').value
 
-    var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
-    // var sourceKeypair = StellarSdk.Keypair.fromPublicKey(sourcePublicKey)
-
-    console.log(asset)
-
-    StellarSdk.Network.usePublicNetwork()
-
-    server.loadAccount(sourcePublicKey)
-    .then(function(account){
-      var transaction = new StellarSdk.TransactionBuilder(account)
-        .addOperation(StellarSdk.Operation.changeTrust({
-          asset: asset,
-          limit: limit
-        }))
-      .build();
-
-      console.log("signining")
-      transaction.sign(sourceKeypair)
-
-      console.log("submitting")
-      server.submitTransaction(transaction)
-        .then(function(result){
-          var link = result['_links']['transaction']['href']
-          var message = 'Asset ' + asset_code + ' from issuer ' + asset_issuer + ', with limit ' + limit + ', trusted successfully.'
-          document.location.href = '/success?transaction_url=' + link + '&message=' + message 
-        })
-        .catch(function(err) {
-          document.location.href = '/failed?error_description=' + err
-        })
-    })
-    .catch(function(error){
-      console.log('ERROR!', error)
-    })
+    if (isNaN(limit)) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Limit should be a number.")
+    } else if (assetCode && assetIssuer && limit && sourcePublicKey && sourceSecretKey) {
+      $("#layout-alert").hide()
+      trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey)
+    } else {
+      $("#layout-alert").show()
+      $("#layout-alert").html("All fields are compulsory.")
+    }
   })
 

@@ -292,3 +292,63 @@ function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, me
         })
     }
 } // fund new account block end
+
+// Trust Assets
+function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey){
+  try {
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    var asset = new StellarSdk.Asset(assetCode, assetIssuer)
+    var sourceKeyPair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
+    // var sourceKeypair = StellarSdk.Keypair.fromPublicKey(sourcePublicKey)
+
+    StellarSdk.Network.usePublicNetwork()
+    server.loadAccount(sourcePublicKey)
+    .then(function(account){
+      var transaction = new StellarSdk.TransactionBuilder(account)
+        .addOperation(StellarSdk.Operation.changeTrust({
+          asset: asset,
+          limit: limit
+        }))
+      .build();
+
+      transaction.sign(sourceKeyPair)
+      server.submitTransaction(transaction)
+        .then(function(result){
+          var link = result['_links']['transaction']['href']
+          var message = 'Asset ' + assetCode + ' from issuer ' + assetIssuer + ', with limit ' + limit + ', trusted successfully.'
+          document.location.href = '/success?transaction_url=' + link + '&message=' + message 
+        })
+        .catch(function(err) {
+          document.location.href = '/failed?error_description=' + err
+        })
+    })
+    .catch(function(error){
+      console.log('ERROR!', error)
+      document.location.href = '/failed?error_description=' + error
+    })
+  } catch(error) {
+      console.log('ERROR!', error)
+      document.location.href = '/failed?error_description=' + error.message
+  }
+}
+// end trust asset
+// 
+// remove url param
+function removeURLParam(url, param)
+{
+ var urlparts= url.split('?');
+ if (urlparts.length>=2)
+ {
+  var prefix= encodeURIComponent(param)+'=';
+  var pars= urlparts[1].split(/[&;]/g);
+  for (var i=pars.length; i-- > 0;)
+   if (pars[i].indexOf(prefix, 0)==0)
+    pars.splice(i, 1);
+  if (pars.length > 0)
+   return urlparts[0]+'?'+pars.join('&');
+  else
+   return urlparts[0];
+ }
+ else
+  return url;
+}
