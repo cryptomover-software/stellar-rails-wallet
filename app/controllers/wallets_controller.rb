@@ -9,17 +9,20 @@ class WalletsController < ApplicationController
   
   NATIVE_ASSET = "native".freeze
   STELLAR_ASSET = "XLM".freeze
+  TREZOR_LOGIN_KEY = "cryptomover".freeze
   
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
+  INVALID_TREZOR_KEY = "Trezor Key must be cryptomover. Do not change key."
+  TREZOR_LOGIN_ERROR = "Something went wrong. Please try again."
   UNDETERMINED_PRICE = "undetermined".freeze
   HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
   HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
   ACCOUNT_ERROR = "account_error"
 
   def login
+    session.clear
     begin
-      session.clear
       flash[:notice] = INVALID_CAPTCHA
       redirect_to root_path and return if not verify_recaptcha
       
@@ -31,22 +34,29 @@ class WalletsController < ApplicationController
       session[:address] = address
       redirect_to portfolio_path
     rescue
-      session.clear
       flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path
     end
   end
 
   def trezor_wallet
-    value = params[:value]
-    seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
-    pair = Stellar::KeyPair.from_raw_seed(seed)
-
-    session.clear
-    session[:address] = pair.address
-    session[:seed] = pair.seed
+    sessoin.clear
+    begin
+      key = params[:key]
+      flash[:notice] = INVALID_TREZOR_KEY
+      redirect_to trezor_wallet_login_path and return if key != TREZOR_LOGIN_KEY
       
-    redirect_to portfolio_path
+      value = params[:value]
+      seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
+      pair = Stellar::KeyPair.from_raw_seed(seed)
+
+      session[:address] = pair.address
+      session[:seed] = pair.seed
+      redirect_to portfolio_path
+    rescue
+      flash[:notice] = TREZOR_LOGIN_ERROR
+      redirect_to trezor_wallet_login_path
+    end
   end
 
   def logout

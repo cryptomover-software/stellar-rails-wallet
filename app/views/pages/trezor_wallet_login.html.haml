@@ -6,8 +6,10 @@
     .card-body
       %p.text-muted.text-center
         Now you can use Trezor to store your XLM and Cryptomover supported tokens.
-      #result.text-center.alert.alert-danger
-      %form.m-t.text-center{:role => "form"}
+      .text-center
+        THIS FEATURE IS HIGHLY EXPERIMENTAL.
+      #result.text-center.alert.alert-danger.mt-1
+      %form.mt-2.text-center{:role => "form"}
         .form-group
           %label Path:
           %input#path{value: "m/49'/10'/0'"}
@@ -15,9 +17,7 @@
             Each unique path indicates single asset.
         .form-group
           %label Key:
-          %input#key{placeholder: "Type your Key Here", type: "password"}/
-          .text-muted
-            Use strong key and keep it safe. Do not lose it.
+          %input#key{value: "cryptomover", type: "text", disabled: true}/
         .text-center#trezor-btn
           %button.btn.btn-brown{onclick: "trezorLogin(); return false;"} Login
           = link_to "Cancel", root_path, class: "btn btn-default"
@@ -69,7 +69,7 @@
       if (response.success) {
         $(resultEl).hide()
         console.log(response)
-        document.location.href = '/trezor_wallet?value=' + response.value
+        document.location.href = '/trezor_wallet?value=' + response.value + '&key=' + key
       } else {
         console.log(response)
         $(resultEl).show()
