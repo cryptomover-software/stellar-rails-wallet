@@ -44,7 +44,7 @@ class WalletsController < ApplicationController
   end
 
   def trezor_wallet
-    sessoin.clear
+    session.clear
     begin
       value = params[:value]
       seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
