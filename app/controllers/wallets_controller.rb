@@ -3,18 +3,22 @@ class WalletsController < ApplicationController
   before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :inactive_account, :success, :failed, :trezor_wallet]
   # for Index action, we check account status each time
   # after fetching balance and after initializing the balance cookie.
-  
+  before_action :validate_trezor_login, only: :trezor_wallet
+  # APIs
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
-  
+  # Configuration values
   NATIVE_ASSET = "native".freeze
   STELLAR_ASSET = "XLM".freeze
   TREZOR_LOGIN_KEY = "cryptomover".freeze
-  
+  TREZOR_LOGIN_CYPHER_VALUE = "fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136".freeze
+  # Login Errors
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
   INVALID_TREZOR_KEY = "Trezor Key must be cryptomover. Do not change key."
+  INVALID_TREZOR_CYPHER = "Invalid Cypher Value. Do not change cypher value."
   TREZOR_LOGIN_ERROR = "Something went wrong. Please try again."
+  # Other Errors
   UNDETERMINED_PRICE = "undetermined".freeze
   HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
   HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
@@ -42,10 +46,6 @@ class WalletsController < ApplicationController
   def trezor_wallet
     sessoin.clear
     begin
-      key = params[:key]
-      flash[:notice] = INVALID_TREZOR_KEY
-      redirect_to trezor_wallet_login_path and return if key != TREZOR_LOGIN_KEY
-      
       value = params[:value]
       seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
       pair = Stellar::KeyPair.from_raw_seed(seed)
@@ -338,5 +338,16 @@ class WalletsController < ApplicationController
       redirect_to inactive_account_path
       return
     end
+  end
+
+  def validate_trezor_login
+    key = params[:key]
+    cypher_value = params[:cypher_value]
+
+    flash[:notice] = INVALID_TREZOR_KEY
+    redirect_to trezor_wallet_login_path and return if key != TREZOR_LOGIN_KEY
+    flash.clear
+    flash[:notice] = INVALID_TREZOR_CYPHER
+    redirect_to trezor_wallet_login_path and return if cypher_value != TREZOR_LOGIN_CYPHER_VALUE
   end
 end

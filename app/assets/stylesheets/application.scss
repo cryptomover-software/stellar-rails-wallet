@@ -175,6 +175,16 @@ nav.navbar.navbar-expand-md {
         margin: 0 10% 0 10%;      
     }
 }
+#trezor-login-form {
+    width: 100%;
+    @media(min-width: 960px) {
+        width: 70%;
+    }
+    margin: 0 auto;
+    label {
+        text-align: center;
+    }
+}
 .logo-scrolled {
     width: 270px;
     height: 80px;
