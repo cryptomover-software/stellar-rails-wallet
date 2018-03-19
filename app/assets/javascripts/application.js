@@ -18,7 +18,6 @@
 //= require popper
 //= require bootstrap.min
 // require chartjs/Chart.min.js
-// require iCheck/icheck.min.js
 //= require pace.min
 //= require_tree .
 
