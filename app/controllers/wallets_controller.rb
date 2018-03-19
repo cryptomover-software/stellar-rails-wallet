@@ -110,7 +110,7 @@ class WalletsController < ApplicationController
     end
   end
   
-  def get_balances()
+  def get_balances
     address = session[:address]
     endpoint = "/accounts/#{address}"
     url = STELLAR_API + endpoint

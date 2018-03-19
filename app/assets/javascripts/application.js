@@ -294,6 +294,21 @@ function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, me
 } // fund new account block end
 
 // Trust Assets
+function createTrustTransaction(limit, account, asset) {
+  if (limit.length > 0) {
+    return new StellarSdk.TransactionBuilder(account)
+    .addOperation(StellarSdk.Operation.changeTrust({
+      asset: asset,
+      limit: limit
+    })).build()
+  } else {
+    return new StellarSdk.TransactionBuilder(account)
+    .addOperation(StellarSdk.Operation.changeTrust({
+      asset: asset
+    })).build()
+  }
+}
+
 function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey){
   try {
     var server = new StellarSdk.Server('https://horizon.stellar.org')
@@ -304,22 +319,21 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
     StellarSdk.Network.usePublicNetwork()
     server.loadAccount(sourcePublicKey)
     .then(function(account){
-      var transaction = new StellarSdk.TransactionBuilder(account)
-        .addOperation(StellarSdk.Operation.changeTrust({
-          asset: asset,
-          limit: limit
-        }))
-      .build();
-
+      var transaction = createTrustTransaction(limit, account, asset)
       transaction.sign(sourceKeyPair)
       server.submitTransaction(transaction)
         .then(function(result){
+          console.log(result)
           var link = result['_links']['transaction']['href']
-          var message = 'Asset ' + assetCode + ' from issuer ' + assetIssuer + ', with limit ' + limit + ', trusted successfully.'
-          document.location.href = '/success?transaction_url=' + link + '&message=' + message 
+          document.location.href = '/success?transaction_url=' + link + '&message=It Worked.'
         })
         .catch(function(err) {
-          document.location.href = '/failed?error_description=' + err
+          console.log("ERROR!" + err)
+          if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
+            document.location.href = '/failed?error_description=Low Base Reserve. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
+          } else {
+            document.location.href = '/failed?error_description=' + err
+          }
         })
     })
     .catch(function(error){
@@ -334,21 +348,20 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
 // end trust asset
 // 
 // remove url param
-function removeURLParam(url, param)
-{
- var urlparts= url.split('?');
- if (urlparts.length>=2)
- {
-  var prefix= encodeURIComponent(param)+'=';
-  var pars= urlparts[1].split(/[&;]/g);
-  for (var i=pars.length; i-- > 0;)
-   if (pars[i].indexOf(prefix, 0)==0)
-    pars.splice(i, 1);
-  if (pars.length > 0)
-   return urlparts[0]+'?'+pars.join('&');
-  else
-   return urlparts[0];
- }
- else
-  return url;
+function removeURLParam(url, param) {
+  var urlparts= url.split('?')
+
+  if (urlparts.length>=2) {
+   var prefix= encodeURIComponent(param)+'='
+   var pars= urlparts[1].split(/[&;]/g)
+
+   for (let i=pars.length; i-- > 0;)
+     if (pars[i].indexOf(prefix, 0)==0)
+       pars.splice(i, 1)
+     if (pars.length > 0)
+       return urlparts[0]+'?'+pars.join('&')
+     else
+       return urlparts[0]
+  } else
+    return url
 }

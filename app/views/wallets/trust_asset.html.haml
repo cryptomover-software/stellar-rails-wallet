@@ -8,6 +8,11 @@
   .card-body
     .form-group
       .form-label
+        Your Lumens Balance:
+        %span
+          = @lumens_balance
+    .form-group
+      .form-label
         Public Key 
       %input.form-control{id: "source-account", value: session[:address], disabled: true, type: "text"}
     .form-group
@@ -24,7 +29,7 @@
       %input.form-control{id: "asset-issuer", required: true, type: "text", value: params[:asset_issuer]}/
     .form-group
       .form-label
-        Limit
+        Limit (Optional)
       %input.form-control{id: "limit", required: true, type: "number"}/
     %hr
     .fee-prompt.mb-2.mt-2
@@ -65,10 +70,7 @@
     var sourcePublicKey = document.getElementById('source-account').value
     var sourceSecretKey = document.getElementById('secret-seed').value
 
-    if (isNaN(limit)) {
-      $("#layout-alert").show()
-      $("#layout-alert").html("Limit should be a number.")
-    } else if (assetCode && assetIssuer && limit && sourcePublicKey && sourceSecretKey) {
+    if (assetCode && assetIssuer && sourcePublicKey && sourceSecretKey) {
       $("#layout-alert").hide()
       trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey)
     } else {
