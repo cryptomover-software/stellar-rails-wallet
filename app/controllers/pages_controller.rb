@@ -1,4 +1,6 @@
-class PagesController < ApplicationController  
+class PagesController < ApplicationController
+  before_action :user_must_login, only: :fetching_balances
+  
   def index
     if session[:address].present?
       redirect_to portfolio_path
