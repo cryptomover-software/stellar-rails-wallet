@@ -12,6 +12,9 @@ class PagesController < ApplicationController
   def help
   end
 
+  def fetching_balances
+  end
+
   # def stellar_subscribe
   #   if request.post?
   #     @account = Account.new(params.require(:account).permit(:email, :public_address, :seed))
