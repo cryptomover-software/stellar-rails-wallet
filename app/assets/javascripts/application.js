@@ -101,58 +101,63 @@ function check_memo_size(memo, memo_type) {
 }
 
 function process_transfer(fund_account) {
-  // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-  var server = new StellarSdk.Server('https://horizon.stellar.org')
-  StellarSdk.Network.usePublicNetwork()
-  // StellarSdk.Network.useTestNetwork()
+  try {
+    // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    StellarSdk.Network.usePublicNetwork()
+    // StellarSdk.Network.useTestNetwork()
 
-  var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
-  var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
-  var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
+    var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
+    var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
-  var memo_type = $("input[name=memotype]:checked").val()
-  var memo_input = document.getElementById('memo').value
-  var memo_data = check_memo_size(memo_input, memo_type)
-  var memo = memo_data[1]
-  var memo_size_exceeds_limit = memo_data[0]
+    var memo_type = $("input[name=memotype]:checked").val()
+    var memo_input = document.getElementById('memo').value
+    var memo_data = check_memo_size(memo_input, memo_type)
+    var memo = memo_data[1]
+    var memo_size_exceeds_limit = memo_data[0]
 
-  var asset_tag = document.getElementById('asset-type')
-  var asset = asset_tag.options[asset_tag.selectedIndex].text
+    var asset_tag = document.getElementById('asset-type')
+    var asset = asset_tag.options[asset_tag.selectedIndex].text
 
-  if (asset == "Lumens") {
-    asset = StellarSdk.Asset.native()
-  } else {
-    var asset_arr = asset.split(',')
-
-    var asset_code = asset_arr[0].replace(/\s/g,'')
-
-    var asset_issuer = asset_arr[1].replace(/\s/g,'')
-
-    asset = new StellarSdk.Asset(asset_code, asset_issuer)
-  }
-
-  if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("Please Enter All Details.")
-    return
-  
-  } else if (amount_not_within_limit(amount)) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("Amount you entered exceeds your balance.")
-    return
-  } else if (memo_size_exceeds_limit) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("Memo Error: " + memo)
-    return
-  } else {
-    $("#layout-alert").hide()
-    hide_form_controls()
-    progressbar()
-    if (fund_account) {
-      fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+    if (asset == "Lumens") {
+      asset = StellarSdk.Asset.native()
     } else {
-      send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      var asset_arr = asset.split(',')
+
+      var asset_code = asset_arr[0].replace(/\s/g,'')
+
+      var asset_issuer = asset_arr[1].replace(/\s/g,'')
+
+      asset = new StellarSdk.Asset(asset_code, asset_issuer)
     }
+
+    if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Please Enter All Details.")
+      return
+
+    } else if (amount_not_within_limit(amount)) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Amount you entered exceeds your balance.")
+      return
+    } else if (memo_size_exceeds_limit) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Memo Error: " + memo)
+      return
+    } else {
+      $("#layout-alert").hide()
+      hide_form_controls()
+      progressbar()
+      if (fund_account) {
+        fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      } else {
+        send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      }
+    }
+  } catch(error) {
+    console.log(error.message)
+    document.location.href = '/failed?error_description=Wrong Input. Please enter Correct Target Account Address, Correct Private Key and other details. Error Message: ' + error.message
   }
 }
 
@@ -189,6 +194,9 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            // console.log(transactionResult._links.transaction.href)
            var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.'
            document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
+           $.ajax({
+             url: "/get_balances"
+           }) 
          })
          .catch(function(err) {
            console.log('An error has occured:')
@@ -229,6 +237,9 @@ function submit_transaction(server, transaction, receiverPublicKey, amount) {
       // console.log('\nSuccess! View the transaction at: ')
       //console.log(transactionResult._links.transaction.href)
       document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
+      $.ajax({
+        url: "/get_balances"
+      }) 
     })
     .catch(function(err) {
       console.log('An error has occured:')
@@ -324,7 +335,10 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
         .then(function(result){
           console.log(result)
           var link = result['_links']['transaction']['href']
-          document.location.href = '/success?transaction_url=' + link + '&message=It Worked.'
+          document.location.href = '/success?transaction_url=' + link + '&message=Asset ' + assetCode + ' trusted successfully.'
+          $.ajax({
+            url: "/get_balances"
+          })
         })
         .catch(function(err) {
           console.log("ERROR!" + err)
