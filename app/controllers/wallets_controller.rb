@@ -1,17 +1,23 @@
 class WalletsController < ApplicationController
-  before_action :user_must_login, except: [:login, :new_account, :trezor_wallet]
+  before_action :user_must_login, except: [:login, :logout, :new_account, :trezor_wallet]
   before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :inactive_account, :success, :failed, :trezor_wallet]
+  # excluding index action too because,
   # for Index action, we check account status each time
-  # after fetching balance and after initializing the balance cookie.
+  # after fetching balance data from Stellar API
+  # and after initializing the balance cookie.
   before_action :validate_trezor_login, only: :trezor_wallet
+
   # APIs
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
   # Configuration values
+  STELLAR_TRANSACTION_FEE = 0.00001.freeze
+  BASE_RESERVE = 0.5.freeze
   NATIVE_ASSET = "native".freeze
   STELLAR_ASSET = "XLM".freeze
   TREZOR_LOGIN_KEY = "cryptomover".freeze
   TREZOR_LOGIN_CYPHER_VALUE = "fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136".freeze
+  FETCHING_BALANCES = "fetching".freeze
   # Login Errors
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
@@ -105,8 +111,11 @@ class WalletsController < ApplicationController
       balance = asset_balance.first["balance"]
     end
 
+    max_allowed_amount = calculate_max_allowed_amount(asset_code)
+    result = [balance.to_f, max_allowed_amount]
+
     respond_to do |format|
-      format.json {render json: balance.to_f}
+      format.json {render json: result}
     end
   end
   
@@ -114,7 +123,7 @@ class WalletsController < ApplicationController
     address = session[:address]
     endpoint = "/accounts/#{address}"
     url = STELLAR_API + endpoint
-    session[:balances] = balances = 404
+    session[:balances] = balances = FETCHING_BALANCES
 
     begin
       balances = get_data_from_api(url)
@@ -209,6 +218,7 @@ class WalletsController < ApplicationController
   end
 
   def index
+    session[:balances] = FETCHING_BALANCES
     # Reset previous and next button links of transactions page,
     # when user visits home page
     session[:next_cursor] = nil
@@ -304,11 +314,38 @@ class WalletsController < ApplicationController
   end
   
   def trust_asset
+    balances = session[:balances]
+    balance = balances.select{|b| b["asset_type"] == NATIVE_ASSET}
+    @lumens_balance = balance.first["balance"]
+  end
+
+  def calculate_max_allowed_amount(asset_type)
+    balances = session[:balances]
+
+    trusted_assets = balances.select{|b| b["asset_code"]}
+    
+    lumens_record = balances.select{ |b| b["asset_type"] == NATIVE_ASSET}
+    lumen_balance = lumens_record.first["balance"].to_f
+
+    minimum_reserve_balance = BASE_RESERVE + (BASE_RESERVE * trusted_assets.count)
+    min_balance_required = STELLAR_TRANSACTION_FEE + minimum_reserve_balance
+
+    if asset_type == NATIVE_ASSET
+      allowed_amount = lumen_balance - min_balance_required
+      allowed_amount > 0 ? allowed_amount.round(5) : "Not Enough Balance"
+    elsif (lumen_balance > min_balance_required)
+      assets_record = balances.select{|b| b["asset_code"] == asset_type}
+      asset_balance = assets_record.first["balance"].to_f
+      asset_balance > 0 ? asset_balance : "Not Enough Balance"
+    else
+      "Not Enough Balance"
+    end
   end
 
   def transfer_assets
-    # TODO refresh assets and balances without visiting home page
     @balances = session[:balances]
+    
+    @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
 
     @assets = @balances.map {
       |balance|
@@ -324,17 +361,15 @@ class WalletsController < ApplicationController
   end
 
   private
-  
-  def user_must_login
-    if not session[:address].present?
-      session.clear
-      flash[:notice] = "User Not Logged In OR Session Expired."
-      redirect_to root_path
-    end
-  end
-
   def activate_account
-    if (session[:balances] == 404) || (session[:balances].blank?)
+    if (session[:balances] == FETCHING_BALANCES)
+      # We are still fetching balances data from Stellar API.
+      # Request user to wait until that operation is completed.
+      redirect_to fetching_balances_path
+      return
+    elsif (session[:balances] == 404) || (session[:balances].blank?)
+      # Either this is new inactive account yet to be funded,
+      # or something went wrong while creating balances cookies.
       redirect_to inactive_account_path
       return
     end

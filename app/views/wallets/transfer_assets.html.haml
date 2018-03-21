@@ -21,7 +21,8 @@
       url: "/get_balance",
       data: {code: "XLM"}
     }).done(function(result) {
-      $("#available-balance").text(result + " Lumens")
+      $("#available-balance").text(result[0])
+      $("#send-max").text("Send Maximum Allowed: " + result[1])
     })
   })
   
@@ -32,18 +33,27 @@
     if (selectedValue != "Lumens") {
       asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
     }
+    $('#send-max').text("Fetching...")
+    $("#amount-to-send").val("")
+    $("#amount-to-send").attr("placeholder", "Amount to Transfer")
 
     $.ajax({
       method: "GET",
       url: "/get_balance",
       data: {code: asset_code}
     }).done(function(result) {
-      $("#available-balance").text(result + " " + asset_code)
+      $("#available-balance").text(result[0] + " ")
+      $("#send-max").text("Send Maximum Allowed: " + result[1])
     })
   })
   
   $("input[name=memotype]").click(function() {
     $("#memo").prop("disabled", false)
+  })
+
+  $('#send-max').click(function() {
+    var amount = parseFloat($(this).text().split(":")[1])
+    $("#amount-to-send").val(amount)
   })
 
   $('#send_money').click(function(event) {
