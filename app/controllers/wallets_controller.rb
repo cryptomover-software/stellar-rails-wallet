@@ -11,6 +11,7 @@ class WalletsController < ApplicationController
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
   # Configuration values
+  STELLAR_MIN_BALANCE = 1.freeze
   STELLAR_TRANSACTION_FEE = 0.00001.freeze
   BASE_RESERVE = 0.5.freeze
   NATIVE_ASSET = "native".freeze
@@ -327,7 +328,7 @@ class WalletsController < ApplicationController
     lumens_record = balances.select{ |b| b["asset_type"] == NATIVE_ASSET}
     lumen_balance = lumens_record.first["balance"].to_f
 
-    minimum_reserve_balance = BASE_RESERVE + (BASE_RESERVE * trusted_assets.count)
+    minimum_reserve_balance = STELLAR_MIN_BALANCE + (BASE_RESERVE * trusted_assets.count)
     min_balance_required = STELLAR_TRANSACTION_FEE + minimum_reserve_balance
 
     if asset_type == NATIVE_ASSET
