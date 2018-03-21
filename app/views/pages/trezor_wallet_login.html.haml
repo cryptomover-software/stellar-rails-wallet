@@ -6,27 +6,25 @@
     .card-body
       %p.text-muted.text-center
         Now you can use Trezor to store your XLM and Cryptomover supported tokens.
-      #result.text-center.alert.alert-danger
-      %form.m-t.text-center{:role => "form"}
-        .form-group
-          %label Path:
-          %input#path{value: "m/49'/10'/0'"}
-          .text-muted
-            Each unique path indicates single asset.
-        .form-group
-          %label Key:
-          %input#key{placeholder: "Type your Key Here", type: "password"}/
-          .text-muted
-            Use strong key and keep it safe. Do not lose it.
-        .text-center#trezor-btn
-          %button.btn.btn-brown{onclick: "trezorLogin(); return false;"} Login
-          = link_to "Cancel", root_path, class: "btn btn-default"
-
-      %p
-        %small.text-muted
-          As per Trezor requirement, to use Trezor you need one of the Trezor Transport Layer installed. Install any one of the following:
-          %br
-          https://github.com/trezor/trezor-chrome-extension OR https://github.com/trezor/trezord-go
+      .text-center
+        THIS FEATURE IS HIGHLY EXPERIMENTAL.
+      #result.text-center.alert.alert-danger.mt-1
+      #trezor-login-form
+        %form.mt-2{:role => "form"}
+          .form-group
+            %label Path:
+            %input#path.form-control{value: "m/49'/10'/0'"}
+            .text-muted
+              Each unique path indicates single asset.
+          .form-group
+            %label Key:
+            %input#key.form-control{value: "cryptomover", type: "text", disabled: true}/
+          .form-group
+            %label Cypher Value:
+            %input.form-control{value: "fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136", type: "text", readonly: "readonly"}
+          .text-center#trezor-btn
+            %button.btn.btn-brown{onclick: "trezorLogin(); return false;"} Login
+            = link_to "Cancel", root_path, class: "btn btn-default"
     #login-footer.card-footer.text-center
       = link_to "https://medium.com/cryptomover", target: "_blank" do
         %i.fab.fa-medium.fa-3x
@@ -69,7 +67,7 @@
       if (response.success) {
         $(resultEl).hide()
         console.log(response)
-        document.location.href = '/trezor_wallet?value=' + response.value
+        document.location.href = '/trezor_wallet?value=' + response.value + '&key=' + key + '&cypher_value=' + value
       } else {
         console.log(response)
         $(resultEl).show()

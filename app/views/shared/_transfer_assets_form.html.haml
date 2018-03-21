@@ -4,24 +4,26 @@
       Recipients Public Key
     %input.form-control{id: "target-account", name: "address", placeholder: "Recipient's public key or address", required: true, type: "text"}
   - if @balances.present?
-    .form-label
-      Asset Type
-    .form-inline
-      = select_tag :asset_name, options_for_select(@assets, selected: "Lumens"), class: "form-control", id: "asset-type"
-      .text-muted.mt-1.ml-3
-        Balance:
-        %span#available-balance
-          Fetching...
+    .form-group
+      .form-label
+        Asset Type
+        = select_tag :asset_name, options_for_select(@assets, selected: "Lumens"), class: "form-control", id: "asset-type"
+        .text-muted.mt-1
+          Balance:
+          %span#available-balance
+            Fetching...
   .form-group
     .form-label
       Amount
-    %input.form-control{id: "amount-to-send", name: "amount", placeholder: "Amount to Transfer", required: true, type: "number"}
+      %input.form-control{id: "amount-to-send", name: "amount", placeholder: "Amount to Transfer", required: true, type: "number"}
+      %button#send-max.btn.btn-brown.bt-lg.mt-2
+        Fetching
   .form-group
     .form-label
       Type your Secret Key
     %input.form-control{id: "secret-seed", type: "password", placeholder: "Your Secret Key", required: true, value: session[:seed]}
   Memo Type
-  .form-check.form-check-inline
+  #memo-types.form-check.form-check-inline
     %label.radio-inline
       %input.form-check-input{type: "radio", name: "memotype", value: "text"} TEXT
     %label.radio-inline

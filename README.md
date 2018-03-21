@@ -11,6 +11,12 @@ Stellar-Rails is an open source Stellar wallet created using Ruby on Rails web a
   5. Fund new accounts.  
   6. Trust Assets.  
   7. Login Using Trezor Hardware Wallet.  
+
+## Technology Stack  
+  1. Ruby 2.4.1  
+  2. Ruby on Rails 5.1.2  
+  3. Stellar API  
+  4. Trezor Connect  
   
 ## For Developers: How to Setup
   1. Download Repository.  
@@ -20,11 +26,11 @@ Stellar-Rails is an open source Stellar wallet created using Ruby on Rails web a
   5. Run command `bundle install` to install necessary ruby gems.   
   6. Add Recaptcha Keys.  
   7. For production, add deploy script and your app server configuration.  
-  8. For producion, add `SECRET_KEY_BASE`  
+  8. For production, add `SECRET_KEY_BASE`  
   9. Run command `rails server` to start the server.  
   10. Access `http://localhost:3000` in your web browser.  
   
-## Todo
+## ToDo
   1. Add Tests.  
   2. Show the real-time NAV of cryptomover Index funds in USD.  
   3. Display customer's total NAV and history in USD.  

@@ -1,38 +1,49 @@
 class WalletsController < ApplicationController
-  before_action :user_must_login, except: [:login, :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :forgot_password, :inactive_account, :success, :failed, :trezor_wallet]
+  before_action :user_must_login, except: [:login, :logout, :new_account, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :inactive_account, :success, :failed, :trezor_wallet]
+  # excluding index action too because,
   # for Index action, we check account status each time
-  # after fetching balance and after initializing the balance cookie.
-  
+  # after fetching balance data from Stellar API
+  # and after initializing the balance cookie.
+  before_action :validate_trezor_login, only: :trezor_wallet
+
+  # APIs
   STELLAR_API = "https://horizon.stellar.org".freeze
   COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
-  
+  # Configuration values
+  STELLAR_MIN_BALANCE = 1.freeze
+  STELLAR_TRANSACTION_FEE = 0.00001.freeze
+  BASE_RESERVE = 0.5.freeze
   NATIVE_ASSET = "native".freeze
   STELLAR_ASSET = "XLM".freeze
-  
+  TREZOR_LOGIN_KEY = "cryptomover".freeze
+  TREZOR_LOGIN_CYPHER_VALUE = "fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136".freeze
+  FETCHING_BALANCES = "fetching".freeze
+  # Login Errors
   INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
   INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
+  INVALID_TREZOR_KEY = "Trezor Key must be cryptomover. Do not change key."
+  INVALID_TREZOR_CYPHER = "Invalid Cypher Value. Do not change cypher value."
+  TREZOR_LOGIN_ERROR = "Something went wrong. Please try again."
+  # Other Errors
   UNDETERMINED_PRICE = "undetermined".freeze
   HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
   HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
   ACCOUNT_ERROR = "account_error"
-  
-  def dashboard
-  end
 
   def login
+    session.clear
     begin
-      session.clear
-
-      if verify_recaptcha
-        # TODO validate correct stellar public key
-        session[:address] = params[:public_key].delete(' ')
+      flash[:notice] = INVALID_CAPTCHA
+      redirect_to root_path and return if not verify_recaptcha
       
-        redirect_to portfolio_path
-      else
-        flash[:notice] = INVALID_CAPTCHA
-        redirect_to root_path
-      end
+      flash.clear
+      address = params[:public_key].delete(' ')
+      # Failure to generate key pair indicates invalid Public Key.
+      Stellar::KeyPair.from_address(address)
+
+      session[:address] = address
+      redirect_to portfolio_path
     rescue
       flash[:notice] = INVALID_LOGIN_KEY
       redirect_to root_path
@@ -40,15 +51,19 @@ class WalletsController < ApplicationController
   end
 
   def trezor_wallet
-    value = params[:value]
-    seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
-    pair = Stellar::KeyPair.from_raw_seed(seed)
-
     session.clear
-    session[:address] = pair.address
-    session[:seed] = pair.seed
-      
-    redirect_to portfolio_path
+    begin
+      value = params[:value]
+      seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
+      pair = Stellar::KeyPair.from_raw_seed(seed)
+
+      session[:address] = pair.address
+      session[:seed] = pair.seed
+      redirect_to portfolio_path
+    rescue
+      flash[:notice] = TREZOR_LOGIN_ERROR
+      redirect_to trezor_wallet_login_path
+    end
   end
 
   def logout
@@ -97,16 +112,19 @@ class WalletsController < ApplicationController
       balance = asset_balance.first["balance"]
     end
 
+    max_allowed_amount = calculate_max_allowed_amount(asset_code)
+    result = [balance.to_f, max_allowed_amount]
+
     respond_to do |format|
-      format.json {render json: balance.to_f}
+      format.json {render json: result}
     end
   end
   
-  def get_balances()
+  def get_balances
     address = session[:address]
     endpoint = "/accounts/#{address}"
     url = STELLAR_API + endpoint
-    session[:balances] = balances = 404
+    session[:balances] = balances = FETCHING_BALANCES
 
     begin
       balances = get_data_from_api(url)
@@ -201,6 +219,7 @@ class WalletsController < ApplicationController
   end
 
   def index
+    session[:balances] = FETCHING_BALANCES
     # Reset previous and next button links of transactions page,
     # when user visits home page
     session[:next_cursor] = nil
@@ -296,11 +315,38 @@ class WalletsController < ApplicationController
   end
   
   def trust_asset
+    balances = session[:balances]
+    balance = balances.select{|b| b["asset_type"] == NATIVE_ASSET}
+    @lumens_balance = balance.first["balance"]
+  end
+
+  def calculate_max_allowed_amount(asset_type)
+    balances = session[:balances]
+
+    trusted_assets = balances.select{|b| b["asset_code"]}
+    
+    lumens_record = balances.select{ |b| b["asset_type"] == NATIVE_ASSET}
+    lumen_balance = lumens_record.first["balance"].to_f
+
+    minimum_reserve_balance = STELLAR_MIN_BALANCE + (BASE_RESERVE * trusted_assets.count)
+    min_balance_required = STELLAR_TRANSACTION_FEE + minimum_reserve_balance
+
+    if asset_type == NATIVE_ASSET
+      allowed_amount = lumen_balance - min_balance_required
+      allowed_amount > 0 ? allowed_amount.round(5) : "Not Enough Balance"
+    elsif (lumen_balance > min_balance_required)
+      assets_record = balances.select{|b| b["asset_code"] == asset_type}
+      asset_balance = assets_record.first["balance"].to_f
+      asset_balance > 0 ? asset_balance : "Not Enough Balance"
+    else
+      "Not Enough Balance"
+    end
   end
 
   def transfer_assets
-    # TODO refresh assets and balances without visiting home page
     @balances = session[:balances]
+    
+    @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
 
     @assets = @balances.map {
       |balance|
@@ -316,19 +362,28 @@ class WalletsController < ApplicationController
   end
 
   private
-  
-  def user_must_login
-    if not session[:address].present?
-      session.clear
-      flash[:notice] = "User Not Logged In OR Session Expired."
-      redirect_to root_path
-    end
-  end
-
   def activate_account
-    if (session[:balances] == 404) || (session[:balances].blank?)
+    if (session[:balances] == FETCHING_BALANCES)
+      # We are still fetching balances data from Stellar API.
+      # Request user to wait until that operation is completed.
+      redirect_to fetching_balances_path
+      return
+    elsif (session[:balances] == 404) || (session[:balances].blank?)
+      # Either this is new inactive account yet to be funded,
+      # or something went wrong while creating balances cookies.
       redirect_to inactive_account_path
       return
     end
+  end
+
+  def validate_trezor_login
+    key = params[:key]
+    cypher_value = params[:cypher_value]
+
+    flash[:notice] = INVALID_TREZOR_KEY
+    redirect_to trezor_wallet_login_path and return if key != TREZOR_LOGIN_KEY
+    flash.clear
+    flash[:notice] = INVALID_TREZOR_CYPHER
+    redirect_to trezor_wallet_login_path and return if cypher_value != TREZOR_LOGIN_CYPHER_VALUE
   end
 end

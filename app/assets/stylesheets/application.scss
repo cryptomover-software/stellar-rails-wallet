@@ -165,14 +165,31 @@ nav.navbar.navbar-expand-md {
         margin: 0 5% 0 5%;
     }
 }
-#login-card, #new-account-card, #success-card, #failed-card {
+#transfer-assets-card, #trust-asset-card {
+    @media(min-width: 750px) {
+        margin: 0 10% 0 10%;      
+    }
+}
+#new-account-card {
+    @media(min-width: 750px) {
+        margin: 0 15% 0 15%;
+    }
+}
+#login-card, #success-card, #failed-card {
     @media(min-width: 750px) {
         margin: 0 20% 0 20%;
     }
 }
-#transfer-assets-card, #trust-asset-card {
-    @media(min-width: 750px) {
-        margin: 0 10% 0 10%;      
+
+
+#trezor-login-form {
+    width: 100%;
+    @media(min-width: 960px) {
+        width: 70%;
+    }
+    margin: 0 auto;
+    label {
+        text-align: center;
     }
 }
 .logo-scrolled {
@@ -458,9 +475,12 @@ footer {
     display: none;
 }
 #assets-filter {
-    width: 100%;
+    width: 60%;
     @media(min-width: 750px) {
         width: 60%;
+    }
+    @media(min-width: 960px) {
+        width: 45%;
     }
     margin: 0 auto;
     text-align: center;
@@ -473,4 +493,9 @@ footer {
     @media(min-width: 750px) {
         width: 50%;
     }
+}
+#memo-types {
+    label {
+        margin-left: 10px;
+   }
 }

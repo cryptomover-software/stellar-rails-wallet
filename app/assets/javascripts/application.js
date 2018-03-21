@@ -18,7 +18,6 @@
 //= require popper
 //= require bootstrap.min
 // require chartjs/Chart.min.js
-// require iCheck/icheck.min.js
 //= require pace.min
 //= require_tree .
 
@@ -102,58 +101,63 @@ function check_memo_size(memo, memo_type) {
 }
 
 function process_transfer(fund_account) {
-  // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
-  var server = new StellarSdk.Server('https://horizon.stellar.org')
-  StellarSdk.Network.usePublicNetwork()
-  // StellarSdk.Network.useTestNetwork()
+  try {
+    // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    StellarSdk.Network.usePublicNetwork()
+    // StellarSdk.Network.useTestNetwork()
 
-  var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
-  var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
-  var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
+    var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
+    var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
-  var memo_type = $("input[name=memotype]:checked").val()
-  var memo_input = document.getElementById('memo').value
-  var memo_data = check_memo_size(memo_input, memo_type)
-  var memo = memo_data[1]
-  var memo_size_exceeds_limit = memo_data[0]
+    var memo_type = $("input[name=memotype]:checked").val()
+    var memo_input = document.getElementById('memo').value
+    var memo_data = check_memo_size(memo_input, memo_type)
+    var memo = memo_data[1]
+    var memo_size_exceeds_limit = memo_data[0]
 
-  var asset_tag = document.getElementById('asset-type')
-  var asset = asset_tag.options[asset_tag.selectedIndex].text
+    var asset_tag = document.getElementById('asset-type')
+    var asset = asset_tag.options[asset_tag.selectedIndex].text
 
-  if (asset == "Lumens") {
-    asset = StellarSdk.Asset.native()
-  } else {
-    var asset_arr = asset.split(',')
-
-    var asset_code = asset_arr[0].replace(/\s/g,'')
-
-    var asset_issuer = asset_arr[1].replace(/\s/g,'')
-
-    asset = new StellarSdk.Asset(asset_code, asset_issuer)
-  }
-
-  if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("Please Enter All Details.")
-    return
-  
-  } else if (amount_not_within_limit(amount)) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("Amount you entered exceeds your balance.")
-    return
-  } else if (memo_size_exceeds_limit) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("Memo Error: " + memo)
-    return
-  } else {
-    $("#layout-alert").hide()
-    hide_form_controls()
-    progressbar()
-    if (fund_account) {
-      fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+    if (asset == "Lumens") {
+      asset = StellarSdk.Asset.native()
     } else {
-      send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      var asset_arr = asset.split(',')
+
+      var asset_code = asset_arr[0].replace(/\s/g,'')
+
+      var asset_issuer = asset_arr[1].replace(/\s/g,'')
+
+      asset = new StellarSdk.Asset(asset_code, asset_issuer)
     }
+
+    if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Please Enter All Details.")
+      return
+
+    } else if (amount_not_within_limit(amount)) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Amount you entered exceeds your balance.")
+      return
+    } else if (memo_size_exceeds_limit) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Memo Error: " + memo)
+      return
+    } else {
+      $("#layout-alert").hide()
+      hide_form_controls()
+      progressbar()
+      if (fund_account) {
+        fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      } else {
+        send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      }
+    }
+  } catch(error) {
+    console.log(error.message)
+    document.location.href = '/failed?error_description=Wrong Input. Please enter Correct Target Account Address, Correct Private Key and other details. Error Message: ' + error.message
   }
 }
 
@@ -190,6 +194,9 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            // console.log(transactionResult._links.transaction.href)
            var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.'
            document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
+           $.ajax({
+             url: "/get_balances"
+           }) 
          })
          .catch(function(err) {
            console.log('An error has occured:')
@@ -230,6 +237,9 @@ function submit_transaction(server, transaction, receiverPublicKey, amount) {
       // console.log('\nSuccess! View the transaction at: ')
       //console.log(transactionResult._links.transaction.href)
       document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
+      $.ajax({
+        url: "/get_balances"
+      }) 
     })
     .catch(function(err) {
       console.log('An error has occured:')
@@ -292,3 +302,79 @@ function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, me
         })
     }
 } // fund new account block end
+
+// Trust Assets
+function createTrustTransaction(limit, account, asset) {
+  if (limit.length > 0) {
+    return new StellarSdk.TransactionBuilder(account)
+    .addOperation(StellarSdk.Operation.changeTrust({
+      asset: asset,
+      limit: limit
+    })).build()
+  } else {
+    return new StellarSdk.TransactionBuilder(account)
+    .addOperation(StellarSdk.Operation.changeTrust({
+      asset: asset
+    })).build()
+  }
+}
+
+function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey){
+  try {
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    var asset = new StellarSdk.Asset(assetCode, assetIssuer)
+    var sourceKeyPair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
+    // var sourceKeypair = StellarSdk.Keypair.fromPublicKey(sourcePublicKey)
+
+    StellarSdk.Network.usePublicNetwork()
+    server.loadAccount(sourcePublicKey)
+    .then(function(account){
+      var transaction = createTrustTransaction(limit, account, asset)
+      transaction.sign(sourceKeyPair)
+      server.submitTransaction(transaction)
+        .then(function(result){
+          console.log(result)
+          var link = result['_links']['transaction']['href']
+          document.location.href = '/success?transaction_url=' + link + '&message=Asset ' + assetCode + ' trusted successfully.'
+          $.ajax({
+            url: "/get_balances"
+          })
+        })
+        .catch(function(err) {
+          console.log("ERROR!" + err)
+          if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
+            document.location.href = '/failed?error_description=Low Base Reserve. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
+          } else {
+            document.location.href = '/failed?error_description=' + err
+          }
+        })
+    })
+    .catch(function(error){
+      console.log('ERROR!', error)
+      document.location.href = '/failed?error_description=' + error
+    })
+  } catch(error) {
+      console.log('ERROR!', error)
+      document.location.href = '/failed?error_description=' + error.message
+  }
+}
+// end trust asset
+// 
+// remove url param
+function removeURLParam(url, param) {
+  var urlparts= url.split('?')
+
+  if (urlparts.length>=2) {
+   var prefix= encodeURIComponent(param)+'='
+   var pars= urlparts[1].split(/[&;]/g)
+
+   for (let i=pars.length; i-- > 0;)
+     if (pars[i].indexOf(prefix, 0)==0)
+       pars.splice(i, 1)
+     if (pars.length > 0)
+       return urlparts[0]+'?'+pars.join('&')
+     else
+       return urlparts[0]
+  } else
+    return url
+}
