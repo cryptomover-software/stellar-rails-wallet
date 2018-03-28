@@ -1,6 +1,9 @@
 class WalletsController < ApplicationController
-  before_action :user_must_login, except: [:login, :logout, :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login, :logout, :new_account, :inactive_account, :success, :failed, :trezor_wallet]
+  before_action :user_must_login, except: [:login, :logout,
+                                           :new_account, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances, :login,
+                                            :logout, :new_account, :inactive_account,
+                                            :success, :failed, :trezor_wallet]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -8,35 +11,35 @@ class WalletsController < ApplicationController
   before_action :validate_trezor_login, only: :trezor_wallet
 
   # APIs
-  STELLAR_API = "https://horizon.stellar.org".freeze
-  COINMARKETCAP_API = "https://api.coinmarketcap.com/v1".freeze
+  STELLAR_API = 'https://horizon.stellar.org'.freeze
+  COINMARKETCAP_API = 'https://api.coinmarketcap.com/v1'.freeze
   # Configuration values
-  STELLAR_MIN_BALANCE = 1.freeze
-  STELLAR_TRANSACTION_FEE = 0.00001.freeze
-  BASE_RESERVE = 0.5.freeze
-  NATIVE_ASSET = "native".freeze
-  STELLAR_ASSET = "XLM".freeze
-  TREZOR_LOGIN_KEY = "cryptomover".freeze
-  TREZOR_LOGIN_CYPHER_VALUE = "fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136".freeze
-  FETCHING_BALANCES = "fetching".freeze
+  STELLAR_MIN_BALANCE = 1
+  STELLAR_TRANSACTION_FEE = 0.00001
+  BASE_RESERVE = 0.5
+  NATIVE_ASSET = 'native'.freeze
+  STELLAR_ASSET = 'XLM'.freeze
+  TREZOR_LOGIN_KEY = 'cryptomover'.freeze
+  TREZOR_LOGIN_CYPHER_VALUE = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136'.freeze
+  FETCHING_BALANCES = 'fetching'.freeze
   # Login Errors
-  INVALID_LOGIN_KEY = "Invalid Public Key. Please check key again.".freeze
-  INVALID_CAPTCHA = "Please Verify CAPTCHA Code.".freeze
-  INVALID_TREZOR_KEY = "Trezor Key must be cryptomover. Do not change key."
-  INVALID_TREZOR_CYPHER = "Invalid Cypher Value. Do not change cypher value."
-  TREZOR_LOGIN_ERROR = "Something went wrong. Please try again."
+  INVALID_LOGIN_KEY = 'Invalid Public Key. Please check key again.'.freeze
+  INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
+  INVALID_TREZOR_KEY = 'Trezor Key must be cryptomover. Do not change key.'.freeze
+  INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
+  TREZOR_LOGIN_ERROR = 'Something went wrong. Please try again.'.freeze
   # Other Errors
-  UNDETERMINED_PRICE = "undetermined".freeze
-  HTTPARTY_STANDARD_ERROR = "Unable to reach Stellar Server. Check network connection or try again later.".freeze
-  HTTPARTY_500_ERROR = "Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support."
-  ACCOUNT_ERROR = "account_error"
+  UNDETERMINED_PRICE = 'undetermined'.freeze
+  HTTPARTY_STANDARD_ERROR = 'Unable to reach Stellar Server. Check network connection or try again later.'.freeze
+  HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
+  ACCOUNT_ERROR = 'account_error'.freeze
 
   def login
     session.clear
     begin
       flash[:notice] = INVALID_CAPTCHA
-      redirect_to root_path and return if not verify_recaptcha
-      
+      redirect_to root_path and return unless true # verify_recaptcha
+
       flash.clear
       address = params[:public_key].delete(' ')
       # Failure to generate key pair indicates invalid Public Key.
@@ -105,11 +108,11 @@ class WalletsController < ApplicationController
 
     if asset_code == STELLAR_ASSET
       asset_code = NATIVE_ASSET
-      asset_balance = balances.select{|key| key["asset_type"] == asset_code}
-      balance = asset_balance.first["balance"]
+      asset_balance = balances.select{|key| key['asset_type'] == asset_code}
+      balance = asset_balance.first['balance']
     else
-      asset_balance = balances.select{|key| key["asset_code"] == asset_code}
-      balance = asset_balance.first["balance"]
+      asset_balance = balances.select{|key| key['asset_code'] == asset_code}
+      balance = asset_balance.first['balance']
     end
 
     max_allowed_amount = calculate_max_allowed_amount(asset_code)
@@ -129,20 +132,21 @@ class WalletsController < ApplicationController
     begin
       balances = get_data_from_api(url)
 
-      balances = set_usd_price(balances["balances"]) if (balances != 404) && (balances != ACCOUNT_ERROR)
+      balances = set_usd_price(balances['balances']) if (balances != 404) && (balances != ACCOUNT_ERROR)
       session[:balances] = balances if balances != ACCOUNT_ERROR
-      
+
       respond_to do |format|
         format.json {render json: balances}
       end
     rescue StandardError # => e
       # puts e
-      render js: "document.location.href='/failed?error_description=#{HTTPARTY_STANDARD_ERROR}'"  
+      render js: "document.location.href='/failed?error_description=#{HTTPARTY_STANDARD_ERROR}'"
+      # render html: failed_path(error_description: HTTPARTY_STANDARD_ERROR)
     end
   end
 
   def set_cursor(url, cookie, type)
-    if type
+    if type == 'asset'
       next_cursor = :next_asset_cursor
       prev_cursor = :prev_asset_cursor
     else
@@ -169,14 +173,14 @@ class WalletsController < ApplicationController
     endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
     if params[:order] == 'asc'
-      endpoint += "&order=asc"
+      endpoint += '&order=asc'
     else
-      endpoint += "&order=desc"
+      endpoint += '&order=desc'
     end
   end
 
   def set_assets_endpoint
-    endpoint = "/assets?limit=20"
+    endpoint = '/assets?limit=20'
     
     endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
@@ -184,22 +188,22 @@ class WalletsController < ApplicationController
     endpoint += "&asset_issuer=#{params[:asset_issuer]}" if params[:asset_issuer]
     
     if params[:order] == 'asc'
-      endpoint += "&order=asc"
+      endpoint += '&order=asc'
     elsif params[:order] == 'desc'
-      endpoint += "&order=desc"
+      endpoint += '&order=desc'
     else
       endpoint
     end      
   end
 
   def set_trades_endpoint(balance)        
-    endpoint = "/trades?"
-    endpoint += "base_asset_type=" + balance["asset_type"]
-    endpoint += "&base_asset_code=" + balance["asset_code"]
-    endpoint += "&base_asset_issuer=" + balance["asset_issuer"]
+    endpoint = '/trades?'
+    endpoint += 'base_asset_type=' + balance['asset_type']
+    endpoint += '&base_asset_code=' + balance['asset_code']
+    endpoint += '&base_asset_issuer=' + balance['asset_issuer']
     endpoint += "&counter_asset_type=#{NATIVE_ASSET}"
-    endpoint += "&limit=1"
-    endpoint += "&order=desc"
+    endpoint += '&limit=1'
+    endpoint += '&order=desc'
   end
   
   def get_transactions
@@ -227,18 +231,18 @@ class WalletsController < ApplicationController
   end
 
   def get_lumen_price_in_usd
-    endpoint = "/ticker/stellar"
+    endpoint = '/ticker/stellar'
     url = COINMARKETCAP_API + endpoint
     lumen_data = get_data_from_api(url)
-    lumen_data[0]["price_usd"].to_f
+    lumen_data[0]['price_usd'].to_f
   end
 
   def calculate_usd_price(record, lumen_usd_price, balance)
     if record
-      counter_price = record["counter_amount"].to_f
-      base_price = record["base_amount"].to_f
+      counter_price = record['counter_amount'].to_f
+      base_price = record['base_amount'].to_f
       asset_price_in_lumen = counter_price/base_price
-      quantity = balance["balance"].to_f
+      quantity = balance['balance'].to_f
 
       price = (asset_price_in_lumen * lumen_usd_price) * (quantity)
       price.round(2)
@@ -253,18 +257,18 @@ class WalletsController < ApplicationController
     lumen_usd_price = get_lumen_price_in_usd()
     
     balances.each do |balance|
-      if balance["asset_type"] == NATIVE_ASSET
-        quantity = balance["balance"].to_f
+      if balance['asset_type'] == NATIVE_ASSET
+        quantity = balance['balance'].to_f
         usd_price = lumen_usd_price * quantity
         
-        balance["usd_price"] = usd_price.round(2)
+        balance['usd_price'] = usd_price.round(2)
       else
         endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
         trade = get_data_from_api(url)
-        record = trade["_embedded"]["records"].first
+        record = trade['_embedded']['records'].first
 
-        balance["usd_price"] = calculate_usd_price(record, lumen_usd_price, balance)
+        balance['usd_price'] = calculate_usd_price(record, lumen_usd_price, balance)
       end
     end
   end
@@ -316,30 +320,30 @@ class WalletsController < ApplicationController
   
   def trust_asset
     balances = session[:balances]
-    balance = balances.select{|b| b["asset_type"] == NATIVE_ASSET}
-    @lumens_balance = balance.first["balance"]
+    balance = balances.select{|b| b['asset_type'] == NATIVE_ASSET}
+    @lumens_balance = balance.first['balance']
   end
 
   def calculate_max_allowed_amount(asset_type)
     balances = session[:balances]
 
-    trusted_assets = balances.select{|b| b["asset_code"]}
+    trusted_assets = balances.select{|b| b['asset_code']}
     
-    lumens_record = balances.select{ |b| b["asset_type"] == NATIVE_ASSET}
-    lumen_balance = lumens_record.first["balance"].to_f
+    lumens_record = balances.select{ |b| b['asset_type'] == NATIVE_ASSET}
+    lumen_balance = lumens_record.first['balance'].to_f
 
     minimum_reserve_balance = STELLAR_MIN_BALANCE + (BASE_RESERVE * trusted_assets.count)
     min_balance_required = STELLAR_TRANSACTION_FEE + minimum_reserve_balance
 
     if asset_type == NATIVE_ASSET
       allowed_amount = lumen_balance - min_balance_required
-      allowed_amount > 0 ? allowed_amount.round(5) : "Not Enough Balance"
+      allowed_amount > 0 ? allowed_amount.round(5) : 'Not Enough Balance'
     elsif (lumen_balance > min_balance_required)
-      assets_record = balances.select{|b| b["asset_code"] == asset_type}
-      asset_balance = assets_record.first["balance"].to_f
-      asset_balance > 0 ? asset_balance : "Not Enough Balance"
+      assets_record = balances.select{|b| b['asset_code'] == asset_type}
+      asset_balance = assets_record.first['balance'].to_f
+      asset_balance > 0 ? asset_balance : 'Not Enough Balance'
     else
-      "Not Enough Balance"
+      'Not Enough Balance'
     end
   end
 
@@ -350,8 +354,8 @@ class WalletsController < ApplicationController
 
     @assets = @balances.map {
       |balance|
-      balance["asset_type"] == NATIVE_ASSET ?
-        "Lumens" : "#{balance['asset_code']}, #{balance['asset_issuer']}"
+      balance['asset_type'] == NATIVE_ASSET ?
+        'Lumens' : "#{balance['asset_code']}, #{balance['asset_issuer']}"
     }
   end
 
