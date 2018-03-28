@@ -362,19 +362,21 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
 // 
 // remove url param
 function removeURLParam(url, param) {
-  var urlparts= url.split('?')
+  var urlparts = url.split('?')
 
-  if (urlparts.length>=2) {
-   var prefix= encodeURIComponent(param)+'='
-   var pars= urlparts[1].split(/[&;]/g)
+  if (urlparts.length >= 2) {
+   var prefix = encodeURIComponent(param) + '='
+   var pars = urlparts[1].split(/[&;]/g)
 
    for (let i=pars.length; i-- > 0;)
-     if (pars[i].indexOf(prefix, 0)==0)
+     if (pars[i].indexOf(prefix, 0) == 0)
        pars.splice(i, 1)
+
      if (pars.length > 0)
-       return urlparts[0]+'?'+pars.join('&')
+       return urlparts[0] + '?' + pars.join('&')
      else
        return urlparts[0]
-  } else
+  } else {
     return url
+  }
 }

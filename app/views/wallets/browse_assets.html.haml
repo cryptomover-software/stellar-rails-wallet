@@ -93,10 +93,12 @@
       params = '&cursor=' + cursor
     }
     
-    document.location.href = '/assets?order=asc'+ params
+    document.location.href = '/assets?order=desc'+ params
   })
   $('#first-btn').click(function() {
-    var params = window.location.href.split('?')[1]
+    var url = removeURLParam(window.location.href, 'cursor')
+    url = removeURLParam(url, 'order')
+    var params = url.split('?')[1]
 
     if (params) {
       document.location.href = '/assets?' + params
