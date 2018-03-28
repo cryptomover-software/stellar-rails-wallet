@@ -107,12 +107,15 @@
     }
   })
   $('#last-btn').click(function() {
-    var params = window.location.href.split('?')[1]
+    var url = removeURLParam(window.location.href, 'cursor')
+    url = removeURLParam(url, 'order')
+    var params = url.split('?')[1]
+    var cursor = $(this).data("prev")
 
     if (params) {
-      document.location.href = '/assets?order=desc' + params
+      document.location.href = '/assets?order=desc&cursor=' + cursor + params
     } else {
-      document.location.href = '/assets?order=desc'
+      document.location.href = '/assets?order=desc&cursor=' + cursor
     }
 
   })
