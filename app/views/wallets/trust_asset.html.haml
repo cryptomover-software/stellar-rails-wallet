@@ -52,7 +52,7 @@
     document.location.href = '/assets'
   })
   
-  function hide_form_controls(){
+  function hideAssetsFormControls(){
     $('#secret-seed').prop("disabled", true)
     $('#asset-code').prop("disabled", true)
     $('#asset-issuer').prop("disabled", true)
@@ -62,8 +62,6 @@
   }
 
   $('#trust-btn').click(function(){
-    hide_form_controls()
-    progressbar()
     var assetCode = document.getElementById('asset-code').value
     var assetIssuer = document.getElementById('asset-issuer').value
     var limit = document.getElementById('limit').value
@@ -71,6 +69,8 @@
     var sourceSecretKey = document.getElementById('secret-seed').value
 
     if (assetCode && assetIssuer && sourcePublicKey && sourceSecretKey) {
+      hideAssetsFormControls()
+      progressBar()
       $("#layout-alert").hide()
       trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey)
     } else {
