@@ -14,7 +14,7 @@
 :javascript
   $(document).ready(function() {
     var selectedValue = $(this).val()
-    var asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+    var assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
 
     $.ajax({
       method: "GET",
@@ -29,9 +29,9 @@
   
   $('#asset-type').change(function() {
     var selectedValue = $(this).val()
-    var asset_code = "XLM"
+    var assetCode = "XLM"
     if (selectedValue != "Lumens") {
-      asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+      assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
     }
     $('#send-max').text("Fetching...")
     $("#amount-to-send").val("")
@@ -40,7 +40,7 @@
     $.ajax({
       method: "GET",
       url: "/get_balance",
-      data: {code: asset_code}
+      data: {code: assetCode}
     }).done(function(result) {
       $("#available-balance").text(result[0] + " ")
       $("#send-max").text("Send Maximum Allowed: " + result[1])
@@ -57,10 +57,10 @@
   })
 
   $('#send_money').click(function(event) {
-    var fund_account = false
+    var fundAccount = false
     if ($("#fund-new-chk").is(":checked")) {
-      fund_account = true
+      fundAccount = true
     }
-    processTransfer(fund_account)
+    processTransfer(fundAccount)
     
   }) // btn click end
