@@ -21,11 +21,7 @@
 //= require pace.min
 //= require_tree .
 
-$(document).ready(function() {
-  
-});
-
-function progressbar() {    
+function progressBar() {
   $("#progressbar").progressbar({
     value: false
   });
@@ -38,7 +34,7 @@ function progressbar() {
   $("#progressbar").focus()
 }
 
-function initiate_fund_new_account() {
+function initiateFundNewAccount() {
   $("#progressbar").hide()
 
   $("#secret-seed").prop("disabled", false)
@@ -56,7 +52,7 @@ function initiate_fund_new_account() {
   $("#layout-alert").focus()
 }
 
-function hide_form_controls() {
+function hideFormControls() {
     $("#secret-seed").prop("disabled", true)
     $("#target-account").prop("disabled", true)
     $("#amount-to-send").prop("disabled", true)
@@ -68,7 +64,7 @@ function hide_form_controls() {
     $("#cancel-btn").hide()
 }
 
-function amount_not_within_limit(amount) {
+function amountNotWithinLimit(amount) {
   balance = $("#available-balance").text().split(" ")[0]
 
   if (parseFloat(amount) < parseFloat(balance)) {
@@ -78,7 +74,7 @@ function amount_not_within_limit(amount) {
   }
 }
 
-function check_memo_size(memo, memo_type) {
+function checkMemoSize(memo, memo_type) {
   var set_memo = "Memo"
   var memo_data = []
 
@@ -100,7 +96,7 @@ function check_memo_size(memo, memo_type) {
   return memo_data
 }
 
-function process_transfer(fund_account) {
+function processTransfer(fund_account) {
   try {
     // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
     var server = new StellarSdk.Server('https://horizon.stellar.org')
@@ -113,7 +109,7 @@ function process_transfer(fund_account) {
 
     var memo_type = $("input[name=memotype]:checked").val()
     var memo_input = document.getElementById('memo').value
-    var memo_data = check_memo_size(memo_input, memo_type)
+    var memo_data = checkMemoSize(memo_input, memo_type)
     var memo = memo_data[1]
     var memo_size_exceeds_limit = memo_data[0]
 
@@ -137,7 +133,7 @@ function process_transfer(fund_account) {
       $("#layout-alert").html("Please Enter All Details.")
       return
 
-    } else if (amount_not_within_limit(amount)) {
+    } else if (amountNotWithinLimit(amount)) {
       $("#layout-alert").show()
       $("#layout-alert").html("Amount you entered exceeds your balance.")
       return
@@ -147,12 +143,12 @@ function process_transfer(fund_account) {
       return
     } else {
       $("#layout-alert").hide()
-      hide_form_controls()
+      hideFormControls()
       progressbar()
       if (fund_account) {
-        fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+        fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
       } else {
-        send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+        sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
       }
     }
   } catch(error) {
@@ -161,7 +157,7 @@ function process_transfer(fund_account) {
   }
 }
 
-function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
+function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
 
     // Derive Keypair object and public key (that starts with a G) from the secret
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
@@ -205,7 +201,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
            var result_code = err.data.extras.result_codes.operations[0]
 
            if (result_code == 'op_no_destination') {
-             initiate_fund_new_account()
+             initiateFundNewAccount()
            } else if (result_code == 'op_underfunded') {
              var message = "You do not have enough balance."
              document.location.href = '/failed?error_description=' + message
@@ -230,7 +226,7 @@ function send_money(server, sourceSecretKey, receiverPublicKey, amount, memo_typ
 
 // ***
 // fund new account block start
-function submit_transaction(server, transaction, receiverPublicKey, amount) {    
+function submitTransaction(server, transaction, receiverPublicKey, amount) {    
   server.submitTransaction(transaction)
     .then(function(transactionResult) {
       // console.log(JSON.stringify(transactionResult, null, 2))
@@ -246,9 +242,9 @@ function submit_transaction(server, transaction, receiverPublicKey, amount) {
       console.log(err)
       document.location.href = '/failed?error_description=' + err.message
     })
-} // submit_transaction end
+} // submitTransaction end
   
-function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo) {
+function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo) {
   var account = new StellarSdk.Account(sourcePublicKey, sequence)
 
   var transaction = new StellarSdk.TransactionBuilder(account)
@@ -261,9 +257,9 @@ function build_transaction(sourceSecretKey, sourcePublicKey, sequence, receiverP
 
   transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey))
   return transaction
-} // build_transaction end
+} // buildTransaction end
 
-function already_funded(server, receiverPublicKey) {
+function alreadyFunded(server, receiverPublicKey) {
   var status_code = 200
   server.accounts()
     .accountId(receiverPublicKey)
@@ -278,13 +274,13 @@ function already_funded(server, receiverPublicKey) {
   } else {
     return true
   }
-} // already_funded end
+} // alreadyFunded end
 
-function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
+function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
     var sourcePublicKey = sourceKeypair.publicKey()
 
-    if (already_funded(server, receiverPublicKey)) {
+    if (alreadyFunded(server, receiverPublicKey)) {
       var message = "Account is Already Active. Account Address: " + receiverPublicKey
       document.location.href = '/failed?error_description=' + message
       return
@@ -293,8 +289,8 @@ function fund_new_account(server, sourceSecretKey, receiverPublicKey, amount, me
         .accountId(sourcePublicKey)
         .call()
         .then(function(accountResult) {
-          var transaction = build_transaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo)
-          submit_transaction(server, transaction, receiverPublicKey, amount)
+          var transaction = buildTransaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo)
+          submitTransaction(server, transaction, receiverPublicKey, amount)
         })
         .catch(function (err) {
           console.log(err)
