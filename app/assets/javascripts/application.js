@@ -26,10 +26,10 @@ function progressBar() {
     value: false
   });
 
-  var progressbar = $("#progressbar")
-  var progressbarValue = progressbar.find( ".ui-progressbar-value" )
-  progressbar.progressbar( "option", "value", false )
-  progressbarValue.css({"background": "#00bfff"})
+  var progressBar = $("#progressbar")
+  var progressBarValue = progressBar.find(".ui-progressbar-value")
+  progressBar.progressbar( "option", "value", false )
+  progressBarValue.css({"background": "#00bfff"})
   $("#progressbar").show()
   $("#progressbar").focus()
 }
@@ -74,29 +74,29 @@ function amountNotWithinLimit(amount) {
   }
 }
 
-function checkMemoSize(memo, memo_type) {
-  var set_memo = "Memo"
-  var memo_data = []
+function checkMemoSize(memo, memoType) {
+  var setMemo = "Memo"
+  var memoData = []
 
   try {
-    if (memo_type == 'id') {
-      set_memo = StellarSdk.Memo.id(memo)
-    } else if (memo_type == 'hash') {
-      set_memo = StellarSdk.Memo.hash(memo)
-    } else if (memo_type == 'return') {
-      set_memo = StellarSdk.Memo.return(memo)
+    if (memoType == 'id') {
+      setMemo = StellarSdk.Memo.id(memo)
+    } else if (memoType == 'hash') {
+      setMemo = StellarSdk.Memo.hash(memo)
+    } else if (memoType == 'return') {
+      setMemo = StellarSdk.Memo.return(memo)
     } else {
-      set_memo = StellarSdk.Memo.text(memo)
+      setMemo = StellarSdk.Memo.text(memo)
     }
-    memo_data = [false, set_memo]
+    memoData = [false, setMemo]
   } catch(error) {
     console.log(error)
-    memo_data = [true, error.message]
+    memoData = [true, error.message]
   }
-  return memo_data
+  return memoData
 }
 
-function processTransfer(fund_account) {
+function processTransfer(fundAccount) {
   try {
     // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
     var server = new StellarSdk.Server('https://horizon.stellar.org')
@@ -107,25 +107,25 @@ function processTransfer(fund_account) {
     var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
     var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
-    var memo_type = $("input[name=memotype]:checked").val()
-    var memo_input = document.getElementById('memo').value
-    var memo_data = checkMemoSize(memo_input, memo_type)
-    var memo = memo_data[1]
-    var memo_size_exceeds_limit = memo_data[0]
+    var memoType = $("input[name=memotype]:checked").val()
+    var memoInput = document.getElementById('memo').value
+    var memoData = checkMemoSize(memoInput, memoType)
+    var memo = memoData[1]
+    var memoSizeExceedsLimit = memoData[0]
 
-    var asset_tag = document.getElementById('asset-type')
-    var asset = asset_tag.options[asset_tag.selectedIndex].text
+    var assetTag = document.getElementById('asset-type')
+    var asset = assetTag.options[assetTag.selectedIndex].text
 
     if (asset == "Lumens") {
       asset = StellarSdk.Asset.native()
     } else {
-      var asset_arr = asset.split(',')
+      var assetArr = asset.split(',')
 
-      var asset_code = asset_arr[0].replace(/\s/g,'')
+      var assetCode = assetArr[0].replace(/\s/g,'')
 
-      var asset_issuer = asset_arr[1].replace(/\s/g,'')
+      var assetIssuer = assetArr[1].replace(/\s/g,'')
 
-      asset = new StellarSdk.Asset(asset_code, asset_issuer)
+      asset = new StellarSdk.Asset(assetCode, assetIssuer)
     }
 
     if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
@@ -137,18 +137,18 @@ function processTransfer(fund_account) {
       $("#layout-alert").show()
       $("#layout-alert").html("Amount you entered exceeds your balance.")
       return
-    } else if (memo_size_exceeds_limit) {
+    } else if (memoSizeExceedsLimit) {
       $("#layout-alert").show()
       $("#layout-alert").html("Memo Error: " + memo)
       return
     } else {
       $("#layout-alert").hide()
       hideFormControls()
-      progressbar()
-      if (fund_account) {
-        fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+      progressBar()
+      if (fundAccount) {
+        fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       } else {
-        sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset)
+        sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       }
     }
   } catch(error) {
@@ -157,7 +157,7 @@ function processTransfer(fund_account) {
   }
 }
 
-function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
+function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
 
     // Derive Keypair object and public key (that starts with a G) from the secret
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
@@ -188,8 +188,9 @@ function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memo_type
            // console.log(JSON.stringify(transactionResult, null, 2))
            // console.log('\nSuccess! View the transaction at: ')
            // console.log(transactionResult._links.transaction.href)
+           var transactionURL = transactionResult._links.transaction.href
            var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.'
-           document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=' + message
+           document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message
            $.ajax({
              url: "/get_balances"
            }) 
@@ -198,14 +199,14 @@ function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memo_type
            console.log('An error has occured:')
            console.log(err)
 
-           var result_code = err.data.extras.result_codes.operations[0]
+           var resultCode = err.data.extras.resultCodes.operations[0]
 
-           if (result_code == 'op_no_destination') {
+           if (resultCode == 'op_no_destination') {
              initiateFundNewAccount()
-           } else if (result_code == 'op_underfunded') {
+           } else if (resultCode == 'op_underfunded') {
              var message = "You do not have enough balance."
              document.location.href = '/failed?error_description=' + message
-           } else if (result_code == 'op_no_trust') {
+           } else if (resultCode == 'op_no_trust') {
              var message = "The target address " + receiverPublicKey + " do not trust asset " + asset.code + "."
              document.location.href = '/failed?error_description=' + message
            } else {
@@ -232,7 +233,8 @@ function submitTransaction(server, transaction, receiverPublicKey, amount) {
       // console.log(JSON.stringify(transactionResult, null, 2))
       // console.log('\nSuccess! View the transaction at: ')
       //console.log(transactionResult._links.transaction.href)
-      document.location.href = '/success?transaction_url=' + transactionResult._links.transaction.href + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
+      var transactionURL = transactionResult._links.transaction.href
+      document.location.href = '/success?transaction_url=' + transactionURL + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
       $.ajax({
         url: "/get_balances"
       }) 
@@ -260,23 +262,23 @@ function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPu
 } // buildTransaction end
 
 function alreadyFunded(server, receiverPublicKey) {
-  var status_code = 200
+  var statusCode = 200
   server.accounts()
     .accountId(receiverPublicKey)
     .call()
     .then(function(accountResult) {
     }).catch(function (err) {
-      status_code = err["message"]["status"]
+      statusCode = err["message"]["status"]
     })
 
-  if (parseInt(status_code) == 404) {
+  if (parseInt(statusCode) == 404) {
     return false
   } else {
     return true
   }
 } // alreadyFunded end
 
-function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo_type, memo, asset) {
+function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
     var sourcePublicKey = sourceKeypair.publicKey()
 
@@ -338,7 +340,7 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
         })
         .catch(function(err) {
           console.log("ERROR!" + err)
-          if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
+          if (err.data.extras.resultCodes.operations[0] == "op_low_reserve") {
             document.location.href = '/failed?error_description=Low Base Reserve. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
           } else {
             document.location.href = '/failed?error_description=' + err
