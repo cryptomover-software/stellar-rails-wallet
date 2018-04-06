@@ -16,6 +16,8 @@
     var selectedValue = $(this).val()
     var assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
 
+    // Display Maximum allowed amount to send,
+    // on page load
     $.ajax({
       method: "GET",
       url: "/get_balance",
@@ -26,7 +28,8 @@
     })
   })
   
-  
+  // Display Maximum allowed amount to send,
+  // on asset type change
   $('#asset-type').change(function() {
     var selectedValue = $(this).val()
     var assetCode = "XLM"
@@ -51,11 +54,13 @@
     $("#memo").prop("disabled", false)
   })
 
+  // set the amount to the max amount allowed
   $('#send-max').click(function() {
     var amount = parseFloat($(this).text().split(":")[1])
     $("#amount-to-send").val(amount)
   })
 
+  // initiate send money
   $('#send_money').click(function(event) {
     var fundAccount = false
     if ($("#fund-new-chk").is(":checked")) {

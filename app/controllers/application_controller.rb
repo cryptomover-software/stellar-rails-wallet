@@ -1,5 +1,9 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
+  def create_log
+    logger.debug params['message']
+    render body: nil, status: :not_found
+  end
 
   private
 

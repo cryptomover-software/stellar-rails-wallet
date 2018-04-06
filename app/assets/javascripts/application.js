@@ -146,13 +146,16 @@ function processTransfer(fundAccount) {
       hideFormControls()
       progressBar()
       if (fundAccount) {
+        $.post('/create_log', {message: '--> Funding New Account Began for' + receiverPublicKey})
         fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       } else {
+        $.post('/create_log', {message: '--> Sending asset(s) to existing account ' + receiverPublicKey})
         sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       }
     }
   } catch(error) {
-    console.log(error.message)
+    // console.log(error.message)
+    $.post('/create_log', {message: '--> ERROR! Wrong input in Asset Transfer form.'})
     document.location.href = '/failed?error_description=Wrong Input. Please enter Correct Target Account Address, Correct Private Key and other details. Error Message: ' + error.message
   }
 }
@@ -190,16 +193,17 @@ function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType,
            // console.log(transactionResult._links.transaction.href)
            var transactionURL = transactionResult._links.transaction.href
            var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.'
+           $.post('/create_log', {message: '--> ' + message})
            document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message
            $.ajax({
              url: "/get_balances"
            }) 
          })
          .catch(function(err) {
-           console.log('An error has occured:')
-           console.log(err)
-
+           // console.log('An error has occured:')
+           // console.log(err)
            var resultCode = err.data.extras.resultCodes.operations[0]
+           $.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err})
 
            if (resultCode == 'op_no_destination') {
              initiateFundNewAccount()
@@ -215,11 +219,13 @@ function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType,
          }) // submit transaction end
      })
      .catch(function(e) {
-       console.log(e.message.detail)
-       console.error(e)
+       // console.log(e.message.detail)
+       // console.error(e)
        if (e.message.detail == undefined) {
+         $.post('/create_log', {message: '--> ERROR! ' + e})
          document.location.href = '/failed?error_description=' + e
        } else {
+         $.post('/create_log', {message: '--> ERROR! ' + e.message.detail})
          document.location.href = '/failed?error_description=' + e.message.detail
        }
      }) // load account end
@@ -234,14 +240,17 @@ function submitTransaction(server, transaction, receiverPublicKey, amount) {
       // console.log('\nSuccess! View the transaction at: ')
       //console.log(transactionResult._links.transaction.href)
       var transactionURL = transactionResult._links.transaction.href
-      document.location.href = '/success?transaction_url=' + transactionURL + '&message=New Account with adderess </br>' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
+      var message = 'New Account with adderess ' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.'
+      $.post('/create_log', {message: '--> SUCCESS! ' + message})
+      document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message
       $.ajax({
         url: "/get_balances"
       }) 
     })
     .catch(function(err) {
-      console.log('An error has occured:')
-      console.log(err)
+      // console.log('An error has occured:')
+      // console.log(err)
+      $.post('/create_log', {message: '--> ERROR! ' + err.message})
       document.location.href = '/failed?error_description=' + err.message
     })
 } // submitTransaction end
@@ -284,6 +293,7 @@ function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo
 
     if (alreadyFunded(server, receiverPublicKey)) {
       var message = "Account is Already Active. Account Address: " + receiverPublicKey
+      $.post('/create_log', {message: '--> ERROR! ' + message})
       document.location.href = '/failed?error_description=' + message
       return
     } else {
@@ -295,7 +305,8 @@ function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo
           submitTransaction(server, transaction, receiverPublicKey, amount)
         })
         .catch(function (err) {
-          console.log(err)
+          // console.log(err)
+          $.post('/create_log', {message: '--> ERROR! ' + err.message.detail})
           document.location.href = '/failed?error_description=' + err.message.detail
         })
     }
@@ -331,28 +342,35 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
       transaction.sign(sourceKeyPair)
       server.submitTransaction(transaction)
         .then(function(result){
-          console.log(result)
+          // console.log(result)
           var link = result['_links']['transaction']['href']
-          document.location.href = '/success?transaction_url=' + link + '&message=Asset ' + assetCode + ' trusted successfully.'
+          var message = 'Asset ' + assetCode + ' trusted successfully in account ' + sourcePublicKey
+          $.post('/create_log', {message: '--> SUCCESS! ' + message})
+          document.location.href = '/success?transaction_url=' + link + '&message=' + message
           $.ajax({
             url: "/get_balances"
           })
         })
         .catch(function(err) {
-          console.log("ERROR!" + err)
+          // console.log("ERROR!" + err)
           if (err.data.extras.resultCodes.operations[0] == "op_low_reserve") {
-            document.location.href = '/failed?error_description=Low Base Reserve. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
+            var message = 'Low Base Reserve in account ' + sourcePublicKey + '. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
+            $.post('/create_log', {message: '--> ERROR! ' + message})
+            document.location.href = '/failed?error_description=' + message
           } else {
+            $.post('/create_log', {message: '--> ERROR! ' + err})
             document.location.href = '/failed?error_description=' + err
           }
         })
     })
     .catch(function(error){
-      console.log('ERROR!', error)
+      // console.log('ERROR!', error)
+      $.post('/create_log', {message: '--> ERROR! ' + error})
       document.location.href = '/failed?error_description=' + error
     })
   } catch(error) {
-      console.log('ERROR!', error)
+      // console.log('ERROR!', error)
+      $.post('/create_log', {message: '--> ERROR! ' + error.message})
       document.location.href = '/failed?error_description=' + error.message
   }
 }
