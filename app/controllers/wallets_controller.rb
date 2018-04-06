@@ -46,9 +46,11 @@ class WalletsController < ApplicationController
       Stellar::KeyPair.from_address(address)
 
       session[:address] = address
+      logger.debug "--> User #{session[:address]} Logged In at #{Time.now}."
       redirect_to portfolio_path
     rescue
       flash[:notice] = INVALID_LOGIN_KEY
+      logger.debug "--> ERROR! Invalid Key #{params[:public_key]}"
       redirect_to root_path
     end
   end
@@ -62,21 +64,24 @@ class WalletsController < ApplicationController
 
       session[:address] = pair.address
       session[:seed] = pair.seed
+      logger.debug "--> SUCCESS! Trezor Login with address #{session[:address]}"
       redirect_to portfolio_path
     rescue
       flash[:notice] = TREZOR_LOGIN_ERROR
+      logger.debug "--> ERROR! Trezor Loging Failed. Value: #{params[:value]}"
       redirect_to trezor_wallet_login_path
     end
   end
 
   def logout
+    logger.debug "--> User #{session[:address]} Logged Out at #{Time.now}."
     session.clear
     redirect_to root_path
   end
 
   def account
-     @address = session[:address]
-     @seed = session[:seed]
+    @address = session[:address]
+    @seed = session[:seed]
   end
 
   def new_account
@@ -84,6 +89,7 @@ class WalletsController < ApplicationController
 
     random = Stellar::KeyPair.random
     session[:address] = @address = random.address
+    logger.debug "--> SUCCESS! New Account created with address #{session[:address]}"
     @seed = random.seed
   end
 
@@ -92,10 +98,12 @@ class WalletsController < ApplicationController
 
     case response.code
       # when 200
-      when 404
-        return 404
-      when 500...600
-        return ACCOUNT_ERROR
+    when 404
+      logger.debug '--> 404 Error while fetching data from API'
+      return 404
+    when 500...600
+      logger.debug '--> 500...600 Error while fetching data from API'
+      return ACCOUNT_ERROR
     end
 
     JSON.parse(response.body)
@@ -108,10 +116,10 @@ class WalletsController < ApplicationController
 
     if asset_code == STELLAR_ASSET
       asset_code = NATIVE_ASSET
-      asset_balance = balances.select{|key| key['asset_type'] == asset_code}
+      asset_balance = balances.select { |key| key['asset_type'] == asset_code }
       balance = asset_balance.first['balance']
     else
-      asset_balance = balances.select{|key| key['asset_code'] == asset_code}
+      asset_balance = balances.select { |key| key['asset_code'] == asset_code }
       balance = asset_balance.first['balance']
     end
 
@@ -140,43 +148,40 @@ class WalletsController < ApplicationController
       end
     rescue StandardError # => e
       # puts e
+      logger.debug '--> FAILED! Fetching balances failed.'
       render js: "document.location.href='/failed?error_description=#{HTTPARTY_STANDARD_ERROR}'"
       # render html: failed_path(error_description: HTTPARTY_STANDARD_ERROR)
     end
   end
 
-  def set_cursor(url, cookie, type)
-    if type == 'asset'
-      next_cursor = :next_asset_cursor
-      prev_cursor = :prev_asset_cursor
-    else
-      next_cursor = :next_cursor
-      prev_cursor = :prev_cursor
-    end
-      
+  def set_cursor(next_cursor, prev_cursor, type)
     # Setting Pagination Cursor for
     # Previous and Next actions
-    url = url['href']
-    
-    url_params = CGI::parse(URI::parse(url).query)
 
-    if cookie == 'next'
-      session[next_cursor] = url_params['cursor']
+    next_url = next_cursor['href']
+    prev_url = prev_cursor['href']
+    next_url_params = CGI.parse(URI.parse(next_url).query)
+    prev_url_params = CGI.parse(URI.parse(prev_url).query)
+
+    if type == 'asset'
+      session[:next_asset_cursor] = next_url_params['cursor']
+      session[:prev_asset_cursor] = prev_url_params['cursor']
     else
-      session[prev_cursor] = url_params['cursor']
+      session[:next_cursor] = next_url_params['cursor']
+      session[:prev_cursor] = prev_url_params['cursor']
     end
   end
 
   def set_transactions_endpoint
     endpoint = "/accounts/#{session[:address]}/payments?limit=10"
-    
-    endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
-    if params[:order] == 'asc'
-      endpoint += '&order=asc'
-    else
-      endpoint += '&order=desc'
-    end
+    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
+
+    endpoint += if params[:order] == 'asc'
+                  '&order=asc'
+                else
+                  '&order=desc'
+                end
   end
 
   def set_assets_endpoint
@@ -193,7 +198,7 @@ class WalletsController < ApplicationController
       endpoint += '&order=desc'
     else
       endpoint
-    end      
+    end
   end
 
   def set_trades_endpoint(balance)        
@@ -274,6 +279,7 @@ class WalletsController < ApplicationController
   end
 
   def inactive_account
+    logger.debug "--> Account #{session[:address]} is Inactive."
   end
 
   def transactions
@@ -288,6 +294,7 @@ class WalletsController < ApplicationController
       end
     rescue StandardError # => e
       # puts e
+      logger.debug '--> FAILED! Fetching transactions history failed.'
       redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
     end
   end
@@ -299,11 +306,9 @@ class WalletsController < ApplicationController
     body = get_data_from_api(url)
     
     # Set links for previous and next buttons
-    url = body['_links']['next']
-    set_cursor(url, 'next', 'asset')
-
-    url = body['_links']['prev']
-    set_cursor(url, 'prev', 'asset')
+    next_cursor = body['_links']['next']
+    prev_cursor = body['_links']['prev']
+    set_cursor(next_cursor, prev_cursor, 'asset')
     
     body['_embedded']['records'].present? ? body['_embedded']['records'] : []
   end
@@ -314,6 +319,7 @@ class WalletsController < ApplicationController
       return @assets
     rescue StandardError # => e
       # puts e
+      logger.debug '--> FAILED! Fetchin list of assets failed.'
       redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
     end
   end
@@ -370,11 +376,13 @@ class WalletsController < ApplicationController
     if (session[:balances] == FETCHING_BALANCES)
       # We are still fetching balances data from Stellar API.
       # Request user to wait until that operation is completed.
+      logger.debug '--> User attempted page access before fetching balances.'
       redirect_to fetching_balances_path
       return
     elsif (session[:balances] == 404) || (session[:balances].blank?)
       # Either this is new inactive account yet to be funded,
       # or something went wrong while creating balances cookies.
+      logger.debug '--> Inactive account or Error in fetching Balance.'
       redirect_to inactive_account_path
       return
     end
@@ -385,9 +393,9 @@ class WalletsController < ApplicationController
     cypher_value = params[:cypher_value]
 
     flash[:notice] = INVALID_TREZOR_KEY
-    redirect_to trezor_wallet_login_path and return if key != TREZOR_LOGIN_KEY
+    redirect_to trezor_wallet_login_path && return if key != TREZOR_LOGIN_KEY
     flash.clear
     flash[:notice] = INVALID_TREZOR_CYPHER
-    redirect_to trezor_wallet_login_path and return if cypher_value != TREZOR_LOGIN_CYPHER_VALUE
+    redirect_to trezor_wallet_login_path && return if cypher_value != TREZOR_LOGIN_CYPHER_VALUE
   end
 end

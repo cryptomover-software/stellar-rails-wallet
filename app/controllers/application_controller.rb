@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
     unless session[:address].present?
       session.clear
       flash[:notice] = 'User Not Logged In OR Session Expired.'
-      logger.debug 'User Not Logged in Or Session Expired.'
+      logger.debug '--> ALERT! User Not Logged in Or Session Expired.'
       redirect_to root_path
     end
   end
