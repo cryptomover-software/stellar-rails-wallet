@@ -14,8 +14,10 @@
 :javascript
   $(document).ready(function() {
     var selectedValue = $(this).val()
-    var asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+    var assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
 
+    // Display Maximum allowed amount to send,
+    // on page load
     $.ajax({
       method: "GET",
       url: "/get_balance",
@@ -26,12 +28,13 @@
     })
   })
   
-  
+  // Display Maximum allowed amount to send,
+  // on asset type change
   $('#asset-type').change(function() {
     var selectedValue = $(this).val()
-    var asset_code = "XLM"
+    var assetCode = "XLM"
     if (selectedValue != "Lumens") {
-      asset_code = selectedValue.split(',')[0].replace(/\s/g,'')
+      assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
     }
     $('#send-max').text("Fetching...")
     $("#amount-to-send").val("")
@@ -40,7 +43,7 @@
     $.ajax({
       method: "GET",
       url: "/get_balance",
-      data: {code: asset_code}
+      data: {code: assetCode}
     }).done(function(result) {
       $("#available-balance").text(result[0] + " ")
       $("#send-max").text("Send Maximum Allowed: " + result[1])
@@ -51,16 +54,18 @@
     $("#memo").prop("disabled", false)
   })
 
+  // set the amount to the max amount allowed
   $('#send-max').click(function() {
     var amount = parseFloat($(this).text().split(":")[1])
     $("#amount-to-send").val(amount)
   })
 
+  // initiate send money
   $('#send_money').click(function(event) {
-    var fund_account = false
+    var fundAccount = false
     if ($("#fund-new-chk").is(":checked")) {
-      fund_account = true
+      fundAccount = true
     }
-    process_transfer(fund_account)
+    processTransfer(fundAccount)
     
   }) // btn click end

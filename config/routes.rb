@@ -27,4 +27,5 @@ Rails.application.routes.draw do
   get 'success', to: 'wallets#success'
   get 'failed', to: 'wallets#failed'
   get 'help', to: 'pages#help'
+  post 'create_log', to: 'application#create_log'
 end
