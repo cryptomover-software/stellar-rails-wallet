@@ -2,10 +2,11 @@ language: ruby
 rvm:
   - 2.4.1
 before_script:
-  - bundle exec rails db:create --all
-  - bundle exec rails db:migrate
+  - bundle install --jobs=3 --retry=3
+  - bundle exec rake db:create --all
+  - bundle exec rake db:migrate
 script:
-  - bundle exec rails ci:tests
+  - bundle exec rake ci:tests
 services:
   - sqlite
 notifications:
