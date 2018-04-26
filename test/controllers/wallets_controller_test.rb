@@ -33,4 +33,9 @@ class WalletsControllerTest < ActionDispatch::IntegrationTest
     get send_money_path
     assert_redirected_to(fetching_balances_path)
   end
+
+  test 'new_account_rendered' do
+    get new_account_path
+    assert_template :new_account
+  end
 end
