@@ -1,7 +1,6 @@
 # Stellar-Rails  
 Stellar-Rails is an open source web browser based Stellar wallet created using Ruby on Rails web application framework.  
 
-
 ## Version 0.7
 
 ## Functionalities of the current website  
