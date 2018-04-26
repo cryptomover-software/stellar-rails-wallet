@@ -64,3 +64,4 @@ gem 'jquery-ui-rails'
 gem 'mina'
 # gem 'font-awesome-sass', '~> 5.0.6'
 gem "recaptcha", require: "recaptcha/rails"
+gem 'rails-controller-testing'
