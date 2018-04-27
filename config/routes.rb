@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get 'transactions', to: 'wallets#transactions'
   get 'trust_asset', to: 'wallets#trust_asset'
   get 'assets', to: 'wallets#browse_assets'
+  get 'watchlist', to: 'wallets#watchlist'
 
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'

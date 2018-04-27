@@ -1,10 +1,11 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :logout,
-                                           :new_account, :trezor_wallet]
+                                           :new_account, :trezor_wallet,
+                                           :watchlist]
   before_action :activate_account, except: [:index, :get_balances, :login,
                                             :logout, :new_account,
                                             :inactive_account, :success,
-                                            :failed, :trezor_wallet]
+                                            :failed, :trezor_wallet, :watchlist]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -173,18 +174,6 @@ class WalletsController < ApplicationController
     end
   end
 
-  def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
-
-    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
-
-    endpoint += if params[:order] == 'asc'
-                  '&order=asc'
-                else
-                  '&order=desc'
-                end
-  end
-
   def set_assets_endpoint
     endpoint = '/assets?limit=20'
     
@@ -211,10 +200,26 @@ class WalletsController < ApplicationController
     endpoint += '&limit=1'
     endpoint += '&order=desc'
   end
-  
+
+  def set_transactions_endpoint
+    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
+
+    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
+
+    endpoint += if params[:order] == 'asc'
+                  '&order=asc'
+                else
+                  '&order=desc'
+                end
+  end
+
   def get_transactions
+    # ToDo Fix Transactions
     endpoint = set_transactions_endpoint()    
-    url = STELLAR_API + endpoint
+    url_string = STELLAR_API + endpoint
+    url = URI.encode_www_form_component(url_string)
+    puts '####'
+    puts url
 
     body = get_data_from_api(url)
 
@@ -293,10 +298,11 @@ class WalletsController < ApplicationController
         format.html { @transactions }
         format.json { render json: body['_embedded']['records']}
       end
-    rescue StandardError # => e
-      # puts e
+    rescue StandardError => e
+      puts "------------"
+      puts e
       logger.debug '--> FAILED! Fetching transactions history failed.'
-      redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+      redirect_to failed_path(error_description: e)
     end
   end
 
@@ -370,6 +376,9 @@ class WalletsController < ApplicationController
   end
 
   def failed
+  end
+
+  def watchlist
   end
 
   private
