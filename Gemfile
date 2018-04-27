@@ -67,3 +67,4 @@ gem "recaptcha", require: "recaptcha/rails"
 gem 'rails-controller-testing'
 gem 'addressable'
 gem 'devise'
+gem 'delayed_job_active_record'
