@@ -2,6 +2,11 @@
   .card-header
     %h1 Watchlist
   .card-body
+    = form_with model: @watchlist do |form|
+      = form.label :address
+      = form.text_field :address, placeholder: 'Type Stellar Address Here'
+      = form.submit 'Add New Address'
+    %hr
     %b List
     %br
     - if not @addresses.present?

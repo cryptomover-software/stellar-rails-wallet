@@ -6,10 +6,11 @@ class WatchlistsController < ApplicationController
     watchlist = Watchlist.new
     address = params[:address]
     watchlist.address = address
+    watchlist.user_id = 1 
     watchlist.save!
     watchlist.process_list
 
-    redirect_to watchlist_addresses_path
+    redirect_to watchlists_path
   end
 
   def index

@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  devise_for :users
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'pages#index'
 
@@ -29,4 +30,6 @@ Rails.application.routes.draw do
   get 'failed', to: 'wallets#failed'
   get 'help', to: 'pages#help'
   post 'create_log', to: 'application#create_log'
+
+  resources :watchlists
 end
