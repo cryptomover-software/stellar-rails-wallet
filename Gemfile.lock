@@ -255,6 +255,7 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
+  daemons
   delayed_job_active_record
   devise
   haml

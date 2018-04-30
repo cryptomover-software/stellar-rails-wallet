@@ -1,0 +1,10 @@
+.card#transfer-assets-card
+  .card-header
+    %h1 Watchlist
+  .card-body
+    %b List
+    %br
+    - if not @addresses.present?
+      No Addresse(s) added yet.
+    - @addresses.each do |address|
+      =  address.address
