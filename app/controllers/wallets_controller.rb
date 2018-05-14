@@ -1,11 +1,10 @@
 class WalletsController < ApplicationController
   before_action :user_must_login, except: [:login, :logout,
-                                           :new_account, :trezor_wallet,
-                                           :watchlist]
+                                           :new_account, :trezor_wallet]
   before_action :activate_account, except: [:index, :get_balances, :login,
                                             :logout, :new_account,
                                             :inactive_account, :success,
-                                            :failed, :trezor_wallet, :watchlist]
+                                            :failed, :trezor_wallet]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -376,9 +375,6 @@ class WalletsController < ApplicationController
   end
 
   def failed
-  end
-
-  def watchlist
   end
 
   private
