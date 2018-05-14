@@ -72,6 +72,8 @@ config/initializers/secret_token.rb
 
 # if using bower-rails ignore default bower_components path bower.json files
 /vendor/assets/bower_components
+/public/assets
+/node_modules
 *.bowerrc
 bower.json
 
