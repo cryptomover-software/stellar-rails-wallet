@@ -1,0 +1,33 @@
+#new-account-card
+  .card
+    .card-header
+      %h1
+        Federation Stellar Account
+    .card-body
+      %ul
+        %li
+          Federation Stellar address allows you to resolve email-like addresses such as
+          %b
+            name*yourdomain.com
+          into Stellar Account addresses like
+          .address
+            GCCVPYFOHY7ZB7557JKENAX62LUAPLMGIWNZJAFV2MITK6T32V37KEJU
+        %li
+          = link_to 'Click here', 'https://www.stellar.org/developers/guides/concepts/federation.html'
+          to know more about Stellar Federation Addresses.
+
+      - if @federations
+        You have following username associated with your address
+        .address
+          = @address
+        %br
+        - @federations.each do |f|
+          = f.username
+      - else
+        = form_with model: Federation.new do |form|
+          .form-group
+            = form.label 'The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>'
+            = form.label :username
+            = form.text_field :username, class: "form-control", placeholder: 'Enter desired username here'
+          = form.submit 'Save Username'
+    .card-footer
