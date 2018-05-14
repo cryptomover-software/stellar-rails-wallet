@@ -16,13 +16,18 @@
           = link_to 'Click here', 'https://www.stellar.org/developers/guides/concepts/federation.html'
           to know more about Stellar Federation Addresses.
 
-      - if @federations
-        You have following username associated with your address
-        .address
-          = @address
-        %br
+      - if @federations.present?
+        .alert.alert-success
+          Your address
+          .address
+            = @address
+          is associated with following Federation Username
         - @federations.each do |f|
-          = f.username
+          - federation_address = "#{f.username}*cryptomover.com"
+          %h3.text-center
+            = federation_address
+        .alert.alert-danger
+          Please prefer Cryptomover Stellar Wallet to send funds to Federation Address. Other Exchanges might not support sending assets to this federation address as of now.
       - else
         = form_with model: Federation.new do |form|
           .form-group

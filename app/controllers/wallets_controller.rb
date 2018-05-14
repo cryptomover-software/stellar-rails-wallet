@@ -238,6 +238,7 @@ class WalletsController < ApplicationController
     # when user visits home page
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
+    @federation = Federation.where(address: session[:address]).first
   end
 
   def get_lumen_price_in_usd
@@ -375,6 +376,11 @@ class WalletsController < ApplicationController
   end
 
   def failed
+  end
+
+  def federation_account
+    @address = session[:address]
+    @federations = Federation.where(address: @address)
   end
 
   private

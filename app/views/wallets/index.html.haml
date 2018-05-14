@@ -9,6 +9,14 @@
           = session[:address]
       .col-md-12.col-lg-1
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
+    .row
+      .col
+        - if @federation.present?
+          Federation Address:
+          .address
+            = "#{@federation.username}*cryptomover.com"
+        - else
+          = link_to 'Create Federation Address', federation_account_path
     %br
     #progressbar
       .progress-label
