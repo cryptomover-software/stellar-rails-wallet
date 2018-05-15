@@ -14,7 +14,7 @@
         - if @federation.present?
           Federation Address:
           .address
-            = "#{@federation.username}*cryptomover.com"
+            = @federation
         - else
           = link_to 'Create Federation Address', federation_account_path
     %br

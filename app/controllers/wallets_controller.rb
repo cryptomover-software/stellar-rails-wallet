@@ -1,10 +1,13 @@
 class WalletsController < ApplicationController
+  # ToDo add verifiction of user copied private key
+  # before leaving new account page
   before_action :user_must_login, except: [:login, :logout,
                                            :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login,
-                                            :logout, :new_account,
-                                            :inactive_account, :success,
-                                            :failed, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances,
+                                            :login, :logout,
+                                            :new_account, :inactive_account,
+                                            :success, :failed,
+                                            :trezor_wallet, :federation_account]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -24,7 +27,7 @@ class WalletsController < ApplicationController
   TREZOR_LOGIN_CYPHER_VALUE = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136'.freeze
   FETCHING_BALANCES = 'fetching'.freeze
   # Login Errors
-  INVALID_LOGIN_KEY = 'Invalid Public Key. Please check key again.'.freeze
+  INVALID_LOGIN_KEY = 'Invalid Login Key. Please check key again.'.freeze
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
   INVALID_TREZOR_KEY = 'Trezor Key must be cryptomover. Do not change key.'.freeze
   INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
@@ -35,6 +38,33 @@ class WalletsController < ApplicationController
   HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
   ACCOUNT_ERROR = 'account_error'.freeze
 
+  def get_federation_server_address(address)
+    domain = address.split('*')[1]
+    url = "https://#{domain}/.well-known/stellar.toml"
+    result = HTTParty.get(url)
+    # Note and ToDo
+    # We are using file parsing solution instead of using TOML
+    # library for the time being. This is because there are some
+    # technical errors with TOML library and it will take time to fix it.
+    # In future we need to use TOML library to parse TOML input.
+    toml = Hash[*result.split(/=|\n/)]
+    url = toml["FEDERATION_SERVER"]
+    # Remove unwanted backward \ from url
+    # ToDo Make sure this works with all TOML outputs
+    url.delete('\"')
+  end
+
+  def fetch_address_from_federation(address)
+    username = address.split('*')[0]
+    domain_name = address.split('*')[1]
+    server_url = get_federation_server_address(address)
+    url = "#{server_url}?q=#{username}*#{domain_name}&type=name"
+    # ToDo
+    # Handle errors & when username do not exist on server
+    result = HTTParty.get(url)
+    result['account_id']
+  end
+
   def login
     session.clear
     begin
@@ -43,6 +73,12 @@ class WalletsController < ApplicationController
 
       flash.clear
       address = params[:public_key].delete(' ')
+
+      if address.include? '*'
+        session[:federation_address] = address
+        address = fetch_address_from_federation(address)
+      end
+
       # Failure to generate key pair indicates invalid Public Key.
       Stellar::KeyPair.from_address(address)
 
@@ -238,7 +274,13 @@ class WalletsController < ApplicationController
     # when user visits home page
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
-    @federation = Federation.where(address: session[:address]).first
+
+    @federation = if session[:federation_address].present?
+                    session[:federation_address]
+                  else
+                    f = Federation.where(address: session[:address]).first
+                    "#{f.username}*cryptomover.com" if f.present?
+                  end
   end
 
   def get_lumen_price_in_usd
