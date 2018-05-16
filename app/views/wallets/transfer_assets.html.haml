@@ -3,6 +3,10 @@
     %h1 Send Lumens/Assets
   .card-body
     From Account
+    - if @federation.present?
+      %br
+      .address
+        = @federation
     %br
     .address
       = session[:address]

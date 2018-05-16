@@ -268,6 +268,16 @@ class WalletsController < ApplicationController
     body['_embedded']['records'].present? ? body['_embedded']['records'] : []
   end
 
+  def set_federation_address
+    return session[:federation_address] if session[:federation_address].present?
+    f = Federation.where(address: session[:address]).first
+    if f.present?
+      address = "#{f.username}*cryptomover.com"
+      session[:federation_address] = address
+      return address
+    end
+  end
+
   def index
     session[:balances] = FETCHING_BALANCES
     # Reset previous and next button links of transactions page,
@@ -275,12 +285,7 @@ class WalletsController < ApplicationController
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
 
-    @federation = if session[:federation_address].present?
-                    session[:federation_address]
-                  else
-                    f = Federation.where(address: session[:address]).first
-                    "#{f.username}*cryptomover.com" if f.present?
-                  end
+    @federation = set_federation_address
   end
 
   def get_lumen_price_in_usd
@@ -403,6 +408,7 @@ class WalletsController < ApplicationController
   end
 
   def transfer_assets
+    @federation = session[:federation_address]
     @balances = session[:balances]
     
     @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
