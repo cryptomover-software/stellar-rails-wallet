@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'
   get 'federation_account', to: 'wallets#federation_account'
+  get 'get_federation_address', to: 'wallets#fetch_address_from_federation'
   get 'send_money', to: 'wallets#transfer_assets'
 
   get 'inactive_account', to: 'wallets#inactive_account'

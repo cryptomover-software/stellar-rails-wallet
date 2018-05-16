@@ -62,7 +62,12 @@ class WalletsController < ApplicationController
     # ToDo
     # Handle errors & when username do not exist on server
     result = HTTParty.get(url)
-    result['account_id']
+    account_id = result['account_id']
+
+    respond_to do |format|
+      format.html { account_id }
+      format.json { render json: account_id }
+    end
   end
 
   def login

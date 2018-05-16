@@ -96,6 +96,23 @@ function checkMemoSize(memo, memoType) {
   return memoData
 }
 
+function setReceiverAddresses() {
+  key = document.getElementById('target-account').value.replace(/\s/g,'')
+
+  if (key.includes('*')) {
+    $.ajax({
+      async: false,
+      url: "/get_federation_address"
+    }).done(function(publicKey) {
+      federationAddress = key
+      return [publicKey, federationAddress]
+    })
+  } else {
+    publicKey = key
+    return [publicKey, null]
+  }
+}
+
 function processTransfer(fundAccount) {
   try {
     // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
@@ -104,7 +121,9 @@ function processTransfer(fundAccount) {
     // StellarSdk.Network.useTestNetwork()
 
     var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
-    var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    var receiverAddresses = setReceiverAddresses()
+    var receiverPublicKey = receiverAddresses[0]
+    var federationAddress = receiverAddresses[1]
     var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
     var memoType = $("input[name=memotype]:checked").val()
