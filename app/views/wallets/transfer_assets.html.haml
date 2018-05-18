@@ -63,12 +63,14 @@
     var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
     if (inputKey.includes('*') == true) {
       $('#resolve-fed-address').show()
+      $('#send_money').attr('disabled', 'disabled')
       $.ajax({
             method: 'GET',
             url: "/get_federation_address",
             data: {address: inputKey},
             success: function(publicKey) {
-              $('#resolve-fed-address').text(' Resolved to: ' + publicKey) 
+              $('#resolve-fed-address').text(' Resolved to: ' + publicKey)
+              $('#send_money').removeAttr('disabled')
       }})
     }
   })
