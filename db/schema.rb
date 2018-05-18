@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180514111501) do
+ActiveRecord::Schema.define(version: 20180518133405) do
 
 
   create_table "federations", force: :cascade do |t|
@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20180514111501) do
     t.text "address", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "synced", default: false
     t.index ["username"], name: "index_federations_on_username", unique: true
   end
 end
