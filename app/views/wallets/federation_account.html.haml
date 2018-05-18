@@ -32,7 +32,8 @@
         = form_with model: Federation.new do |form|
           .form-group
             = form.label 'The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>'
-            = form.label :username
             = form.text_field :username, class: "form-control", placeholder: 'Enter desired username here'
-          = form.submit 'Save Username'
+            = form.label :'cryptomover.com'
+              // TODO report errors for wrong username
+          = form.submit 'Save Federation Address'
     .card-footer

@@ -70,6 +70,25 @@
     if ($("#fund-new-chk").is(":checked")) {
       fundAccount = true
     }
-    processTransfer(fundAccount)
+    //processTransfer(fundAccount)
+
+    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    console.log("KEYY")
+    console.log(inputKey)
+    var values = []
+    console.log(inputKey.includes('*'))
+
+    if (inputKey.includes('*') == true) {
+      console.log("CALLING GET FED ADD")
+      $.ajax({
+        method: 'GET',
+        url: "/get_federation_address",
+        data: {address: inputKey},
+        success: function(publicKey) {
+          processTransfer(fundAccount, publicKey, inputKey)
+        }})
+    } else {
+      processTransfer(fundAccount, inputKey, null)
+    }
     
   }) // btn click end
