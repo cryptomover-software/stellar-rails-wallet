@@ -58,6 +58,21 @@
     $("#memo").prop("disabled", false)
   })
 
+  $("input[name=address]").focusout(function() {
+    console.log("fed adress out")
+    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    if (inputKey.includes('*') == true) {
+      $('#resolve-fed-address').show()
+      $.ajax({
+            method: 'GET',
+            url: "/get_federation_address",
+            data: {address: inputKey},
+            success: function(publicKey) {
+              $('#resolve-fed-address').text(' Resolved to: ' + publicKey) 
+      }})
+    }
+  })
+
   // set the amount to the max amount allowed
   $('#send-max').click(function() {
     var amount = parseFloat($(this).text().split(":")[1])

@@ -34,6 +34,7 @@ class WalletsController < ApplicationController
   INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
   TREZOR_LOGIN_ERROR = 'Something went wrong. Please try again.'.freeze
   # Other Errors
+  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
   UNDETERMINED_PRICE = 'undetermined'.freeze
   HTTPARTY_STANDARD_ERROR = 'Unable to reach Stellar Server. Check network connection or try again later.'.freeze
   HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
@@ -58,6 +59,7 @@ class WalletsController < ApplicationController
 
   def get_address_locally(username)
     federation = Federation.where(username: username).first
+    return INVALID_FEDERATION_ADDRESS if not federation
     federation.address
   end
 
@@ -67,7 +69,7 @@ class WalletsController < ApplicationController
     # All accounts created on our wallet are stored locally
     # with domain name cryptomover.com.
     # They will be synced with our Stellar Federation server.
-    return get_address_locally(username) if domain == CRYPTOMOVER_DOMAIN
+    return get_address_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
 
     server_url = get_federation_server_address(address)
     url = "#{server_url}?q=#{username}*#{domain_name}&type=name"

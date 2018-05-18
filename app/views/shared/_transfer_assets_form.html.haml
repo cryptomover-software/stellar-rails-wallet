@@ -3,6 +3,8 @@
     .form-label
       Recipients Public Key OR Federation Address
     %input.form-control{id: "target-account", name: "address", placeholder: "Recipient's public key or Federation address", required: true, type: "text"}
+    %span#resolve-fed-address.text-danger.mt-1
+      Resolving Federation Address...
   - if @balances.present?
     .form-group
       .form-label

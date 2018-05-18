@@ -90,30 +90,13 @@ function checkMemoSize(memo, memoType) {
     }
     memoData = [false, setMemo]
   } catch(error) {
-    console.log(error)
+    // console.log(error)
     memoData = [true, error.message]
   }
   return memoData
 }
 
-function setReceiverAddresses() {
-  key = document.getElementById('target-account').value.replace(/\s/g,'')
-
-  if (key.includes('*')) {
-    $.ajax({
-      async: false,
-      url: "/get_federation_address"
-    }).done(function(publicKey) {
-      federationAddress = key
-      return [publicKey, federationAddress]
-    })
-  } else {
-    publicKey = key
-    return [publicKey, null]
-  }
-}
-
-function processTransfer(fundAccount) {
+function processTransfer(fundAccount, receiverPublicKey, federationAddress) {
   try {
     // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
     var server = new StellarSdk.Server('https://horizon.stellar.org')
@@ -121,9 +104,7 @@ function processTransfer(fundAccount) {
     // StellarSdk.Network.useTestNetwork()
 
     var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
-    var receiverAddresses = setReceiverAddresses()
-    var receiverPublicKey = receiverAddresses[0]
-    var federationAddress = receiverAddresses[1]
+    // var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
     var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
 
     var memoType = $("input[name=memotype]:checked").val()
@@ -169,6 +150,7 @@ function processTransfer(fundAccount) {
         fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       } else {
         $.post('/create_log', {message: '--> Sending asset(s) to existing account ' + receiverPublicKey})
+        // console.log("sending money")
         sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       }
     }
@@ -180,7 +162,6 @@ function processTransfer(fundAccount) {
 }
 
 function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
-
     // Derive Keypair object and public key (that starts with a G) from the secret
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
 
@@ -221,7 +202,7 @@ function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType,
          .catch(function(err) {
            // console.log('An error has occured:')
            // console.log(err)
-           var resultCode = err.data.extras.resultCodes.operations[0]
+           var resultCode = err.data.extras.result_codes.operations[0]
            $.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err})
 
            if (resultCode == 'op_no_destination') {
@@ -372,7 +353,7 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
         })
         .catch(function(err) {
           // console.log("ERROR!" + err)
-          if (err.data.extras.resultCodes.operations[0] == "op_low_reserve") {
+          if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
             var message = 'Low Base Reserve in account ' + sourcePublicKey + '. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
             $.post('/create_log', {message: '--> ERROR! ' + message})
             document.location.href = '/failed?error_description=' + message
