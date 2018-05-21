@@ -29,10 +29,12 @@
         .alert.alert-danger
           Please prefer Cryptomover Stellar Wallet to send funds to Federation Address. Other Exchanges might not support sending assets to this federation address as of now.
       - else
-        The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>
+        .text-muted
+          The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>
         = form_with model: Federation.new do |form|
+          = form.label :enter_username
           .form-group.form-inline
-            = form.label :username
-            = form.text_field :username, class: "ml-2 form-control", width: "70%", placeholder: 'Enter Username'
-            // TODO report errors for wrong username
-            = form.submit 'Save Federation Address', class: 'ml-2'
+            = form.text_field :username, class: "form-control", width: "70%", placeholder: 'Enter Username'
+            *cryptomover.com
+          // TODO report errors for wrong username
+          = form.submit 'Save Federation Address'
