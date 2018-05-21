@@ -59,7 +59,7 @@ class WalletsController < ApplicationController
 
   def get_address_locally(username)
     federation = Federation.where(username: username).first
-    return INVALID_FEDERATION_ADDRESS if not federation
+    return INVALID_FEDERATION_ADDRESS unless federation
     federation.address
   end
 
@@ -73,8 +73,7 @@ class WalletsController < ApplicationController
 
     server_url = get_federation_server_address(address)
     url = "#{server_url}?q=#{username}*#{domain_name}&type=name"
-    # TODO:
-    # Handle errors & when username do not exist on server
+    # TODO: Handle errors & when username do not exist on server
     result = HTTParty.get(url)
     result['account_id']
   end
