@@ -3,6 +3,8 @@
     .card-header
       %h1 New Stellar Account Details
     .card-body
+      .alert.alert-success
+        New Stellar account created successfully.
       %ol
         %li The seed controls 100% of your fund and CAN NOT be recovered if lost. Make sure to backup it offline securely and never lose it.
         %li The account will NOT BE active upon creation. It needs to be funded for at least 1 XLM.
@@ -20,7 +22,7 @@
         .row
           .col-md-12
             %span This is your secret stellar seed:
-          .col-md-12
+          .col-md-12.text-danger
             .form-inline
               #secret-seed.address.secret-seed.blur-text
                 = @seed
@@ -29,9 +31,12 @@
               %button{type: "button", class: "btn btn-brown", "data-clipboard-target": ".secret-seed", id: "copy_seed"} Copy
         .alert.alert-danger.text-center.mt-3
           %b This account doesn't exist on the Stellar network yet. To activate this account, send it at least 1 Lumen (XLM) to fulfill the
-          = link_to "minumum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
+          = link_to "minimum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
           \.
-      .row
+        .text-center.alert.alert-info
+          = link_to 'Create Federation Stellar Address', federation_account_path
+    .card-footer
+      .row.mb-2
         .col-md-12.text-center
           = link_to "Go to Wallet", portfolio_path, class: "btn btn-brown"
           = link_to "Log Out", logout_path, class: "btn btn-info"
@@ -39,8 +44,6 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 
 :javascript
-  new Clipboard('#copy_address')
-  new Clipboard("#copy_seed")
   $("#show-seed").click(function() {
     $("#secret-seed").removeClass("blur-text").addClass("unblur-text")
     $(this).hide()
@@ -51,3 +54,5 @@
     $(this).hide()
     $("#show-seed").show()
   })
+  new Clipboard("#copy_seed")
+  new Clipboard('#copy_address')

@@ -1,10 +1,13 @@
 class WalletsController < ApplicationController
+  # TODO: add verifiction of user copied private key
+  # before leaving new account page
   before_action :user_must_login, except: [:login, :logout,
                                            :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login,
-                                            :logout, :new_account,
-                                            :inactive_account, :success,
-                                            :failed, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances,
+                                            :login, :logout,
+                                            :new_account, :inactive_account,
+                                            :success, :failed,
+                                            :trezor_wallet, :federation_account]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -20,20 +23,71 @@ class WalletsController < ApplicationController
   BASE_RESERVE = 0.5
   NATIVE_ASSET = 'native'.freeze
   STELLAR_ASSET = 'XLM'.freeze
+  CRYPTOMOVER_DOMAIN = 'cryptomover.com'.freeze
   TREZOR_LOGIN_KEY = 'cryptomover'.freeze
   TREZOR_LOGIN_CYPHER_VALUE = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136'.freeze
   FETCHING_BALANCES = 'fetching'.freeze
   # Login Errors
-  INVALID_LOGIN_KEY = 'Invalid Public Key. Please check key again.'.freeze
+  INVALID_LOGIN_KEY = 'Invalid Login Key. Please check key again.'.freeze
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
   INVALID_TREZOR_KEY = 'Trezor Key must be cryptomover. Do not change key.'.freeze
   INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
   TREZOR_LOGIN_ERROR = 'Something went wrong. Please try again.'.freeze
   # Other Errors
+  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
   UNDETERMINED_PRICE = 'undetermined'.freeze
   HTTPARTY_STANDARD_ERROR = 'Unable to reach Stellar Server. Check network connection or try again later.'.freeze
   HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
   ACCOUNT_ERROR = 'account_error'.freeze
+
+
+  def get_federation_server_address(address)
+    domain = address.split('*')[1]
+    url = "https://#{domain}/.well-known/stellar.toml"
+    result = HTTParty.get(url)
+    # Note and TODO:
+    # We are using file parsing solution instead of using TOML
+    # library for the time being. This is because there are some
+    # technical errors with TOML library and it will take time to fix it.
+    # In future we need to use TOML library to parse TOML input.
+    toml = Hash[*result.split(/=|\n/)]
+    url = toml["FEDERATION_SERVER"]
+    # Remove unwanted backward \ from url
+    # TODO: Make sure this works with all TOML outputs
+    url.delete('\"')
+  end
+
+  def get_address_locally(username)
+    federation = Federation.where(username: username).first
+    return INVALID_FEDERATION_ADDRESS unless federation
+    federation.address
+  end
+
+  def fetch_address_from_federation(address)
+    username = address.split('*')[0]
+    domain_name = address.split('*')[1]
+    # All accounts created on our wallet are stored locally
+    # with domain name cryptomover.com.
+    # They will be synced with our Stellar Federation server.
+    return get_address_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
+
+    server_url = get_federation_server_address(address)
+    url = "#{server_url}?q=#{username}*#{domain_name}&type=name"
+    # TODO: Handle errors & when username do not exist on server
+    result = HTTParty.get(url)
+    result['account_id']
+  end
+
+  def get_federation_address
+    address = params[:address]
+    account_id = fetch_address_from_federation(address)
+    puts '$$$$$$$$$$$$$$'
+    puts account_id
+
+    respond_to do |format|
+      format.js { render json: account_id }
+    end
+  end
 
   def login
     session.clear
@@ -43,6 +97,12 @@ class WalletsController < ApplicationController
 
       flash.clear
       address = params[:public_key].delete(' ')
+
+      if address.include? '*'
+        session[:federation_address] = address
+        address = fetch_address_from_federation(address)
+      end
+
       # Failure to generate key pair indicates invalid Public Key.
       Stellar::KeyPair.from_address(address)
 
@@ -176,21 +236,20 @@ class WalletsController < ApplicationController
   def set_assets_endpoint
     endpoint = '/assets?limit=20'
     
-    endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
+    # endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
 
-    endpoint += "&asset_code=#{params[:asset_code]}" if params[:asset_code]
-    endpoint += "&asset_issuer=#{params[:asset_issuer]}" if params[:asset_issuer]
+    # endpoint += "&asset_code=#{params[:asset_code]}" if params[:asset_code]
+    # endpoint += "&asset_issuer=#{params[:asset_issuer]}" if params[:asset_issuer]
     
-    if params[:order] == 'asc'
-      endpoint += '&order=asc'
-    elsif params[:order] == 'desc'
-      endpoint += '&order=desc'
-    else
-      endpoint
-    end
+    # order = if params[:order] == 'asc'
+    #               '&order=asc'
+    #             elsif params[:order] == 'desc'
+    #               '&order=desc'
+    #         end
+    # endpoint # + order
   end
 
-  def set_trades_endpoint(balance)        
+  def set_trades_endpoint(balance)
     endpoint = '/trades?'
     endpoint += 'base_asset_type=' + balance['asset_type']
     endpoint += '&base_asset_code=' + balance['asset_code']
@@ -198,6 +257,7 @@ class WalletsController < ApplicationController
     endpoint += "&counter_asset_type=#{NATIVE_ASSET}"
     endpoint += '&limit=1'
     endpoint += '&order=desc'
+    endpoint
   end
 
   def set_transactions_endpoint
@@ -205,31 +265,38 @@ class WalletsController < ApplicationController
 
     endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
 
-    endpoint += if params[:order] == 'asc'
-                  '&order=asc'
-                else
-                  '&order=desc'
-                end
+    order = if params[:order] == 'asc'
+              '&order=asc'
+            else
+              '&order=desc'
+            end
+    endpoint + order
   end
 
   def get_transactions
-    # ToDo Fix Transactions
-    endpoint = set_transactions_endpoint()    
-    url_string = STELLAR_API + endpoint
-    url = URI.encode_www_form_component(url_string)
-    puts '####'
-    puts url
+    endpoint = set_transactions_endpoint()
+    url = STELLAR_API + endpoint
 
     body = get_data_from_api(url)
 
     # Set links for previous and next buttons
-    url = body['_links']['next']
-    set_cursor(url, 'next', nil)
+    # url = body['_links']['next']
+    # set_cursor(url, 'next', nil)
 
-    url = body['_links']['prev']
-    set_cursor(url, 'prev', nil)
+    # url = body['_links']['prev']
+    # set_cursor(url, 'prev', nil)
     
     body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+  end
+
+  def set_federation_address
+    return session[:federation_address] if session[:federation_address].present?
+    f = Federation.where(address: session[:address]).first
+    if f.present?
+      address = "#{f.username}*cryptomover.com"
+      session[:federation_address] = address
+      return address
+    end
   end
 
   def index
@@ -238,6 +305,8 @@ class WalletsController < ApplicationController
     # when user visits home page
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
+
+    @federation = set_federation_address
   end
 
   def get_lumen_price_in_usd
@@ -312,9 +381,9 @@ class WalletsController < ApplicationController
     body = get_data_from_api(url)
     
     # Set links for previous and next buttons
-    next_cursor = body['_links']['next']
-    prev_cursor = body['_links']['prev']
-    set_cursor(next_cursor, prev_cursor, 'asset')
+    # next_cursor = body['_links']['next']
+    # prev_cursor = body['_links']['prev']
+    # set_cursor(next_cursor, prev_cursor, 'asset')
     
     body['_embedded']['records'].present? ? body['_embedded']['records'] : []
   end
@@ -360,6 +429,7 @@ class WalletsController < ApplicationController
   end
 
   def transfer_assets
+    @federation = session[:federation_address]
     @balances = session[:balances]
     
     @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
@@ -375,6 +445,11 @@ class WalletsController < ApplicationController
   end
 
   def failed
+  end
+
+  def federation_account
+    @address = session[:address]
+    @federations = Federation.where(address: @address)
   end
 
   private

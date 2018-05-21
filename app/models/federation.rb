@@ -1,0 +1,2 @@
+class Federation < ApplicationRecord
+end
