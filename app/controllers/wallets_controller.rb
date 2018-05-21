@@ -81,8 +81,6 @@ class WalletsController < ApplicationController
   def get_federation_address
     address = params[:address]
     account_id = fetch_address_from_federation(address)
-    puts '$$$$$$$$$$$$$$'
-    puts account_id
 
     respond_to do |format|
       format.js { render json: account_id }

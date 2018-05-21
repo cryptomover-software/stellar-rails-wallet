@@ -252,6 +252,7 @@ DEPENDENCIES
   puma
   rails (~> 5.1.2)
   rails-controller-testing
+  rails-html-sanitizer (~> 1.0.4)
   recaptcha
   sass-rails
   selenium-webdriver
