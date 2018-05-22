@@ -51,8 +51,11 @@ class WalletsController < ApplicationController
   end
 
   def get_federation_server_address(address)
+    # Process address fetching request
+    # for non cryptomover federation servers.
     domain = address.split('*')[1]
     url = "https://#{domain}/.well-known/stellar.toml"
+
     result = HTTParty.get(url)
     # Note and TODO:
     # We are using file parsing solution instead of using TOML
