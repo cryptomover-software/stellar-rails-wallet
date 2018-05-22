@@ -10,13 +10,13 @@
     .card-body
       #history-nav
         .prev
-          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_cursor]} << Prev
+          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": @prev_cursor} << Prev
         .first
           %button{class: "btn btn-brown", id: "first-btn"} First
         .last
           %button{class: "btn btn-brown", id: "last-btn"} Last
         .next
-          %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_cursor]} Next >>
+          %button{class: "btn btn-brown", id: "next-btn", "data-next": @next_cursor} Next >>
       .table-responsive
         %table#transactions-tbl.table.table-striped.table-sm
           %thead

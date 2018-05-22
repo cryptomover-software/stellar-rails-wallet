@@ -40,6 +40,15 @@ class WalletsController < ApplicationController
   HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
   ACCOUNT_ERROR = 'account_error'.freeze
 
+  def index
+    session[:balances] = FETCHING_BALANCES
+    # Reset previous and next button links of transactions page,
+    # when user visits home page
+    session[:next_cursor] = nil
+    session[:prev_cursor] = nil
+
+    @federation = set_federation_address
+  end
 
   def get_federation_server_address(address)
     domain = address.split('*')[1]
@@ -60,6 +69,7 @@ class WalletsController < ApplicationController
   def get_address_locally(username)
     federation = Federation.where(username: username).first
     return INVALID_FEDERATION_ADDRESS unless federation
+
     federation.address
   end
 
@@ -213,22 +223,14 @@ class WalletsController < ApplicationController
     end
   end
 
-  def set_cursor(next_cursor, prev_cursor, type)
+  def set_cursor(url)
     # Setting Pagination Cursor for
     # Previous and Next actions
 
-    next_url = next_cursor['href']
-    prev_url = prev_cursor['href']
-    next_url_params = CGI.parse(URI.parse(next_url).query)
-    prev_url_params = CGI.parse(URI.parse(prev_url).query)
+    cursor_url = url['href']
+    url_params = CGI.parse(URI.parse(cursor_url).query)
 
-    if type == 'asset'
-      session[:next_asset_cursor] = next_url_params['cursor']
-      session[:prev_asset_cursor] = prev_url_params['cursor']
-    else
-      session[:next_cursor] = next_url_params['cursor']
-      session[:prev_cursor] = prev_url_params['cursor']
-    end
+    url_params['cursor']
   end
 
   def set_assets_endpoint
@@ -258,35 +260,6 @@ class WalletsController < ApplicationController
     endpoint
   end
 
-  def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
-
-    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
-
-    order = if params[:order] == 'asc'
-              '&order=asc'
-            else
-              '&order=desc'
-            end
-    endpoint + order
-  end
-
-  def get_transactions
-    endpoint = set_transactions_endpoint()
-    url = STELLAR_API + endpoint
-
-    body = get_data_from_api(url)
-
-    # Set links for previous and next buttons
-    # url = body['_links']['next']
-    # set_cursor(url, 'next', nil)
-
-    # url = body['_links']['prev']
-    # set_cursor(url, 'prev', nil)
-    
-    body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-  end
-
   def set_federation_address
     return session[:federation_address] if session[:federation_address].present?
     f = Federation.where(address: session[:address]).first
@@ -295,16 +268,6 @@ class WalletsController < ApplicationController
       session[:federation_address] = address
       return address
     end
-  end
-
-  def index
-    session[:balances] = FETCHING_BALANCES
-    # Reset previous and next button links of transactions page,
-    # when user visits home page
-    session[:next_cursor] = nil
-    session[:prev_cursor] = nil
-
-    @federation = set_federation_address
   end
 
   def get_lumen_price_in_usd
@@ -354,16 +317,43 @@ class WalletsController < ApplicationController
     logger.debug "--> Account #{session[:address]} is Inactive."
   end
 
+  def set_transactions_endpoint
+    endpoint = "/accounts/#{session[:address]}/payments?limit=3"
+
+    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
+
+    order = if params[:order] == 'asc'
+              '&order=asc'
+            else
+              '&order=desc'
+            end
+    endpoint + order
+  end
+
+  def get_transactions
+    endpoint = set_transactions_endpoint()
+    url = STELLAR_API + endpoint
+
+    body = get_data_from_api(url)
+
+    # Set links for previous and next buttons
+    url = body['_links']['next']
+    next_cursor = set_cursor(url)
+
+    url = body['_links']['prev']
+    prev_cursor = set_cursor(url)
+
+    transactions = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    [transactions, next_cursor, prev_cursor]
+  end
+
   def transactions
     begin
-      @transactions = get_transactions()
-
-      return @transactions.reverse if params[:order] == 'asc_order'
-
-      respond_to do |format|
-        format.html { @transactions }
-        format.json { render json: body['_embedded']['records']}
-      end
+      result = get_transactions()
+      @transactions = result[0]
+      @transactions = @transactions.reverse if params[:order] == 'asc_order'
+      @next_cursor = result[1]
+      @prev_cursor = result[2]
     rescue StandardError => e
       puts "------------"
       puts e

@@ -22,8 +22,10 @@ namespace :federation do
       unless f.synced
         puts "Adding #{f.address} To Remote Stellar Federation Database."
         conn.exec("insert into accounts (name, address) values ('#{f.username}', '#{f.address}');")
+        conn.exec('commit;')
+        f.synced = true
+        f.save!
       end
-      conn.exec('commit;')
     end
   end
 end
