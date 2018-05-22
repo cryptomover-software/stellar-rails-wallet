@@ -233,22 +233,6 @@ class WalletsController < ApplicationController
     url_params['cursor']
   end
 
-  def set_assets_endpoint
-    endpoint = '/assets?limit=20'
-    
-    # endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
-
-    # endpoint += "&asset_code=#{params[:asset_code]}" if params[:asset_code]
-    # endpoint += "&asset_issuer=#{params[:asset_issuer]}" if params[:asset_issuer]
-    
-    # order = if params[:order] == 'asc'
-    #               '&order=asc'
-    #             elsif params[:order] == 'desc'
-    #               '&order=desc'
-    #         end
-    # endpoint # + order
-  end
-
   def set_trades_endpoint(balance)
     endpoint = '/trades?'
     endpoint += 'base_asset_type=' + balance['asset_type']
@@ -363,23 +347,31 @@ class WalletsController < ApplicationController
   end
 
   def get_assets
-    endpoint = set_assets_endpoint()
+    endpoint = '/assets?limit=30'
     url = STELLAR_API + endpoint
-
     body = get_data_from_api(url)
-    
-    # Set links for previous and next buttons
-    # next_cursor = body['_links']['next']
-    # prev_cursor = body['_links']['prev']
-    # set_cursor(next_cursor, prev_cursor, 'asset')
-    
-    body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+
+    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    next_url = body['_links']['next']['href']
+    [assets, next_url]
+  end
+
+  def fetch_next_assets
+    url = params[:next_url]
+    body = get_data_from_api(url)
+    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    next_url = body['_links']['next']['href']
+    data = [assets, next_url]
+    respond_to do |format|
+      format.json { render json: data }
+    end
   end
 
   def browse_assets
     begin
-      @assets = get_assets()
-      return @assets
+      result = get_assets
+      @assets = result[0]
+      @next_url = result[1]
     rescue StandardError # => e
       # puts e
       logger.debug '--> FAILED! Fetchin list of assets failed.'

@@ -317,7 +317,7 @@ footer {
     }
 }
 
-#history-nav, #assets-nav {
+#history-nav {
     margin: 10px 0 10px 0;
     text-align: center;
     .prev, .next, .first, .last {
@@ -474,20 +474,7 @@ footer {
 #result {
     display: none;
 }
-#assets-filter {
-    width: 60%;
-    @media(min-width: 750px) {
-        width: 60%;
-    }
-    @media(min-width: 960px) {
-        width: 45%;
-    }
-    margin: 0 auto;
-    text-align: center;
-    label {
-        margin: 0 10px 0 10px;
-    }
-}
+
 #help-card {
     margin: 0 auto;
     @media(min-width: 750px) {

@@ -3,23 +3,6 @@
     .card-header
       %h1 Assets List
     .card-body
-      #assets-filter
-        .form-inline.text-center
-          %label Asset Code
-          %input#asset-code.form-control.mb-2.mr-sm-2{type: "text", placeholder: "Type Asset Code"}
-          %label Asset Issuer
-          %input#asset-issuer.form-control.mb-2.mr-sm-2{type: "text", placeholder: "Type Asset Issuer"}
-
-          %button#filter-assets.btn.btn-brown.mb-2{type: "submit"} Filter
-      #assets-nav
-        .prev
-          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": session[:prev_asset_cursor]} << Prev
-        .first
-          %button{class: "btn btn-brown", id: "first-btn"} First
-        .last
-          %button{class: "btn btn-brown", id: "last-btn"} Last
-        .next
-          %button{class: "btn btn-brown", id: "next-btn", "data-next": session[:next_asset_cursor]} Next >>
       .table-responsive
         %table#assets-tbl.table.table-striped
           %thead
@@ -46,76 +29,43 @@
                   %button{class: "btn btn-brown trust-btn", "data-asset-code": asset_code, "data-asset-issuer": asset_issuer} Trust
                 %td
                   = url
+      .load-more-assets.text-center.mt-1.mb-1
+        %button#load-more-assets-btn{class: "btn btn-brown", "data-next-url": @next_url} Load More
 
 :javascript  
-  $("#filter-assets").click(function() {
-    var asset_code = $("#asset-code").val()
-    var asset_issuer = $("#asset-issuer").val()
-
-    var params = ""
-    if (asset_code.length > 0) {
-      params += 'asset_code=' + asset_code
-    } else if (asset_issuer.length > 0) {
-      params += '&asset_issuer=' + asset_issuer
-    }
-    console.log(params)
-
-    document.location.href = '/assets?'+params
-  })
-  
   $("#assets-tbl").on("click", ".short-address", function(e) {
     $(this).css("maxWidth", "100%")
   })
   
-  $(".trust-btn").click(function() {
+  $("#assets-tbl").on('click', ".trust-btn", function() {
     var asset_code = $(this).data("asset-code")
     var asset_issuer = $(this).data("asset-issuer")
     document.location.href = '/trust_asset?asset_code='+asset_code+'&asset_issuer='+asset_issuer
   })
-  
-  $("#next-btn").click(function() {
-    var params = window.location.href.split('?')[1]
-    var cursor = $(this).data("next")
-    if (params) {
-      params = '&cursor=' + cursor + params
-    } else {
-      params = '&cursor=' + cursor
-    }
-    document.location.href = '/assets?'+ params
-  })
-  $("#prev-btn").click(function() {
-    var params = window.location.href.split('?')[1]
-    var cursor = $(this).data("prev")
 
-    if (params) {
-      params = '&cursor=' + cursor + params
-    } else {
-      params = '&cursor=' + cursor
-    }
-    
-    document.location.href = '/assets?order=desc'+ params
-  })
-  $('#first-btn').click(function() {
-    var url = removeURLParam(window.location.href, 'cursor')
-    url = removeURLParam(url, 'order')
-    var params = url.split('?')[1]
+  $('#load-more-assets-btn').click(function() {
+    var nextUrl = $(this).data("next-url")
+    $(this).text("Loading...")
 
-    if (params) {
-      document.location.href = '/assets?' + params
-    } else {
-      document.location.href = '/assets'
-    }
-  })
-  $('#last-btn').click(function() {
-    var url = removeURLParam(window.location.href, 'cursor')
-    url = removeURLParam(url, 'order')
-    var params = url.split('?')[1]
-    var cursor = $(this).data("prev")
+    $.ajax({
+          method: 'GET',
+          url: "/fetch_next_assets",
+          data: {next_url: nextUrl},
+          success: function(data) {
+            var assets = data[0]
+            var nextUrl = data[1]
+            $('#load-more-assets-btn').data('next-url', nextUrl)
+            $('#load-more-assets-btn').text('Load More')
+            len = assets.length
 
-    if (params) {
-      document.location.href = '/assets?order=desc&cursor=' + cursor + params
-    } else {
-      document.location.href = '/assets?order=desc&cursor=' + cursor
-    }
-
+            for (i=0; i<len; ++i) {
+              if (i in assets) {
+                asset = assets[i];
+                $('#assets-tbl tr:last').after("<tr><td>" +
+                asset["asset_code"] + "</td><td>" +
+                asset["asset_type"] + "</td><td>" +
+                asset["asset_issuer"] + "</td><td><button class='btn btn-brown trust-btn' 'data-asset-code'=" + asset['asset_code'] + " 'data-asset-issuer'=" + asset['asset_issuer'] + ">Trust</button></td><td>" + asset['_links']['toml']['href'] + "</td></tr>")
+              }
+            }
+    }})
   })
