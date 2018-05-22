@@ -31,6 +31,8 @@
     "sass-loader": "^6.0.6",
     "stellar-sdk": "^0.8.0",
     "style-loader": "^0.18.2",
+    "trezor.js": "^6.15.17",
+    "trezor.js-node": "^6.11.3",
     "webpack": "^3.1.0",
     "webpack-manifest-plugin": "^1.1.2",
     "webpack-merge": "^4.1.0"

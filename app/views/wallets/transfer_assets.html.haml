@@ -3,6 +3,10 @@
     %h1 Send Lumens/Assets
   .card-body
     From Account
+    - if @federation.present?
+      %br
+      .address
+        = @federation
     %br
     .address
       = session[:address]
@@ -54,6 +58,23 @@
     $("#memo").prop("disabled", false)
   })
 
+  $("input[name=address]").focusout(function() {
+    console.log("fed adress out")
+    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    if (inputKey.includes('*') == true) {
+      $('#resolve-fed-address').show()
+      $('#send_money').attr('disabled', 'disabled')
+      $.ajax({
+            method: 'GET',
+            url: "/get_federation_address",
+            data: {address: inputKey},
+            success: function(publicKey) {
+              $('#resolve-fed-address').text(' Resolved to: ' + publicKey)
+              $('#send_money').removeAttr('disabled')
+      }})
+    }
+  })
+
   // set the amount to the max amount allowed
   $('#send-max').click(function() {
     var amount = parseFloat($(this).text().split(":")[1])
@@ -66,6 +87,25 @@
     if ($("#fund-new-chk").is(":checked")) {
       fundAccount = true
     }
-    processTransfer(fundAccount)
+    //processTransfer(fundAccount)
+
+    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    console.log("KEYY")
+    console.log(inputKey)
+    var values = []
+    console.log(inputKey.includes('*'))
+
+    if (inputKey.includes('*') == true) {
+      console.log("CALLING GET FED ADD")
+      $.ajax({
+        method: 'GET',
+        url: "/get_federation_address",
+        data: {address: inputKey},
+        success: function(publicKey) {
+          processTransfer(fundAccount, publicKey, inputKey)
+        }})
+    } else {
+      processTransfer(fundAccount, inputKey, null)
+    }
     
   }) // btn click end

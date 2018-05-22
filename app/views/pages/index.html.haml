@@ -4,10 +4,10 @@
       %h1
         Login
     .card-body
-      %form#login_form.m-t{action: "/login", role: "form"}
+      %form#login_form.m-t{action: login_path, role: "form"}
         .form-group
           %label
-            Enter your Stellar Public Stellar Key
+            Enter Federation address OR Public Stellar Key
           %input#public-key.form-control.form-control-lg{name: "public_key", placeholder: "Enter Public Key", type: "text"}/
         .row
           .col
@@ -17,11 +17,11 @@
             %button.btn.btn-brown.btn-lg{type: "submit"} Login
           .col.my-auto
             = link_to "New User? Create New Stellar Account.", new_account_path, class: "btn"
-      %hr
-      .text-center
-        = link_to trezor_wallet_login_path, class: "btn btn-info block full-width m-b" do
-          = image_tag("trezor_logo.png")
-          Login with Trezor
+      -# %hr
+      -# .text-center
+      -#   = link_to trezor_wallet_login_path, class: "btn btn-info block full-width m-b" do
+      -#     = image_tag("trezor_logo.png")
+      -#     Login with Trezor
     #login-footer.card-footer.text-center
       = link_to "https://medium.com/cryptomover", target: "_blank" do
         %i.fab.fa-medium.fa-3x

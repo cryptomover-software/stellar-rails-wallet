@@ -1,0 +1,57 @@
+#new-account-card
+  .card
+    .card-header
+      %h1
+        Federation Stellar Account
+    .card-body
+      %ul
+        %li
+          Federation Stellar address allows you to resolve email-like addresses such as
+          %b
+            name*yourdomain.com
+          into Stellar Account addresses like
+          .address
+            GCCVPYFOHY7ZB7557JKENAX62LUAPLMGIWNZJAFV2MITK6T32V37KEJU
+        %li
+          = link_to 'Click here', 'https://www.stellar.org/developers/guides/concepts/federation.html'
+          to know more about Stellar Federation Addresses.
+
+      - if @federations.present?
+        .alert.alert-success
+          SUCCESS! Your address
+          .address
+            = @address
+          is associated with following Federation Username
+        - @federations.each do |f|
+          - federation_address = "#{f.username}*cryptomover.com"
+          %h3.text-center
+            = federation_address
+        .alert.alert-danger
+          WARNING: It takes some time to sync this address in our Stellar Federation Database. If you want to send assets to this federation address from other exchange or wallet then please wait for atleast 5 minutes.
+        .alert.alert-danger
+          NOTE: Please prefer Cryptomover Stellar Wallet to send funds to Federation Addresses. Other Exchanges might not support sending assets to Stellar Federation Address as of now.
+      - else
+        .text-muted
+          The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>
+        = form_with model: Federation.new do |form|
+          = form.label :enter_username
+          .form-group.form-inline
+            = form.text_field :username, id: "fed-address", class: "form-control", width: "70%", placeholder: 'Enter Username'
+            %span#fed-address-error.alert.alert-danger
+            *cryptomover.com
+          // TODO report errors for wrong username
+          = form.submit 'Save Federation Address', id: "fed-address-submit", class: "btn btn-brown"
+
+:javascript
+  $('#fed-address').keypress(function() {
+    var regexp = new RegExp("[<*,>]")
+    if(regexp.test(document.getElementById("fed-address").value)) {
+      $('#fed-address-error').show()
+      $('#fed-address-error').text("Only Username is accepted. Do not type * OR the domain name. These symbols <*,> are not allowed.")
+      $('#fed-address-submit').attr('disabled', true)
+      return false
+    } else {
+      $('#fed-address-error').hide()
+      $('#fed-address-submit').removeAttr('disabled')
+    }
+  })

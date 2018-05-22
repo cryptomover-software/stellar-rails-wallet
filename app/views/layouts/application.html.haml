@@ -20,6 +20,10 @@
     / Wrapper
     #wrapper
       / Main view
+      -# .notice
+      -#   = notice
+      .alert
+        = alert
       - if flash[:notice].present?
         .alert.alert-danger.text-center
           = flash[:notice]

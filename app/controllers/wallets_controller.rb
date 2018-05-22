@@ -1,9 +1,13 @@
 class WalletsController < ApplicationController
+  # TODO: add verifiction of user copied private key
+  # before leaving new account page
   before_action :user_must_login, except: [:login, :logout,
                                            :new_account, :trezor_wallet]
-  before_action :activate_account, except: [:index, :get_balances, :login,
-                                            :logout, :new_account, :inactive_account,
-                                            :success, :failed, :trezor_wallet]
+  before_action :activate_account, except: [:index, :get_balances,
+                                            :login, :logout,
+                                            :new_account, :inactive_account,
+                                            :success, :failed,
+                                            :trezor_wallet, :federation_account]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -19,29 +23,97 @@ class WalletsController < ApplicationController
   BASE_RESERVE = 0.5
   NATIVE_ASSET = 'native'.freeze
   STELLAR_ASSET = 'XLM'.freeze
+  CRYPTOMOVER_DOMAIN = 'cryptomover.com'.freeze
   TREZOR_LOGIN_KEY = 'cryptomover'.freeze
   TREZOR_LOGIN_CYPHER_VALUE = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136'.freeze
   FETCHING_BALANCES = 'fetching'.freeze
   # Login Errors
-  INVALID_LOGIN_KEY = 'Invalid Public Key. Please check key again.'.freeze
+  INVALID_LOGIN_KEY = 'Invalid Login Key. Please check key again.'.freeze
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
   INVALID_TREZOR_KEY = 'Trezor Key must be cryptomover. Do not change key.'.freeze
   INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
   TREZOR_LOGIN_ERROR = 'Something went wrong. Please try again.'.freeze
   # Other Errors
+  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
   UNDETERMINED_PRICE = 'undetermined'.freeze
   HTTPARTY_STANDARD_ERROR = 'Unable to reach Stellar Server. Check network connection or try again later.'.freeze
   HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
   ACCOUNT_ERROR = 'account_error'.freeze
 
+  def index
+    session[:balances] = FETCHING_BALANCES
+    # Reset previous and next button links of transactions page,
+    # when user visits home page
+    session[:next_cursor] = nil
+    session[:prev_cursor] = nil
+
+    @federation = set_federation_address
+  end
+
+  def get_federation_server_address(address)
+    # Process address fetching request
+    # for non cryptomover federation servers.
+    domain = address.split('*')[1]
+    url = "https://#{domain}/.well-known/stellar.toml"
+
+    result = HTTParty.get(url)
+    # Note and TODO:
+    # We are using file parsing solution instead of using TOML
+    # library for the time being. This is because there are some
+    # technical errors with TOML library and it will take time to fix it.
+    # In future we need to use TOML library to parse TOML input.
+    toml = Hash[*result.split(/=|\n/)]
+    url = toml["FEDERATION_SERVER"]
+    # Remove unwanted backward \ from url
+    # TODO: Make sure this works with all TOML outputs
+    url.delete('\"')
+  end
+
+  def get_address_locally(username)
+    federation = Federation.where(username: username).first
+    return INVALID_FEDERATION_ADDRESS unless federation
+
+    federation.address
+  end
+
+  def fetch_address_from_federation(address)
+    username = address.split('*')[0]
+    domain_name = address.split('*')[1]
+    # All accounts created on our wallet are stored locally
+    # with domain name cryptomover.com.
+    # They will be synced with our Stellar Federation server.
+    return get_address_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
+
+    server_url = get_federation_server_address(address)
+    url = "#{server_url}?q=#{username}*#{domain_name}&type=name"
+    # TODO: Handle errors & when username do not exist on server
+    result = HTTParty.get(url)
+    result['account_id']
+  end
+
+  def get_federation_address
+    address = params[:address]
+    account_id = fetch_address_from_federation(address)
+
+    respond_to do |format|
+      format.js { render json: account_id }
+    end
+  end
+
   def login
     session.clear
     begin
       flash[:notice] = INVALID_CAPTCHA
-      redirect_to root_path and return unless true # verify_recaptcha
+      redirect_to root_path && return unless verify_recaptcha
 
       flash.clear
       address = params[:public_key].delete(' ')
+
+      if address.include? '*'
+        session[:federation_address] = address
+        address = fetch_address_from_federation(address)
+      end
+
       # Failure to generate key pair indicates invalid Public Key.
       Stellar::KeyPair.from_address(address)
 
@@ -154,54 +226,17 @@ class WalletsController < ApplicationController
     end
   end
 
-  def set_cursor(next_cursor, prev_cursor, type)
+  def set_cursor(url)
     # Setting Pagination Cursor for
     # Previous and Next actions
 
-    next_url = next_cursor['href']
-    prev_url = prev_cursor['href']
-    next_url_params = CGI.parse(URI.parse(next_url).query)
-    prev_url_params = CGI.parse(URI.parse(prev_url).query)
+    cursor_url = url['href']
+    url_params = CGI.parse(URI.parse(cursor_url).query)
 
-    if type == 'asset'
-      session[:next_asset_cursor] = next_url_params['cursor']
-      session[:prev_asset_cursor] = prev_url_params['cursor']
-    else
-      session[:next_cursor] = next_url_params['cursor']
-      session[:prev_cursor] = prev_url_params['cursor']
-    end
+    url_params['cursor']
   end
 
-  def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
-
-    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
-
-    endpoint += if params[:order] == 'asc'
-                  '&order=asc'
-                else
-                  '&order=desc'
-                end
-  end
-
-  def set_assets_endpoint
-    endpoint = '/assets?limit=20'
-    
-    endpoint += "&cursor=#{params[:cursor]}" if (params[:cursor])
-
-    endpoint += "&asset_code=#{params[:asset_code]}" if params[:asset_code]
-    endpoint += "&asset_issuer=#{params[:asset_issuer]}" if params[:asset_issuer]
-    
-    if params[:order] == 'asc'
-      endpoint += '&order=asc'
-    elsif params[:order] == 'desc'
-      endpoint += '&order=desc'
-    else
-      endpoint
-    end
-  end
-
-  def set_trades_endpoint(balance)        
+  def set_trades_endpoint(balance)
     endpoint = '/trades?'
     endpoint += 'base_asset_type=' + balance['asset_type']
     endpoint += '&base_asset_code=' + balance['asset_code']
@@ -209,30 +244,17 @@ class WalletsController < ApplicationController
     endpoint += "&counter_asset_type=#{NATIVE_ASSET}"
     endpoint += '&limit=1'
     endpoint += '&order=desc'
-  end
-  
-  def get_transactions
-    endpoint = set_transactions_endpoint()    
-    url = STELLAR_API + endpoint
-
-    body = get_data_from_api(url)
-
-    # Set links for previous and next buttons
-    url = body['_links']['next']
-    set_cursor(url, 'next', nil)
-
-    url = body['_links']['prev']
-    set_cursor(url, 'prev', nil)
-    
-    body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    endpoint
   end
 
-  def index
-    session[:balances] = FETCHING_BALANCES
-    # Reset previous and next button links of transactions page,
-    # when user visits home page
-    session[:next_cursor] = nil
-    session[:prev_cursor] = nil
+  def set_federation_address
+    return session[:federation_address] if session[:federation_address].present?
+    f = Federation.where(address: session[:address]).first
+    if f.present?
+      address = "#{f.username}*cryptomover.com"
+      session[:federation_address] = address
+      return address
+    end
   end
 
   def get_lumen_price_in_usd
@@ -282,41 +304,77 @@ class WalletsController < ApplicationController
     logger.debug "--> Account #{session[:address]} is Inactive."
   end
 
+  def set_transactions_endpoint
+    endpoint = "/accounts/#{session[:address]}/payments?limit=3"
+
+    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
+
+    order = if params[:order] == 'asc'
+              '&order=asc'
+            else
+              '&order=desc'
+            end
+    endpoint + order
+  end
+
+  def get_transactions
+    endpoint = set_transactions_endpoint()
+    url = STELLAR_API + endpoint
+
+    body = get_data_from_api(url)
+
+    # Set links for previous and next buttons
+    url = body['_links']['next']
+    next_cursor = set_cursor(url)
+
+    url = body['_links']['prev']
+    prev_cursor = set_cursor(url)
+
+    transactions = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    [transactions, next_cursor, prev_cursor]
+  end
+
   def transactions
     begin
-      @transactions = get_transactions()
-
-      return @transactions.reverse if params[:order] == 'asc_order'
-
-      respond_to do |format|
-        format.html { @transactions }
-        format.json { render json: body['_embedded']['records']}
-      end
-    rescue StandardError # => e
-      # puts e
+      result = get_transactions()
+      @transactions = result[0]
+      @transactions = @transactions.reverse if params[:order] == 'asc_order'
+      @next_cursor = result[1]
+      @prev_cursor = result[2]
+    rescue StandardError => e
+      puts "------------"
+      puts e
       logger.debug '--> FAILED! Fetching transactions history failed.'
-      redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+      redirect_to failed_path(error_description: e)
     end
   end
 
   def get_assets
-    endpoint = set_assets_endpoint()
+    endpoint = '/assets?limit=30'
     url = STELLAR_API + endpoint
-
     body = get_data_from_api(url)
-    
-    # Set links for previous and next buttons
-    next_cursor = body['_links']['next']
-    prev_cursor = body['_links']['prev']
-    set_cursor(next_cursor, prev_cursor, 'asset')
-    
-    body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+
+    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    next_url = body['_links']['next']['href']
+    [assets, next_url]
+  end
+
+  def fetch_next_assets
+    url = params[:next_url]
+    body = get_data_from_api(url)
+    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+    next_url = body['_links']['next']['href']
+    data = [assets, next_url]
+    respond_to do |format|
+      format.json { render json: data }
+    end
   end
 
   def browse_assets
     begin
-      @assets = get_assets()
-      return @assets
+      result = get_assets
+      @assets = result[0]
+      @next_url = result[1]
     rescue StandardError # => e
       # puts e
       logger.debug '--> FAILED! Fetchin list of assets failed.'
@@ -354,6 +412,7 @@ class WalletsController < ApplicationController
   end
 
   def transfer_assets
+    @federation = session[:federation_address]
     @balances = session[:balances]
     
     @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
@@ -369,6 +428,11 @@ class WalletsController < ApplicationController
   end
 
   def failed
+  end
+
+  def federation_account
+    @address = session[:address]
+    @federations = Federation.where(address: @address)
   end
 
   private
