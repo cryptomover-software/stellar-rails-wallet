@@ -37,8 +37,8 @@
           = form.label :enter_username
           .form-group.form-inline
             = form.text_field :username, id: "fed-address", class: "form-control", width: "70%", placeholder: 'Enter Username'
-            *cryptomover.com
             %span#fed-address-error.alert.alert-danger
+            *cryptomover.com
           // TODO report errors for wrong username
           = form.submit 'Save Federation Address', id: "fed-address-submit", class: "btn btn-brown"
 
