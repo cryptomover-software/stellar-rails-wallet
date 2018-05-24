@@ -9,8 +9,11 @@ class FederationsController < ApplicationController
       federation.address = session[:address]
       federation.save!
       # ToDo Rescue saving errors
+      @username = federation.username
 
-      redirect_to federation_account_path
+      respond_to do |format|
+        format.js { @username }
+      end
     rescue
       flash[:notice] = "Invalid Username. Do not type * OR Domain Name. These characters <*,> are not allowed."
       redirect_to federation_account_path

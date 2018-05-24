@@ -16,7 +16,9 @@
           .address
             = @federation
         - else
-          = link_to 'Create Federation Address', federation_account_path
+          %button.btn.btn-brown#create-federation-address-btn Create Federation Address
+          #create-federation-account
+            = render partial: 'shared/create_federation_account'
     %br
     #progressbar
       .progress-label
@@ -35,6 +37,13 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"}
 
 :javascript
+  $('#create-federation-address-btn').attr('disabled', 'disabled')
+  $('#create-federation-account').hide()
+  $('#create-federation-address-btn').click(function() {
+    $(this).hide()
+    $('#create-federation-account').show()
+  })
+
   progressBar()
   new Clipboard('#copy_address')
 
@@ -58,6 +67,7 @@
       document.location.href = '/failed?error_description=' + message
     } else {
       $("#progressbar").hide()
+      $('#create-federation-address-btn').removeAttr('disabled')
       var row = ""
       $("#balances-tbl tbody").remove()
 
