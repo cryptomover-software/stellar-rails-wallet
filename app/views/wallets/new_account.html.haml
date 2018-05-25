@@ -47,9 +47,9 @@
           = link_to "Go to Wallet", portfolio_path, class: "btn btn-brown"
           = link_to "Log Out", logout_path, class: "btn btn-info"
 
-%script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
-
 :javascript
+  new Clipboard("#copy_seed")
+  new Clipboard('#copy_address')
   $("#show-seed").click(function() {
     $("#secret-seed").removeClass("blur-text").addClass("unblur-text")
     $(this).hide()
@@ -60,5 +60,3 @@
     $(this).hide()
     $("#show-seed").show()
   })
-  new Clipboard("#copy_seed")
-  new Clipboard('#copy_address')

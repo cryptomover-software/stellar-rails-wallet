@@ -19,6 +19,7 @@
 //= require bootstrap.min
 // require chartjs/Chart.min.js
 //= require pace.min
+//= require clipboard 
 //= require_tree .
 
 function progressBar() {
