@@ -163,6 +163,7 @@ class WalletsController < ApplicationController
     session[:address] = @address = random.address
     logger.debug "--> SUCCESS! New Account created with address #{session[:address]}"
     @seed = random.seed
+    @federation = Federation.where(address: session[:address]).first
   end
 
   def get_data_from_api(url)

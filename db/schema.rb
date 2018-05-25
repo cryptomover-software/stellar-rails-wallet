@@ -12,7 +12,6 @@
 
 ActiveRecord::Schema.define(version: 20180518133405) do
 
-
   create_table "federations", force: :cascade do |t|
     t.text "username", null: false
     t.text "address", null: false
@@ -21,4 +20,5 @@ ActiveRecord::Schema.define(version: 20180518133405) do
     t.boolean "synced", default: false
     t.index ["username"], name: "index_federations_on_username", unique: true
   end
+
 end
