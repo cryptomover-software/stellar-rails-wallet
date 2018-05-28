@@ -12,6 +12,9 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   5. Fund new accounts.  
   6. Trust Assets.  
   7. Login Using Trezor Hardware Wallet.  
+  8. Login Using Federation address  
+  9. Create Federation address with `cryptomover.com` domain  
+  10. Send assets to federation address
 
 ## Technology Stack  
   1. Ruby 2.4.1  
