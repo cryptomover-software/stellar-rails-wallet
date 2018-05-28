@@ -33,7 +33,7 @@
               %button{type: "button", class: "btn btn-brown", id: "show-seed"} Show
               %button{type: "button", class: "btn btn-brown", id: "hide-seed"} Hide
               %button{type: "button", class: "btn btn-brown", "data-clipboard-target": ".secret-seed", id: "copy_seed"} Copy
-        .alert.alert-danger.text-center.mt-3
+        .alert.alert-info.text-center.mt-3
           %b This account doesn't exist on the Stellar network yet. To activate this account, send it at least 1 Lumen (XLM) to fulfill the
           = link_to "minimum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
           \.
