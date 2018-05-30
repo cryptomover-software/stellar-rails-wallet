@@ -1,0 +1,10 @@
+#confirm-email-card
+  .card
+    .card-header.text-success
+      %h1 Email Confirmed.
+    .card-body
+      Your email address
+      = @federation.username
+      is confirmed.
+      %br
+      = link_to 'Login Now', root_path

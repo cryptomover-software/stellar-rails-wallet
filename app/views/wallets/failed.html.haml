@@ -4,6 +4,9 @@
       .failed
         %h1 FAILED!
     .card-body.text-center
-      Transaction failed with following error:
+      - if params[:type] == 'email'
+        Email Verification Failed with following error:
+      - else
+        Transaction failed with following error:
       %br
       = params[:error_description]

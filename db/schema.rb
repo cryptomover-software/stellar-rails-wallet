@@ -18,6 +18,10 @@ ActiveRecord::Schema.define(version: 20180518133405) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "synced", default: false
+    t.string "email_confirmation_token"
+    t.boolean "email_confirmed", default: false
+    t.datetime "email_confirmation_generated_at"
+    t.index ["email_confirmation_token"], name: "index_federations_on_email_confirmation_token", unique: true
     t.index ["username"], name: "index_federations_on_username", unique: true
   end
 
