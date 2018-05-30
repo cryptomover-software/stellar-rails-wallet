@@ -34,13 +34,12 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.perform_deliveries = true
   config.action_mailer.smtp_settings = {
-    address: ENV['SMTP_ADDRESS'],
-    port: ENV['EMAIL_PORT'],
+    address: ENV['smtp_address'],
+    port: ENV['email_port'],
     # enable_starttls_auto: true,
-    user_name: ENV["EMAIL_USERNAME"],
-    password:  ENV["EMAIL_PASSWORD"],
-    authentication: :plain,
-    domain: ENV['EMAIL_DOMAIN']
+    user_name: ENV['email_username'],
+    password: ENV['email_password'],
+    domain: ENV['email_domain']
   }
 
   # Print deprecation notices to the Rails logger.
