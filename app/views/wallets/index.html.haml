@@ -17,7 +17,9 @@
             = "#{@federation.username}*cryptomover.com"
         - elsif @federation.present? and not @federation.email_confirmed
           .alert.alert-warning
-            Please verify your email to activate Federation Account.
+            Please verify your email
+            = @federation.username
+            to activate Federation Account.
         - else
           %button.btn.btn-brown#create-federation-address-btn Create Federation Address
           #create-federation-account
