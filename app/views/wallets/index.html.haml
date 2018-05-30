@@ -11,14 +11,18 @@
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
     .row
       .col
-        - if @federation.present?
+        - if @federation.present? and @federation.email_confirmed
           Federation Address:
           .address
-            = @federation
+            = "#{@federation.username}*cryptomover.com"
+        - elsif @federation.present? and not @federation.email_confirmed
+          .alert.alert-warning
+            Please verify your email to activate Federation Account.
         - else
           %button.btn.btn-brown#create-federation-address-btn Create Federation Address
           #create-federation-account
             = render partial: 'shared/create_federation_account'
+          -# %button.btn.btn-brown#renew-token Renew Verification Token
     %br
     #progressbar
       .progress-label

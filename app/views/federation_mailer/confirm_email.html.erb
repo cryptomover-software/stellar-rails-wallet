@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type"/>
+    </head>
+    <body>
+        <h3>
+            Welcome to Cryptomover Stellar Wallet.
+        </h3>
+        <p>
+            You have successfully signed up to cryptomover.tech Stellar Wallet.
+            Your Stellar Federation Address is #{@federation.username}*cryptomover.com
+            Your Stellar Public Key is
+            <br/>
+            <%= @federation.address %>
+        </p>
+        <p>
+            You have requested to create a Stellar Federation Account with this email.
+            <br/>
+            Please visit following URL to confirm this email in order to activate your Federation Account:
+            <br/>
+            <%= @url %>
+            <br/>
+        </p>
+        <p>
+            To login to the site, just follow this link: https://www.cryptomover.tech
+        </p>
+        <p>Thanks for joining and have a great day!</p>
+    </body>
+</html>
