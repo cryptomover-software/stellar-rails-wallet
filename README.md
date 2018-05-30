@@ -29,10 +29,11 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   4. Run `rails db:migrate`  
   5. Run command `bundle install` to install necessary ruby gems.   
   6. Add Recaptcha Keys.  
-  7. For production, add deploy script and your app server configuration.  
-  8. For production, add `SECRET_KEY_BASE`  
-  9. Run command `rails server` to start the server.  
-  10. Access `http://localhost:3000` in your web browser.  
+  7. Add `config/application.yml` to store email and other configuration settings.  
+  8. For production, add deploy script and your app server configuration.  
+  9. For production, add `SECRET_KEY_BASE`  
+  10. Run command `rails server` to start the server.  
+  11. Access `http://localhost:3000` in your web browser.  
   
 ## ToDo
   1. Add Tests.  
