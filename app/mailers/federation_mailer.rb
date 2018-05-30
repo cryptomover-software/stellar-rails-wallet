@@ -2,9 +2,9 @@ class FederationMailer < ApplicationMailer
   layout 'mailer'
 
   WALLET_URL = 'https://cryptomover.tech'.freeze
-  CRYPTOMOVER_SUPPORT_EMAIL = 'support@cryptomover.com'.freeze
-  GAVIN_EMAIL = 'gavin@cryptomover.com'.freeze
-  NEELABH_EMAIL = 'neelabh@cryptomover.com'.freeze
+  CRYPTOMOVER_SUPPORT_EMAIL = ENV['cryptomover_support_email']
+  GAVIN_EMAIL = ENV['gavin_email']
+  NEELABH_EMAIL = ENV['neelabh_email']
 
   def confirm_email
     @federation = params[:federation]

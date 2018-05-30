@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: 'support@cryptomover.com'
+  default from: ENV['default_email']
   layout 'mailer'
 end
