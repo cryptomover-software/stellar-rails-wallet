@@ -36,10 +36,9 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   11. Access `http://localhost:3000` in your web browser.  
   
 ## ToDo
-  1. Add Tests.  
-  2. Show the real-time NAV of cryptomover Index funds in USD.  
-  3. Display customer's total NAV and history in USD.  
-  4. Add Optional Database Backend Facility.  
+  1. Show the real-time NAV of cryptomover Index funds in USD.  
+  2. Display customer's total NAV and history in USD.  
+  3. Add Optional Database Backend Facility.  
 
 ## LICENSE
 
