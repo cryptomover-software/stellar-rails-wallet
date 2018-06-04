@@ -21,7 +21,3 @@
 every 5.minutes do
   rake 'federation:sync_addresses'
 end
-
-every :day, at: '01:00 am' do
-  rake 'federation:report_users'
-end
