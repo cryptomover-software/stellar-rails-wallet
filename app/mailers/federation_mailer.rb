@@ -2,9 +2,6 @@ class FederationMailer < ApplicationMailer
   layout 'mailer'
 
   WALLET_URL = 'https://cryptomover.tech'.freeze
-  CRYPTOMOVER_SUPPORT_EMAIL = ENV['cryptomover_support_email']
-  GAVIN_EMAIL = ENV['gavin_email']
-  NEELABH_EMAIL = ENV['neelabh_email']
 
   def confirm_email
     @federation = params[:federation]
@@ -14,24 +11,5 @@ class FederationMailer < ApplicationMailer
 
     mail(to: email_address,
          subject: 'Confirm Email Address for Cryptomover Stellar Federation Account')
-  end
-
-  def report_new_user_registration
-    # report individual registration for the pupose of
-    # sending 2 XLMs
-    @federation = params[:federation]
-    email_address = CRYPTOMOVER_SUPPORT_EMAIL
-    mail(to: email_address,
-         subject: 'New User Registered on Wallet. Send 2 XLM.')
-  end
-
-  def report_daily_registrations
-    # report all registrations done yesterday
-    @federations = params[:federations]
-    subject = "Total #{@federations.count} new registration(s) on Wallet for #{Date.yesterday}"
-    subject = "No new registrations on Wallet for #{Date.yesterday}" if @federations.count == 0
-    mail(to: [GAVIN_EMAIL,
-              NEELABH_EMAIL],
-         subject: subject)
   end
 end

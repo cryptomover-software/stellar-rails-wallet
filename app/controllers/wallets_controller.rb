@@ -190,17 +190,16 @@ class WalletsController < ApplicationController
     if asset_code == STELLAR_ASSET
       asset_code = NATIVE_ASSET
       asset_balance = balances.select { |key| key['asset_type'] == asset_code }
-      balance = asset_balance.first['balance']
     else
       asset_balance = balances.select { |key| key['asset_code'] == asset_code }
-      balance = asset_balance.first['balance']
     end
+    balance = asset_balance.first['balance']
 
     max_allowed_amount = calculate_max_allowed_amount(asset_code)
     result = [balance.to_f, max_allowed_amount]
 
     respond_to do |format|
-      format.json {render json: result}
+      format.json { render json: result }
     end
   end
   
