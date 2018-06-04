@@ -170,7 +170,7 @@ nav.navbar.navbar-expand-md {
         margin: 0 10% 0 10%;      
     }
 }
-#new-account-card {
+#new-account-card, #confirm-email-card {
     @media(min-width: 750px) {
         margin: 0 15% 0 15%;
     }
@@ -238,7 +238,7 @@ nav.navbar.navbar-expand-md {
     text-overflow: ellipsis;
 }
 .inactive-prompt {
-    margin-top: 10px;
+    // margin-top: 10px;
     word-wrap: break-word;
 }
 table {

@@ -12,6 +12,9 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   5. Fund new accounts.  
   6. Trust Assets.  
   7. Login Using Trezor Hardware Wallet.  
+  8. Login Using Federation address  
+  9. Create Federation address with `cryptomover.com` domain  
+  10. Send assets to federation address
 
 ## Technology Stack  
   1. Ruby 2.4.1  
@@ -26,16 +29,16 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   4. Run `rails db:migrate`  
   5. Run command `bundle install` to install necessary ruby gems.   
   6. Add Recaptcha Keys.  
-  7. For production, add deploy script and your app server configuration.  
-  8. For production, add `SECRET_KEY_BASE`  
-  9. Run command `rails server` to start the server.  
-  10. Access `http://localhost:3000` in your web browser.  
+  7. Add `config/application.yml` to store email and other configuration settings.  
+  8. For production, add deploy script and your app server configuration.  
+  9. For production, add `SECRET_KEY_BASE`  
+  10. Run command `rails server` to start the server.  
+  11. Access `http://localhost:3000` in your web browser.  
   
 ## ToDo
-  1. Add Tests.  
-  2. Show the real-time NAV of cryptomover Index funds in USD.  
-  3. Display customer's total NAV and history in USD.  
-  4. Add Optional Database Backend Facility.  
+  1. Show the real-time NAV of cryptomover Index funds in USD.  
+  2. Display customer's total NAV and history in USD.  
+  3. Add Optional Database Backend Facility.  
 
 ## LICENSE
 

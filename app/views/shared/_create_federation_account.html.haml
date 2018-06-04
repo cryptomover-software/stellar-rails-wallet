@@ -5,13 +5,13 @@
   %li
     Federation Stellar address allows you to resolve email-like addresses such as
     %b
-      name*yourdomain.com
+      name@gmail.com*yourdomain.com
     into your Stellar Account address
     .address
       = session[:address]
-%li
-  = link_to 'Click here', 'https://www.stellar.org/developers/guides/concepts/federation.html'
-  to know more about Stellar Federation Addresses.
+  %li
+    = link_to 'Click here', 'https://www.stellar.org/developers/guides/concepts/federation.html'
+    to know more about Stellar Federation Addresses.
 
 - if @federations.present?
   .alert.alert-success
@@ -28,27 +28,45 @@
   .alert.alert-danger
     NOTE: Please prefer Cryptomover Stellar Wallet to send funds to Federation Addresses. Other Exchanges might not support sending assets to Stellar Federation Address as of now.
 - else
-  .text-muted
-    The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>
-  = form_with model: Federation.new, remote: true do |form|
-    = form.label :enter_username
-    .form-group.form-inline
-      = form.text_field :username, id: "fed-address", class: "form-control", width: "70%", placeholder: 'Enter Username'
-      %span#fed-address-error.alert.alert-danger
-      *cryptomover.com
-    // TODO report errors for wrong username
-    = form.submit 'Save Federation Address', id: "fed-address-submit", class: "btn btn-brown"
+  #federation-form
+    .text-muted
+      The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>
+    = form_with model: Federation.new, remote: true do |form|
+      = form.label :enter_email_address
+      .form-group.form-inline
+        = form.text_field :username, id: "fed-address", class: "form-control", width: "70%", placeholder: 'Enter Email'
+        %span#fed-address-error.alert.alert-danger
+        *cryptomover.com
+      .text-muted.mb-1
+        You will receive 2 XLM after verifying your email address.
+      // TODO report errors for wrong username
+      = form.submit 'Save Federation Address', id: "fed-address-submit", class: "btn btn-brown"
 
 :javascript
-  $('#fed-address').keypress(function() {
+
+  $('#fed-address').focusout(function() {
     var regexp = new RegExp("[<*,>]")
-    if(regexp.test(document.getElementById("fed-address").value)) {
+    var email_regexp = new RegExp("[@.]")
+    var input = document.getElementById("fed-address").value
+    if(regexp.test(input)) {
       $('#fed-address-error').show()
-      $('#fed-address-error').text("Only Username is accepted. Do not type * OR the domain name. These symbols <*,> are not allowed.")
+      $('#fed-address-error').text("Only Email address is accepted. Do not type * OR the domain name. These symbols <*,> are not allowed.")
+      $('#fed-address-submit').attr('disabled', true)
+      return false
+    
+    } else if(!email_regexp.test(input)) {
+      $('#fed-address-error').show()
+      $('#fed-address-error').text("Username must be a valid email address.")
       $('#fed-address-submit').attr('disabled', true)
       return false
     } else {
       $('#fed-address-error').hide()
       $('#fed-address-submit').removeAttr('disabled')
     }
+  })
+
+  $('#fed-address-submit').click(function() {
+    var input = document.getElementById("fed-address").value
+    $('#federation-form').children().hide()
+    $('#federation-form').append("<div class='alert alert-info'>You will receive confirmation email at " + input + " shortly. Click on the link provided in that email to verify your email address. Your Federation account will be created and will be deposited with 2 XLM only after email verification.</div>")
   })

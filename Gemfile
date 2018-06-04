@@ -68,3 +68,4 @@ gem 'rails-controller-testing'
 gem 'pg'
 gem 'whenever', require: false
 gem 'rails-html-sanitizer', '~> 1.0.4'
+gem "figaro"

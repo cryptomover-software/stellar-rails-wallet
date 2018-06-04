@@ -2,7 +2,7 @@ class WalletsController < ApplicationController
   # TODO: add verifiction of user copied private key
   # before leaving new account page
   before_action :user_must_login, except: [:login, :logout,
-                                           :new_account, :trezor_wallet]
+                                           :new_account, :trezor_wallet, :failed]
   before_action :activate_account, except: [:index, :get_balances,
                                             :login, :logout,
                                             :new_account, :inactive_account,
@@ -190,17 +190,16 @@ class WalletsController < ApplicationController
     if asset_code == STELLAR_ASSET
       asset_code = NATIVE_ASSET
       asset_balance = balances.select { |key| key['asset_type'] == asset_code }
-      balance = asset_balance.first['balance']
     else
       asset_balance = balances.select { |key| key['asset_code'] == asset_code }
-      balance = asset_balance.first['balance']
     end
+    balance = asset_balance.first['balance']
 
     max_allowed_amount = calculate_max_allowed_amount(asset_code)
     result = [balance.to_f, max_allowed_amount]
 
     respond_to do |format|
-      format.json {render json: result}
+      format.json { render json: result }
     end
   end
   
@@ -249,13 +248,9 @@ class WalletsController < ApplicationController
   end
 
   def set_federation_address
-    return session[:federation_address] if session[:federation_address].present?
+    # return session[:federation_address] if session[:federation_address].present?
     f = Federation.where(address: session[:address]).first
-    if f.present?
-      address = "#{f.username}*cryptomover.com"
-      session[:federation_address] = address
-      return address
-    end
+    return f if f.present?
   end
 
   def get_lumen_price_in_usd
@@ -431,10 +426,12 @@ class WalletsController < ApplicationController
   def failed
   end
 
-  def federation_account
-    @address = session[:address]
-    @federations = Federation.where(address: @address)
-  end
+  # def federation_account
+  #   @address = session[:address]
+  #   @federations = Federation.where(address: @address)
+
+  #   head :no_content
+  # end
 
   private
   def activate_account
