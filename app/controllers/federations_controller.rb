@@ -16,7 +16,7 @@ class FederationsController < ApplicationController
 
     @federation.email_confirmed = true
     @federation.save!
-    FederationMailer.with(federation: @federation).report_new_user_registration.deliver_now
+    redirect_to portfolio_path
   end
 
   def create
