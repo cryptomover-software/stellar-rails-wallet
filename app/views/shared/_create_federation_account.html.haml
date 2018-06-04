@@ -43,15 +43,22 @@
       = form.submit 'Save Federation Address', id: "fed-address-submit", class: "btn btn-brown"
 
 :javascript
-  var regexp = new RegExp("[<*,>]")
 
-  $('#fed-address').keypress(function() {
+  $('#fed-address').focusout(function() {
+    var regexp = new RegExp("[<*,>]")
+    var email_regexp = new RegExp("[@.]")
     var input = document.getElementById("fed-address").value
     if(regexp.test(input)) {
       $('#fed-address-error').show()
-      $('#fed-address-error').text("Only Username is accepted. Do not type * OR the domain name. These symbols <*,> are not allowed.")
+      $('#fed-address-error').text("Only Email address is accepted. Do not type * OR the domain name. These symbols <*,> are not allowed.")
       $('#fed-address-submit').attr('disabled', true)
-      return false    
+      return false
+    
+    } else if(!email_regexp.test(input)) {
+      $('#fed-address-error').show()
+      $('#fed-address-error').text("Username must be a valid email address.")
+      $('#fed-address-submit').attr('disabled', true)
+      return false
     } else {
       $('#fed-address-error').hide()
       $('#fed-address-submit').removeAttr('disabled')
