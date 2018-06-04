@@ -16,7 +16,6 @@ class FederationsController < ApplicationController
 
     @federation.email_confirmed = true
     @federation.save!
-    redirect_to portfolio_path
   end
 
   def create
