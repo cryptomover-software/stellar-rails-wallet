@@ -34,11 +34,10 @@ class WalletsController < ApplicationController
   INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
   TREZOR_LOGIN_ERROR = 'Something went wrong. Please try again.'.freeze
   # Other Errors
-  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
+  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'.freeze
   UNDETERMINED_PRICE = 'undetermined'.freeze
-  HTTPARTY_STANDARD_ERROR = 'Unable to reach Stellar Server. Check network connection or try again later.'.freeze
-  HTTPARTY_500_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
-  ACCOUNT_ERROR = 'account_error'.freeze
+  HTTPARTY_STANDARD_ERROR = 'Unable to reach Server. Check URL and network connection or try again later.'.freeze
+  ACCOUNT_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
 
   def index
     session[:balances] = FETCHING_BALANCES
@@ -56,17 +55,21 @@ class WalletsController < ApplicationController
     domain = address.split('*')[1]
     url = "https://#{domain}/.well-known/stellar.toml"
 
-    result = HTTParty.get(url)
-    # Note and TODO:
-    # We are using file parsing solution instead of using TOML
-    # library for the time being. This is because there are some
-    # technical errors with TOML library and it will take time to fix it.
-    # In future we need to use TOML library to parse TOML input.
-    toml = Hash[*result.split(/=|\n/)]
-    url = toml["FEDERATION_SERVER"]
-    # Remove unwanted backward \ from url
-    # TODO: Make sure this works with all TOML outputs
-    url.delete('\"')
+    begin
+      # Note and TODO:
+      # We are using file parsing solution instead of using TOML
+      # library for the time being. This is because there are some
+      # technical errors with TOML library and it will take time to fix it.
+      # In future we need to use TOML library to parse TOML input.
+      response = HTTParty.get(url)
+      toml = Hash[*response.split(/=|\n/)]
+      url = toml['FEDERATION_SERVER']
+      url.delete('\"')
+    rescue HTTParty::Error, SocketError => e
+      puts e
+      logger.debug '--> Error while fetching data from API'
+      return HTTPARTY_STANDARD_ERROR
+    end
   end
 
   def get_address_locally(username)
@@ -84,11 +87,20 @@ class WalletsController < ApplicationController
     # They will be synced with our Stellar Federation server.
     return get_address_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
 
+
     server_url = get_federation_server_address(address)
+    return server_url if server_url == HTTPARTY_STANDARD_ERROR
+    
     url = "#{server_url}?q=#{username}*#{domain_name}&type=name"
     # TODO: Handle errors & when username do not exist on server
-    result = HTTParty.get(url)
-    result['account_id']
+    begin
+      response = HTTParty.get(url)
+      response['account_id']
+    rescue HTTParty::Error, SocketError => e
+      puts e
+      logger.debug '--> Error while fetching data from API'
+      return HTTPARTY_STANDARD_ERROR
+    end
   end
 
   def get_federation_address
