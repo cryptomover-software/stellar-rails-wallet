@@ -59,7 +59,6 @@
   })
 
   $("input[name=address]").focusout(function() {
-    console.log("fed adress out")
     var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
     if (inputKey.includes('*') == true) {
       $('#resolve-fed-address').show()
@@ -93,7 +92,6 @@
     console.log("KEYY")
     console.log(inputKey)
     var values = []
-    console.log(inputKey.includes('*'))
 
     if (inputKey.includes('*') == true) {
       console.log("CALLING GET FED ADD")
