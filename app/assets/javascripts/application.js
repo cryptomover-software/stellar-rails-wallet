@@ -147,8 +147,9 @@ function processTransfer(fundAccount, receiverPublicKey, federationAddress) {
       hideFormControls()
       progressBar()
       if (fundAccount) {
-        $.post('/create_log', {message: '--> Funding New Account Began for' + receiverPublicKey})
-        fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
+        // first check if account is already funded
+        // or not before begining fundNewAccount
+        alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
       } else {
         $.post('/create_log', {message: '--> Sending asset(s) to existing account ' + receiverPublicKey})
         // console.log("sending money")
@@ -271,46 +272,38 @@ function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPu
   return transaction
 } // buildTransaction end
 
-function alreadyFunded(server, receiverPublicKey) {
-  var statusCode = 200
+function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
   server.accounts()
     .accountId(receiverPublicKey)
     .call()
     .then(function(accountResult) {
+      var message = "Account is Already Active. Account Address: " + receiverPublicKey
+      $.post('/create_log', {message: '--> ERROR! ' + message})
+      document.location.href = '/failed?error_description=' + message
+      return
     }).catch(function (err) {
-      statusCode = err["message"]["status"]
+      // statusCode = err["message"]["status"]
+      $.post('/create_log', {message: '--> Funding New Account Began for' + receiverPublicKey})
+      fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
     })
-
-  if (parseInt(statusCode) == 404) {
-    return false
-  } else {
-    return true
-  }
 } // alreadyFunded end
 
 function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
     var sourcePublicKey = sourceKeypair.publicKey()
 
-    if (alreadyFunded(server, receiverPublicKey)) {
-      var message = "Account is Already Active. Account Address: " + receiverPublicKey
-      $.post('/create_log', {message: '--> ERROR! ' + message})
-      document.location.href = '/failed?error_description=' + message
-      return
-    } else {
-      server.accounts()
-        .accountId(sourcePublicKey)
-        .call()
-        .then(function(accountResult) {
-          var transaction = buildTransaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo)
-          submitTransaction(server, transaction, receiverPublicKey, amount)
-        })
-        .catch(function (err) {
-          // console.log(err)
-          $.post('/create_log', {message: '--> ERROR! ' + err.message.detail})
-          document.location.href = '/failed?error_description=' + err.message.detail
-        })
-    }
+    server.accounts()
+      .accountId(sourcePublicKey)
+      .call()
+      .then(function(accountResult) {
+        var transaction = buildTransaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo)
+        submitTransaction(server, transaction, receiverPublicKey, amount)
+      })
+      .catch(function (err) {
+        // console.log(err)
+        $.post('/create_log', {message: '--> ERROR! ' + err.message.detail})
+        document.location.href = '/failed?error_description=' + err.message.detail
+      })
 } // fund new account block end
 
 // Trust Assets
