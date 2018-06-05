@@ -41,7 +41,18 @@
   .form-check
     %label.form-check-label
       %input.form-check-input{type: "checkbox", name: "fund-new", value: "fund-new", id: "fund-new-chk"}  Fund New Account
-  .fee-prompt.mb-2.mt-2
+  %hr
+  .form-check
+    %label.form-check-label
+      %input.form-check-input{type: "checkbox", name: "agree-transfer-terms", value: "agree-terms", id: "agree-terms-chk"}  I agree to
+      = link_to 'Terms & Conditions.', 'https://github.com/cryptomover-code/stellar-rails/blob/master/LICENSE'
+  -# TODO add cryptomover link when its available
+  -# .form-check
+  -#   %label.form-check-label
+  -#     %input.form-check-input{type: "checkbox", name: "agree-transfer-terms", value: "agree-terms", id: "agree-terms-chk"}  I agree to
+  -#     = link_to 'Cryptomover', 'https://github.com/cryptomover-code/stellar-rails/blob/master/LICENSE'
+  -#     Terms and Conditions.
+  .fee-prompt.mb-2.mt-2.text-danger
     Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
   .container-fluid
     .row

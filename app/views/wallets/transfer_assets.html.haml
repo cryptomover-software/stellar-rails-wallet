@@ -10,6 +10,13 @@
     %br
     .address
       = session[:address]
+    .alert.alert-warning
+      %b
+        WARNING!
+      %br
+      Make sure you are transferring the Stellar Assets to correct Stellar Account.
+      %br
+      We are in no way responsible for any loss occurred due to any unexpected server software behaviour or wrong account address.
     %hr
     = render partial: "shared/transfer_assets_form"
 
@@ -82,6 +89,14 @@
 
   // initiate send money
   $('#send_money').click(function(event) {
+    if ($("#agree-terms-chk").is(":checked") == false) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Please read and Accept Terms and Conditions.")
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
+      return 
+    }
+
     var fundAccount = false
     if ($("#fund-new-chk").is(":checked")) {
       fundAccount = true
