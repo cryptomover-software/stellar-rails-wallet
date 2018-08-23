@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WalletsController < ApplicationController
   # TODO: add verifiction of user copied private key
   # before leaving new account page
@@ -28,7 +30,7 @@ class WalletsController < ApplicationController
   TREZOR_LOGIN_CYPHER_VALUE = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136'.freeze
   FETCHING_BALANCES = 'fetching'.freeze
   # Login Errors
-  INVALID_LOGIN_KEY = 'Invalid Login Key. Please check key again.'.freeze
+  INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'.freeze
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
   INVALID_TREZOR_KEY = 'Trezor Key must be cryptomover. Do not change key.'.freeze
   INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
@@ -115,11 +117,20 @@ class WalletsController < ApplicationController
   def login
     session.clear
     begin
-      flash[:notice] = INVALID_CAPTCHA
-      redirect_to root_path && return unless verify_recaptcha
-
       flash.clear
       address = params[:public_key].delete(' ')
+      if address.empty?
+        flash[:notice] = INVALID_LOGIN_KEY
+        redirect_to root_path
+        return
+      end
+
+      flash.clear
+      unless verify_recaptcha
+        flash[:notice] = INVALID_CAPTCHA
+        redirect_to root_path
+        return
+      end
 
       if address.include? '*'
         session[:federation_address] = address
