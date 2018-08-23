@@ -14,9 +14,11 @@
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': true
     = csrf_meta_tags
 
-      
   %body.top-navigation
     = render 'layouts/shared/top_navbar'
+    %noscript
+      .alert.alert-danger.text-center
+        Please enable javascript to use this website.
     / Wrapper
     #wrapper
       / Main view
@@ -50,6 +52,7 @@
               = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
                 %i.fab.fa-github.fa-2x
 :javascript
+  $('#wrapper').show()
   $("#layout-alert").hide()
   
   $("#portfolio-menu").click(function() {

@@ -49,6 +49,9 @@ body {
     background-image: image-url("rocket.png");
     background-repeat: repeat repeat;
 }
+#wrapper {
+    display: none;
+}
 .btn-brown { 
     color: #FFFFFF; 
     background-color: #51504E; 
