@@ -4,17 +4,16 @@ class WalletsController < ApplicationController
   # TODO: add verifiction of user copied private key
   # before leaving new account page
   before_action :user_must_login, except: [:login, :logout,
-                                           :new_account, :trezor_wallet, :failed]
+                                           :new_account, :failed]
   before_action :activate_account, except: [:index, :get_balances,
                                             :login, :logout,
                                             :new_account, :inactive_account,
                                             :success, :failed,
-                                            :trezor_wallet, :federation_account]
+                                            :federation_account]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
   # and after initializing the balance cookie.
-  before_action :validate_trezor_login, only: :trezor_wallet
 
   # APIs
   STELLAR_API = 'https://horizon.stellar.org'.freeze
@@ -26,15 +25,10 @@ class WalletsController < ApplicationController
   NATIVE_ASSET = 'native'.freeze
   STELLAR_ASSET = 'XLM'.freeze
   CRYPTOMOVER_DOMAIN = 'cryptomover.com'.freeze
-  TREZOR_LOGIN_KEY = 'cryptomover'.freeze
-  TREZOR_LOGIN_CYPHER_VALUE = 'fb00d59cd37c56d64ce6eba73af7a0aacdd25e06d18f98af16fc4a7b341b7136'.freeze
   FETCHING_BALANCES = 'fetching'.freeze
   # Login Errors
   INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'.freeze
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
-  INVALID_TREZOR_KEY = 'Trezor Key must be cryptomover. Do not change key.'.freeze
-  INVALID_TREZOR_CYPHER = 'Invalid Cypher Value. Do not change cypher value.'.freeze
-  TREZOR_LOGIN_ERROR = 'Something went wrong. Please try again.'.freeze
   # Other Errors
   INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'.freeze
   UNDETERMINED_PRICE = 'undetermined'.freeze
@@ -146,24 +140,6 @@ class WalletsController < ApplicationController
       flash[:notice] = INVALID_LOGIN_KEY
       logger.debug "--> ERROR! Invalid Key #{params[:public_key]}"
       redirect_to root_path
-    end
-  end
-
-  def trezor_wallet
-    session.clear
-    begin
-      value = params[:value]
-      seed = value.scan(/../).collect { |c| c.to_i(16).chr }.join
-      pair = Stellar::KeyPair.from_raw_seed(seed)
-
-      session[:address] = pair.address
-      session[:seed] = pair.seed
-      logger.debug "--> SUCCESS! Trezor Login with address #{session[:address]}"
-      redirect_to portfolio_path
-    rescue
-      flash[:notice] = TREZOR_LOGIN_ERROR
-      logger.debug "--> ERROR! Trezor Loging Failed. Value: #{params[:value]}"
-      redirect_to trezor_wallet_login_path
     end
   end
 
@@ -470,16 +446,5 @@ class WalletsController < ApplicationController
       redirect_to inactive_account_path
       return
     end
-  end
-
-  def validate_trezor_login
-    key = params[:key]
-    cypher_value = params[:cypher_value]
-
-    flash[:notice] = INVALID_TREZOR_KEY
-    redirect_to trezor_wallet_login_path && return if key != TREZOR_LOGIN_KEY
-    flash.clear
-    flash[:notice] = INVALID_TREZOR_CYPHER
-    redirect_to trezor_wallet_login_path && return if cypher_value != TREZOR_LOGIN_CYPHER_VALUE
   end
 end

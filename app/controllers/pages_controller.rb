@@ -5,8 +5,6 @@ class PagesController < ApplicationController
     redirect_to portfolio_path and return if session[:address].present?
   end
 
-  def trezor_wallet_login; end
-
   def help; end
 
   def fetching_balances; end
