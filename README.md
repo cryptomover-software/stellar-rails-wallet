@@ -2,7 +2,7 @@
 Stellar-Rails is an open source web browser based Stellar wallet created using Ruby on Rails web application framework.  
 Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.svg?branch=master)](https://travis-ci.org/cryptomover-code/stellar-rails) | Development: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.svg?branch=development)](https://travis-ci.org/cryptomover-code/stellar-rails)
 
-## Version 1.0
+## Version 1.0.1
 
 ## Functionalities of the current website  
   1. Check account balances.  
@@ -11,16 +11,14 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   4. Create new accounts.  
   5. Fund new accounts.  
   6. Trust Assets.  
-  7. Login Using Trezor Hardware Wallet.  
-  8. Login Using Federation address  
-  9. Create Federation address with `cryptomover.com` domain  
-  10. Send assets to federation address
+  7. Login Using Federation address  
+  8. Create Federation address with `cryptomover.com` domain  
+  9. Send assets to federation address  
 
 ## Technology Stack  
   1. Ruby 2.4.1  
   2. Ruby on Rails 5.1.2  
   3. Stellar API  
-  4. Trezor Connect  
   
 ## For Developers: How to Setup
   1. Download Repository.  
