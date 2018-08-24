@@ -125,7 +125,6 @@ class WalletsController < ApplicationController
         return
       end
 
-      flash.clear
       unless verify_recaptcha
         flash[:notice] = INVALID_CAPTCHA
         redirect_to root_path
