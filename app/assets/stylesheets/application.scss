@@ -15,7 +15,7 @@
  *= require_self
  */
 
-@import "bootstrap";
+// @import "bootstrap";
 
 // @import "font-awesome-sprockets";
 // @import "font-awesome";
@@ -48,6 +48,9 @@ body {
     /*   position: absolute; */
     background-image: image-url("rocket.png");
     background-repeat: repeat repeat;
+}
+#wrapper {
+    display: none;
 }
 .btn-brown { 
     color: #FFFFFF; 

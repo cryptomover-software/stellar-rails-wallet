@@ -10,13 +10,14 @@
 // Read Sprockets README (https://github.com/rails/sprockets#sprockets-directives) for details
 // about supported directives.
 //
+//= require js.cookie
 //= require jquery3
 //= require jquery_ujs
 //= require jquery-ui
 //= require components
 //= require turbolinks
-//= require popper
-//= require bootstrap.min
+// require popper
+// require bootstrap.min
 // require chartjs/Chart.min.js
 //= require pace.min
 //= require clipboard 
