@@ -380,6 +380,7 @@ class WalletsController < ApplicationController
     balances = session[:balances]
     balance = balances.select{|b| b['asset_type'] == NATIVE_ASSET}
     @lumens_balance = balance.first['balance']
+    @federation = set_federation_address
   end
 
   def calculate_max_allowed_amount(asset_type)

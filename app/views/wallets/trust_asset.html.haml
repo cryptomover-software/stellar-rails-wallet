@@ -8,7 +8,11 @@
   .card-body
     .form-group
       .form-label
-        Your Lumens Balance:
+        - if @federation
+          .address
+            = "#{@federation.username}*cryptomover.com"
+          %br
+        Lumens Balance:
         %span
           = @lumens_balance
     .form-group
