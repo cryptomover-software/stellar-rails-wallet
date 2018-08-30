@@ -42,7 +42,7 @@ class WalletsController < ApplicationController
     session[:next_cursor] = nil
     session[:prev_cursor] = nil
 
-    @federation = set_federation_address
+    @federation = session[:federation_address]
   end
 
   def get_federation_server_address(address)
@@ -68,7 +68,7 @@ class WalletsController < ApplicationController
     end
   end
 
-  def get_address_locally(username)
+  def get_federation_locally(username)
     federation = Federation.where(username: username).first
     return INVALID_FEDERATION_ADDRESS unless federation
 
@@ -81,7 +81,7 @@ class WalletsController < ApplicationController
     # All accounts created on our wallet are stored locally
     # with domain name cryptomover.com.
     # They will be synced with our Stellar Federation server.
-    return get_address_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
+    return get_federation_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
 
 
     server_url = get_federation_server_address(address)
@@ -100,6 +100,8 @@ class WalletsController < ApplicationController
   end
 
   def get_federation_address
+    # retrieve federation address associated with the Stellar key,
+    # when user enters that key on transfer asset form
     address = params[:address]
     account_id = fetch_address_from_federation(address)
 
@@ -108,11 +110,23 @@ class WalletsController < ApplicationController
     end
   end
 
+  def set_session_addresses(address)
+    if address.include? '*'
+      session[:federation_address] = address
+      session[:address] = fetch_address_from_federation(address)
+    else
+      session[:address] = address
+      f = Federation.where(address: session[:address]).first
+      session[:federation_address] = f.username if f.present?
+    end
+  end
+
   def login
     session.clear
     begin
       flash.clear
       address = params[:public_key].delete(' ')
+
       if address.empty?
         flash[:notice] = INVALID_LOGIN_KEY
         redirect_to root_path
@@ -125,15 +139,10 @@ class WalletsController < ApplicationController
         return
       end
 
-      if address.include? '*'
-        session[:federation_address] = address
-        address = fetch_address_from_federation(address)
-      end
-
+      set_session_addresses(address)
       # Failure to generate key pair indicates invalid Public Key.
-      Stellar::KeyPair.from_address(address)
+      Stellar::KeyPair.from_address(session[:address])
 
-      session[:address] = address
       logger.debug "--> User #{session[:address]} Logged In at #{Time.now}."
       redirect_to portfolio_path
     rescue
@@ -243,12 +252,6 @@ class WalletsController < ApplicationController
     endpoint += '&limit=1'
     endpoint += '&order=desc'
     endpoint
-  end
-
-  def set_federation_address
-    # return session[:federation_address] if session[:federation_address].present?
-    f = Federation.where(address: session[:address]).first
-    return f if f.present?
   end
 
   def get_lumen_price_in_usd
@@ -380,7 +383,7 @@ class WalletsController < ApplicationController
     balances = session[:balances]
     balance = balances.select{|b| b['asset_type'] == NATIVE_ASSET}
     @lumens_balance = balance.first['balance']
-    @federation = set_federation_address
+    @federation = session[:federation_address]
   end
 
   def calculate_max_allowed_amount(asset_type)
