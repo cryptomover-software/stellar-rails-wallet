@@ -16,10 +16,13 @@
           .address
             = "#{@federation.username}*cryptomover.com"
         - elsif @federation.present? and not @federation.email_confirmed
-          .alert.alert-warning
-            Please verify your email
-            = @federation.username
-            to activate Federation Account.
+          #verify-warning.text-center
+            .alert.alert-warning.mt-1
+              Please verify your email
+              = @federation.username
+              to activate Federation Account.
+              %br
+              %button.btn.btn-brown.mt-1#resend-confirmation-email-btn Resend Verification Email
         - else
           %button.btn.btn-brown#create-federation-address-btn Create Federation Address
           #create-federation-account
@@ -96,4 +99,21 @@
         }
       }
     }
+  })
+
+  $("#resend-confirmation-email-btn").click(function() {
+    $("#verify-warning").text("Sending...")
+    $("#verify-warning").addClass("alert")
+    $("#verify-warning").addClass("alert-success")
+
+    $.ajax({
+      type: "GET",
+      url: "/resend_confirmation_email"
+    }).done(function(data) {
+        if (data.split('!')[0] == 'ERROR') {
+          $("#verify-warning").removeClass("alert-success")
+          $("#verify-warning").addClass("alert-danger")
+        }
+        $("#verify-warning").text(data)
+    })
   })

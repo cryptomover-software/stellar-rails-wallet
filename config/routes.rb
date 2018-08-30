@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   get 'account', to: 'wallets#stellar_account'
   get 'new_account', to: 'wallets#new_account'
   get 'confirm_email', to: 'federations#confirm_email'
+  get 'resend_confirmation_email', to: 'federations#resend_confirmation_email'
   get 'get_federation_address', to: 'wallets#get_federation_address'
   get 'send_money', to: 'wallets#transfer_assets'
 
