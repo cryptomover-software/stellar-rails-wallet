@@ -31,7 +31,7 @@
   #federation-form
     .text-muted
       The username is limited to printable UTF-8 with whitespace and the following characters excluded: <*,>
-    = form_with model: Federation.new, remote: true do |form|
+    = form_with model: Federation.new, remote: true, id: "new_federation" do |form|
       = form.label :enter_email_address
       .form-group.form-inline
         = form.text_field :username, id: "fed-address", class: "form-control", width: "70%", placeholder: 'Enter Email'
@@ -65,8 +65,17 @@
     }
   })
 
+  $("#new_federation").on("ajax:success", function(e, data, status, xhr) {
+    $('#create-federation-account').children().hide()
+    $('#create-federation-account').append("<div class='alert alert-success'>You will receive confirmation email at " + data + " shortly.  Click on the link provided in that email to verify your email address. Your Federation account will be created and will be deposited with 2 XLM only after email verification. Check SPAM Folder also.</div>")
+  }).on('ajax:error', function(e, xhr, status, error) {
+    $('#create-federation-account').children().hide()
+    $('#create-federation-account').append("<div class='alert alert-danger'>ERROR! Address already in use. </div>")
+  })
+
   $('#fed-address-submit').click(function() {
-    var input = document.getElementById("fed-address").value
-    $('#federation-form').children().hide()
-    $('#federation-form').append("<div class='alert alert-info'>You will receive confirmation email at " + input + " shortly.  Click on the link provided in that email to verify your email address. Your Federation account will be created and will be deposited with 2 XLM only after email verification. Check SPAM Folder also.</div>")
+    // var input = document.getElementById("fed-address").value
+    $('#federation-form').hide()
+    $('#create-federation-account').children().hide()
+    $('#create-federation-account').append("<div class='alert alert-secondary'>Processing...</div>")
   })

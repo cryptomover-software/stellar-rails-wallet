@@ -7,4 +7,5 @@
       = @federation.username
       is confirmed.
       %br
-      = link_to 'Login Now', root_path
+      - if session[:address].nil?
+        = link_to 'Login Now', root_path

@@ -51,7 +51,8 @@ function initiateFundNewAccount() {
 
   $("#layout-alert").show()
   $("#layout-alert").html("Target account is not active Yet. Select Fund New Account option to activate it by sending 1 XLM.")
-  $("#layout-alert").focus()
+  var scrollPos = $('#layout-alert').offset().top
+  $(window).scrollTop(scrollPos)
 }
 
 function hideFormControls() {
@@ -133,15 +134,21 @@ function processTransfer(fundAccount, receiverPublicKey, federationAddress) {
     if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
       $("#layout-alert").show()
       $("#layout-alert").html("Please Enter All Details.")
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
       return
 
     } else if (amountNotWithinLimit(amount)) {
       $("#layout-alert").show()
       $("#layout-alert").html("Amount you entered exceeds your balance.")
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
       return
     } else if (memoSizeExceedsLimit) {
       $("#layout-alert").show()
       $("#layout-alert").html("Memo Error: " + memo)
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
       return
     } else {
       $("#layout-alert").hide()
