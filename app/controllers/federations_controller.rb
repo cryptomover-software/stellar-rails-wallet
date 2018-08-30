@@ -55,13 +55,16 @@ class FederationsController < ApplicationController
     federation = Federation.new(federations_params)
     federation.address = session[:address]
     federation.email_confirmation_generated_at = DateTime.now
-    federation.save!
     # ToDo Rescue saving errors
     @username = federation.username
     FederationMailer.with(federation: federation, token: federation.email_confirmation_token).confirm_email.deliver_now
 
     respond_to do |format|
-      format.js { @username }
+      if federation.save
+        format.js { render json: @username }
+      else
+        format.js { render json: "ERROR! Email Already Registered.", status: :unprocessable_entity }
+      end
     end
   end
 
