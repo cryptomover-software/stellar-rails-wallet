@@ -11,10 +11,10 @@
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
     .row
       .col
-        - if @federation.present? and @federation.email_confirmed
+        - if @federation.present?
           Federation Address:
           .address
-            = "#{@federation.username}*cryptomover.com"
+            = "#{@federation}*cryptomover.com"
         - elsif @federation.present? and not @federation.email_confirmed
           #verify-warning.text-center
             .alert.alert-warning.mt-1
