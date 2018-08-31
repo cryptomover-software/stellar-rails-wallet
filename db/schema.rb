@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180830044342) do
+ActiveRecord::Schema.define(version: 20180831115240) do
 
   create_table "federations", force: :cascade do |t|
     t.text "username", null: false
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20180830044342) do
     t.boolean "email_confirmed", default: false
     t.datetime "email_confirmation_generated_at"
     t.integer "emails_sent", default: 1
+    t.index ["address"], name: "index_federations_on_address", unique: true
     t.index ["email_confirmation_token"], name: "index_federations_on_email_confirmation_token", unique: true
     t.index ["username", "address"], name: "index_federations_on_username_and_address", unique: true
     t.index ["username"], name: "index_federations_on_username", unique: true

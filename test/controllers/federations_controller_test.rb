@@ -42,4 +42,20 @@ class FederationsControllerTest < ActionDispatch::IntegrationTest
 
     assert_redirected_to root_path
   end
+
+  test "resend_verification_email" do
+    @message = 'Verification email sent to fanbing@cryptomover.com'
+    get login_path, params: {public_key:
+                               'GATEULHQJHKOF5VJNIDA2E4EDSLUEMPK4BVLKPLMMLJ57JGTII7VU4ZG'}
+    get resend_confirmation_email_path, xhr: true
+    assert_equal @message, @response.body
+  end
+
+  test "resend_verification_email_within_limit" do
+    @message = 'ERROR! Maximum Emails sent. Contant support.'
+    get login_path, params: {public_key:
+                               'GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO'}
+    get resend_confirmation_email_path, xhr: true
+    assert_equal @message, @response.body
+  end
 end

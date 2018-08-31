@@ -36,7 +36,7 @@ class FederationsController < ApplicationController
     @username = federation.username
     message = 'ERROR! Maximum Emails sent. Contant support.'
 
-    if federation.emails_sent <= MAX_EMAILS
+    if federation.emails_sent < MAX_EMAILS
       # to prevent misuse of resend email functionality
       # we have set max limit of 3 emails.
       FederationMailer.with(federation: federation,
