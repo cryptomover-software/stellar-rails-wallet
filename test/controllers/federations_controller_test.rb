@@ -20,7 +20,7 @@ class FederationsControllerTest < ActionDispatch::IntegrationTest
   # test "send_verification_email_on_federation_address_on_create" do
   #   @username = 'test_federation'
   #   get login_path, params: {public_key:
-  #                              'GDWU47CWKN3OARGCFZGVE3JQ3FOCRV4GDLUSUXYKSUKG74OXWHGNGDJV'}
+  #                              ''}
 
   #   post federations_path, params: { federation:
   #                                      { username: @username}, format: 'js' }, xhr: true
