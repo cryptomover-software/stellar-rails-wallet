@@ -5,8 +5,9 @@ one:
   address: GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO
   email_confirmed: true
   email_confirmation_token: abcd
+  emails_sent: 3
 
 two:
   username: fanbing@cryptomover.com
-  address: GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO
+  address: GATEULHQJHKOF5VJNIDA2E4EDSLUEMPK4BVLKPLMMLJ57JGTII7VU4ZG
   email_confirmation_token: zyxw
