@@ -63,7 +63,7 @@ class FederationsController < ApplicationController
       if federation.save
         format.js { render json: @username }
       else
-        format.js { render json: "ERROR! Email Already Registered.", status: :unprocessable_entity }
+        format.js { render json: federation.errors, status: :unprocessable_entity }
       end
     end
   end
