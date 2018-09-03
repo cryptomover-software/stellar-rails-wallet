@@ -13,7 +13,7 @@
       .col
         - if @federation.present?
           Federation Address:
-          .address
+          #federation.address
             = "#{@federation}*cryptomover.com"
         - elsif @federation.present? and not @federation.email_confirmed
           #verify-warning.text-center

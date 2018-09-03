@@ -1,4 +1,6 @@
+# frozen_string_literal: true
 require 'test_helper'
+KEY1 = 'GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO'
 
 class PagesControllerTest < ActionDispatch::IntegrationTest
   # test "the truth" do
@@ -18,8 +20,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
       end
     end
     # Agreement modal should not be present on all subsequent visits.
-    get login_path, params: {public_key:
-                               'GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO'}
+    get login_path, params: { public_key: KEY1 }
     assert_select '#agreement-modal', count: 0
   end
 end
