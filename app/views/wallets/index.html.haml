@@ -48,6 +48,7 @@
 
 :javascript
   $('#create-federation-address-btn').attr('disabled', 'disabled')
+  $('#resend-confirmation-email-btn').attr('disabled', 'disabled')
   $('#create-federation-account').hide()
   $('#create-federation-address-btn').click(function() {
     $(this).hide()
@@ -78,6 +79,7 @@
     } else {
       $("#progressbar").hide()
       $('#create-federation-address-btn').removeAttr('disabled')
+      $('#resend-confirmation-email-btn').removeAttr('disabled')
       var row = ""
       $("#balances-tbl tbody").remove()
 
