@@ -45,6 +45,7 @@ class WalletsController < ApplicationController
     session[:prev_cursor] = nil
 
     @federation = session[:federation_address]
+    @email_confirmed = session[:email_confirmed]
   end
 
   def get_federation_server_address(address)
@@ -118,22 +119,24 @@ class WalletsController < ApplicationController
       session[:address] = fetch_address_from_federation(address)
     else
       session[:address] = address
-      f = Federation.where(address: session[:address]).first
-      session[:federation_address] = f.username if f.present?
+      if Federation.exists?(address: address)
+        f = Federation.where(address: address).first
+        session[:federation_address] = f.username
+        session[:email_confirmed] = f.email_confirmed
+      end
     end
   end
 
   def login
     session.clear
-    begin
-      flash.clear
-      address = params[:public_key].delete(' ')
+    flash.clear
+    address = params[:public_key].delete(' ')
 
-      if address.empty?
-        flash[:notice] = INVALID_LOGIN_KEY
-        redirect_to root_path
-        return
-      end
+    if address.empty?
+      flash[:notice] = INVALID_LOGIN_KEY
+      redirect_to root_path
+      return
+    end
 
       unless verify_recaptcha
         flash[:notice] = INVALID_CAPTCHA
@@ -141,17 +144,20 @@ class WalletsController < ApplicationController
         return
       end
 
-      set_session_addresses(address)
-      # Failure to generate key pair indicates invalid Public Key.
+    set_session_addresses(address)
+    # Failure to generate key pair indicates invalid Public Key.
+    begin
       Stellar::KeyPair.from_address(session[:address])
-
-      logger.debug "--> User #{session[:address]} Logged In at #{Time.now}."
-      redirect_to portfolio_path
     rescue
+      session.clear
       flash[:notice] = INVALID_LOGIN_KEY
       logger.debug "--> ERROR! Invalid Key #{params[:public_key]}"
       redirect_to root_path
+      return
     end
+
+    logger.debug "--> User #{session[:address]} Logged In at #{Time.now}."
+    redirect_to portfolio_path
   end
 
   def logout
