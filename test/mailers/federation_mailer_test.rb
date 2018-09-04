@@ -12,6 +12,6 @@ class FederationMailerTest < ActionMailer::TestCase
 
     assert_equal ['support@cryptomover.com'], email.from
     assert_equal ['fanbing@cryptomover.com'], email.to
-    assert_equal ['Confirm Email Address for Cryptomover Stellar Federation Account'], email.subject
+    assert_equal 'Confirm Email Address for Cryptomover Stellar Federation Account', email.subject
   end
 end
