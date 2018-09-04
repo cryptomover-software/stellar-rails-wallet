@@ -11,6 +11,7 @@ class WalletsTest < ApplicationSystemTestCase
   #
   #   assert_selector "h1", text: "Wallets"
   # end
+
   test 'display_federation_address_if_created_in_our_app' do
     @federation_address = 'abhijit@cryptomover.com*cryptomover.com'
     visit root_path
@@ -36,5 +37,14 @@ class WalletsTest < ApplicationSystemTestCase
     click_on 'send-max'
     sleep 2
     assert_selector '#resolve-fed-address', text: KEY1
+  end
+
+  test 'show_confirm_email_warning_if_not_confirmed' do
+    visit root_path
+    click_on '#agree-btn'
+    fill_in 'public-key', with: KEY2
+    click_on 'Login'
+    sleep 10
+    assert_selector '#verify-warning'
   end
 end

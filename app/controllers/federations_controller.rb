@@ -61,6 +61,7 @@ class FederationsController < ApplicationController
 
     respond_to do |format|
       if federation.save
+        session[:federation_address] = @username
         format.js { render json: @username }
       else
         format.js { render json: federation.errors, status: :unprocessable_entity }
