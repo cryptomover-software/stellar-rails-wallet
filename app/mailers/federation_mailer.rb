@@ -5,11 +5,11 @@ class FederationMailer < ApplicationMailer
 
   def confirm_email
     @federation = params[:federation]
+    @address = params[:address]
     token = params[:token]
-    email_address = @federation.username
     @url = WALLET_URL + "/confirm_email?token=#{token}"
 
-    mail(to: email_address,
+    mail(to: @federation,
          subject: 'Confirm Email Address for Cryptomover Stellar Federation Account')
   end
 end

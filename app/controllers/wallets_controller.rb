@@ -4,12 +4,14 @@ class WalletsController < ApplicationController
   # TODO: add verifiction of user copied private key
   # before leaving new account page
   before_action :user_must_login, except: [:login, :logout,
-                                           :new_account, :failed]
+                                           :new_account, :failed,
+                                           :simulate_login_for_testing]
   before_action :activate_account, except: [:index, :get_balances,
                                             :login, :logout,
                                             :new_account, :inactive_account,
                                             :success, :failed,
-                                            :federation_account]
+                                            :federation_account,
+                                            :simulate_login_for_testing]
   # excluding index action too because,
   # for Index action, we check account status each time
   # after fetching balance data from Stellar API
@@ -43,6 +45,7 @@ class WalletsController < ApplicationController
     session[:prev_cursor] = nil
 
     @federation = session[:federation_address]
+    @email_confirmed = session[:email_confirmed]
   end
 
   def get_federation_server_address(address)
@@ -116,22 +119,24 @@ class WalletsController < ApplicationController
       session[:address] = fetch_address_from_federation(address)
     else
       session[:address] = address
-      f = Federation.where(address: session[:address]).first
-      session[:federation_address] = f.username if f.present?
+      if Federation.exists?(address: address)
+        f = Federation.where(address: address).first
+        session[:federation_address] = f.username
+        session[:email_confirmed] = f.email_confirmed
+      end
     end
   end
 
   def login
     session.clear
-    begin
-      flash.clear
-      address = params[:public_key].delete(' ')
+    flash.clear
+    address = params[:public_key].delete(' ')
 
-      if address.empty?
-        flash[:notice] = INVALID_LOGIN_KEY
-        redirect_to root_path
-        return
-      end
+    if address.empty?
+      flash[:notice] = INVALID_LOGIN_KEY
+      redirect_to root_path
+      return
+    end
 
       unless verify_recaptcha
         flash[:notice] = INVALID_CAPTCHA
@@ -139,17 +144,20 @@ class WalletsController < ApplicationController
         return
       end
 
-      set_session_addresses(address)
-      # Failure to generate key pair indicates invalid Public Key.
+    set_session_addresses(address)
+    # Failure to generate key pair indicates invalid Public Key.
+    begin
       Stellar::KeyPair.from_address(session[:address])
-
-      logger.debug "--> User #{session[:address]} Logged In at #{Time.now}."
-      redirect_to portfolio_path
     rescue
+      session.clear
       flash[:notice] = INVALID_LOGIN_KEY
       logger.debug "--> ERROR! Invalid Key #{params[:public_key]}"
       redirect_to root_path
+      return
     end
+
+    logger.debug "--> User #{session[:address]} Logged In at #{Time.now}."
+    redirect_to portfolio_path
   end
 
   def logout
@@ -426,6 +434,28 @@ class WalletsController < ApplicationController
   end
 
   def failed
+  end
+
+  def simulate_login_for_testing
+    session[:testing] = true
+    session[:address] = 'GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO'
+    session[:federation_address] = 'abhijit@cryptomover.com'
+    session[:balances] = [{"balance"=>"1.0000000",
+                          "limit"=>"1300.0000000",
+                          "asset_type"=>"credit_alphanum4",
+                          "asset_code"=>"HKDC",
+                          "asset_issuer"=>"GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3",
+                          "usd_price"=>0.0},
+                          {"balance"=>"0.0000000",
+                           "limit"=>"922337203685.4775807",
+                           "asset_type"=>"credit_alphanum12",
+                           "asset_code"=>"1043388008",
+                           "asset_issuer"=>"GD5AEHBCLSEURJGA5X7QOF7U36XV4F5DHSV7B46OONJYQC4DRNBUG5UN",
+                           "usd_price"=>"undetermined"},
+                          {"balance"=>"6.8995200",
+                           "asset_type"=>"native",
+                           "usd_price"=>1.51}]
+    render body: nil
   end
 
   # def federation_account
