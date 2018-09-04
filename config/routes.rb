@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   get 'failed', to: 'wallets#failed'
   get 'help', to: 'pages#help'
   post 'create_log', to: 'application#create_log'
+  get 'simulate_login_for_testing', to: 'wallets#simulate_login_for_testing'
 
   resources :federations
 end
