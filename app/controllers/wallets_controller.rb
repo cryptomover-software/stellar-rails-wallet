@@ -33,6 +33,7 @@ class WalletsController < ApplicationController
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
   # Other Errors
   INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'.freeze
+  FEDERATION_ADDRESS_NOT_FOUND = 'Federation address not registered with us.'
   UNDETERMINED_PRICE = 'undetermined'.freeze
   HTTPARTY_STANDARD_ERROR = 'Unable to reach Server. Check URL and network connection or try again later.'.freeze
   ACCOUNT_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
@@ -73,7 +74,7 @@ class WalletsController < ApplicationController
 
   def get_federation_locally(username)
     federation = Federation.where(username: username).first
-    return INVALID_FEDERATION_ADDRESS unless federation
+    return FEDERATION_ADDRESS_NOT_FOUND unless federation
 
     federation.address
   end
@@ -138,19 +139,26 @@ class WalletsController < ApplicationController
       return
     end
 
-      unless verify_recaptcha
-        flash[:notice] = INVALID_CAPTCHA
-        redirect_to root_path
-        return
-      end
+    unless verify_recaptcha
+      flash[:notice] = INVALID_CAPTCHA
+      redirect_to root_path
+      return
+    end
 
     set_session_addresses(address)
     # Failure to generate key pair indicates invalid Public Key.
+    if session[:address] == FEDERATION_ADDRESS_NOT_FOUND
+      message = FEDERATION_ADDRESS_NOT_FOUND
+    else
+      message = INVALID_LOGIN_KEY
+    end
+
     begin
       Stellar::KeyPair.from_address(session[:address])
     rescue
       session.clear
-      flash[:notice] = INVALID_LOGIN_KEY
+
+      flash[:notice] = message
       logger.debug "--> ERROR! Invalid Key #{params[:public_key]}"
       redirect_to root_path
       return
