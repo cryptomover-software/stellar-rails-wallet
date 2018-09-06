@@ -92,6 +92,7 @@ GEM
     jquery-ui-rails (6.0.1)
       railties (>= 3.2.16)
     json (2.1.0)
+    libv8 (3.16.14.19-x86_64-linux)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -163,6 +164,7 @@ GEM
       rbnacl (>= 3.0.1)
     recaptcha (4.11.1)
       json
+    ref (2.0.0)
     ruby_dep (1.5.0)
     ruby_http_client (3.3.0)
     rubyzip (1.2.1)
@@ -209,6 +211,9 @@ GEM
       rbnacl-libsodium (~> 1.0.3)
       xdr (~> 2.0.0)
     temple (0.8.0)
+    therubyracer (0.12.3)
+      libv8 (~> 3.16.14.15)
+      ref
     thin (1.7.2)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0, >= 1.0.4)
@@ -246,6 +251,7 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   coffee-rails (~> 4.2)
+  execjs
   figaro
   haml
   httparty
@@ -268,6 +274,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   sqlite3
   stellar-base
+  therubyracer
   thin
   turbolinks (~> 5)
   tzinfo-data
