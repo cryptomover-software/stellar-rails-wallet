@@ -28,7 +28,14 @@ class FederationsController < ApplicationController
     # redirect_to failed_path(type: 'email', error_description: "Token Expired. Loging using your public key and generate new token.") and return if token_invalid
 
     @federation.email_confirmed = true
-    @federation.save!
+    if @federation.save!
+      session[:federation_address] = @federation.username
+      session[:email_confirmed] = @federation.email_confirmed
+    else
+      redirect_to failed_path(type: 'email',
+                              error_description: 'Email can not be confirmed. Contact Support.')
+      return
+    end
   end
 
   def resend_confirmation_email
