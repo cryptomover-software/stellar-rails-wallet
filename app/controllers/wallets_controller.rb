@@ -75,6 +75,7 @@ class WalletsController < ApplicationController
   def get_federation_locally(username)
     federation = Federation.where(username: username).first
     return FEDERATION_ADDRESS_NOT_FOUND unless federation
+    session[:email_confirmed] = federation.email_confirmed
 
     federation.address
   end
@@ -116,7 +117,7 @@ class WalletsController < ApplicationController
 
   def set_session_addresses(address)
     if address.include? '*'
-      session[:federation_address] = address
+      session[:federation_address] = address.split('*')[0]
       session[:address] = fetch_address_from_federation(address)
     else
       session[:address] = address
