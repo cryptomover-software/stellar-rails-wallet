@@ -71,3 +71,5 @@ gem 'whenever', require: false
 gem 'rails-html-sanitizer', '~> 1.0.4'
 gem "figaro"
 gem 'sendgrid-ruby'
+# security fix
+gem 'rubyzip', '~> 1.2.2'
