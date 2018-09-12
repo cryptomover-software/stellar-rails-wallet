@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 set :branch, "site_content"
 # server-based syntax
 # ======================

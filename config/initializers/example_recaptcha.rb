@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 #
 # Note:
 # Rename this file to 'recaptcha.rb'

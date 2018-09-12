@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FederationsController < ApplicationController
   MAX_EMAILS = 3
 
