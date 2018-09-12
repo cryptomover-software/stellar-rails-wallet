@@ -44,7 +44,7 @@ class WalletsTest < ApplicationSystemTestCase
     fill_in 'public-key', with: KEY1
     click_button 'Login'
     assert_selector '#federation', text: @federation_address
-    sleep 10
+    sleep 15
     visit trust_asset_path
     assert_selector '#federation', text: @federation_address
     visit send_money_path
