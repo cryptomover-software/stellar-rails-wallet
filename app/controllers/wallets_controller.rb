@@ -42,25 +42,25 @@ class WalletsController < ApplicationController
   # and after initializing the balance cookie.
 
   # APIs
-  STELLAR_API = 'https://horizon.stellar.org'.freeze
-  COINMARKETCAP_API = 'https://api.coinmarketcap.com/v1'.freeze
+  STELLAR_API = 'https://horizon.stellar.org'
+  COINMARKETCAP_API = 'https://api.coinmarketcap.com/v1'
   # Configuration values
   STELLAR_MIN_BALANCE = 1
   STELLAR_TRANSACTION_FEE = 0.00001
   BASE_RESERVE = 0.5
-  NATIVE_ASSET = 'native'.freeze
-  STELLAR_ASSET = 'XLM'.freeze
-  CRYPTOMOVER_DOMAIN = 'cryptomover.com'.freeze
-  FETCHING_BALANCES = 'fetching'.freeze
+  NATIVE_ASSET = 'native'
+  STELLAR_ASSET = 'XLM'
+  CRYPTOMOVER_DOMAIN = 'cryptomover.com'
+  FETCHING_BALANCES = 'fetching'
   # Login Errors
-  INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'.freeze
-  INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
+  INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'
+  INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'
   # Other Errors
-  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'.freeze
+  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
   FEDERATION_ADDRESS_NOT_FOUND = 'Federation address not registered with us.'
-  UNDETERMINED_PRICE = 'undetermined'.freeze
-  HTTPARTY_STANDARD_ERROR = 'Unable to reach Server. Check URL and network connection or try again later.'.freeze
-  ACCOUNT_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
+  UNDETERMINED_PRICE = 'undetermined'
+  HTTPARTY_STANDARD_ERROR = 'Unable to reach Server. Check URL and network connection or try again later.'
+  ACCOUNT_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'
 
   def index
     session[:balances] = FETCHING_BALANCES
