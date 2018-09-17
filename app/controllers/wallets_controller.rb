@@ -42,25 +42,25 @@ class WalletsController < ApplicationController
   # and after initializing the balance cookie.
 
   # APIs
-  STELLAR_API = 'https://horizon.stellar.org'.freeze
-  COINMARKETCAP_API = 'https://api.coinmarketcap.com/v1'.freeze
+  STELLAR_API = 'https://horizon.stellar.org'
+  COINMARKETCAP_API = 'https://api.coinmarketcap.com/v1'
   # Configuration values
   STELLAR_MIN_BALANCE = 1
   STELLAR_TRANSACTION_FEE = 0.00001
   BASE_RESERVE = 0.5
-  NATIVE_ASSET = 'native'.freeze
-  STELLAR_ASSET = 'XLM'.freeze
-  CRYPTOMOVER_DOMAIN = 'cryptomover.com'.freeze
-  FETCHING_BALANCES = 'fetching'.freeze
+  NATIVE_ASSET = 'native'
+  STELLAR_ASSET = 'XLM'
+  CRYPTOMOVER_DOMAIN = 'cryptomover.com'
+  FETCHING_BALANCES = 'fetching'
   # Login Errors
-  INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'.freeze
-  INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'.freeze
+  INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'
+  INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'
   # Other Errors
-  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'.freeze
+  INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
   FEDERATION_ADDRESS_NOT_FOUND = 'Federation address not registered with us.'
-  UNDETERMINED_PRICE = 'undetermined'.freeze
-  HTTPARTY_STANDARD_ERROR = 'Unable to reach Server. Check URL and network connection or try again later.'.freeze
-  ACCOUNT_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'.freeze
+  UNDETERMINED_PRICE = 'undetermined'
+  HTTPARTY_STANDARD_ERROR = 'Unable to reach Server. Check URL and network connection or try again later.'
+  ACCOUNT_ERROR = 'Sowething Wrong with your Account. Please check with Stellar or contact Cryptomover support.'
 
   def index
     session[:balances] = FETCHING_BALANCES
@@ -250,6 +250,13 @@ class WalletsController < ApplicationController
       format.json { render json: result }
     end
   end
+
+  def get_usd_prices
+    balances = set_usd_price(session[:balances])
+    respond_to do |format|
+      format.json { render json: balances }
+    end
+  end
   
   def get_balances
     address = session[:address]
@@ -258,13 +265,15 @@ class WalletsController < ApplicationController
     session[:balances] = balances = FETCHING_BALANCES
 
     begin
-      balances = get_data_from_api(url)
+      result = get_data_from_api(url)
 
-      balances = set_usd_price(balances['balances']) if (balances != 404) && (balances != ACCOUNT_ERROR)
-      session[:balances] = balances if balances != ACCOUNT_ERROR
+      if (balances != 404) && (balances != ACCOUNT_ERROR)
+        balances = result['balances']
+        session[:balances] = balances # if balances != ACCOUNT_ERROR
+      end
 
       respond_to do |format|
-        format.json {render json: balances}
+        format.json { render json: balances }
       end
     rescue StandardError # => e
       # puts e
@@ -325,9 +334,12 @@ class WalletsController < ApplicationController
       if balance['asset_type'] == NATIVE_ASSET
         quantity = balance['balance'].to_f
         usd_price = lumen_usd_price * quantity
-        
+
         balance['usd_price'] = usd_price.round(2)
       else
+        # Fetch latest trade against the pair XLM-Asset.
+        # Thin using this trade's price and USD price of XLM
+        # calculate USD price of this Asset
         endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
         trade = get_data_from_api(url)

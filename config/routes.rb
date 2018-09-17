@@ -33,6 +33,7 @@ Rails.application.routes.draw do
 
   get 'portfolio', to: 'wallets#index'
   get 'get_balances', to: 'wallets#get_balances'
+  get 'get_usd_prices', to: 'wallets#get_usd_prices'
   get 'get_balance', to: 'wallets#get_balance'
   get 'calculate_max_allowed_amount', to: 'wallets#calculate_max_allowed_amount'
   get 'fetching_balances', to: 'pages#fetching_balances'
