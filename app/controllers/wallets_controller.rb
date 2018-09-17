@@ -250,6 +250,13 @@ class WalletsController < ApplicationController
       format.json { render json: result }
     end
   end
+
+  def get_usd_prices
+    balances = set_usd_price(session[:balances])
+    respond_to do |format|
+      format.json { render json: balances }
+    end
+  end
   
   def get_balances
     address = session[:address]
@@ -258,13 +265,15 @@ class WalletsController < ApplicationController
     session[:balances] = balances = FETCHING_BALANCES
 
     begin
-      balances = get_data_from_api(url)
+      result = get_data_from_api(url)
 
-      balances = set_usd_price(balances['balances']) if (balances != 404) && (balances != ACCOUNT_ERROR)
-      session[:balances] = balances if balances != ACCOUNT_ERROR
+      if (balances != 404) && (balances != ACCOUNT_ERROR)
+        balances = result['balances']
+        session[:balances] = balances # if balances != ACCOUNT_ERROR
+      end
 
       respond_to do |format|
-        format.json {render json: balances}
+        format.json { render json: balances }
       end
     rescue StandardError # => e
       # puts e
@@ -325,9 +334,12 @@ class WalletsController < ApplicationController
       if balance['asset_type'] == NATIVE_ASSET
         quantity = balance['balance'].to_f
         usd_price = lumen_usd_price * quantity
-        
+
         balance['usd_price'] = usd_price.round(2)
       else
+        # Fetch latest trade against the pair XLM-Asset.
+        # Thin using this trade's price and USD price of XLM
+        # calculate USD price of this Asset
         endpoint = set_trades_endpoint(balance)
         url = STELLAR_API + endpoint
         trade = get_data_from_api(url)

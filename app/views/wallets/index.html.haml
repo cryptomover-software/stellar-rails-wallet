@@ -104,27 +104,14 @@
       $("#progressbar").hide()
       $('#create-federation-address-btn').removeAttr('disabled')
       $('#resend-confirmation-email-btn').removeAttr('disabled')
-      var row = ""
-      $("#balances-tbl tbody").remove()
-
-      if(balances.length == 1) {
-        // special case of only one asset in account
-        var usd_price = numeral(balances[0]["usd_price"]).format('$0,0.00')
-        row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>"+usd_price+"</td></tr>")
-        $("#balances-tbl").append(row)
-      } else {
-        // multiple assets in accounts
-        for(i=0;i < balances.length;i++) {
-          if (balances[i]["asset_type"] == "native") {
-            var usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00')
-            row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>"+usd_price+"</td></tr>")
-          } else {
-            var usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00')
-            row = $("<tr><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>"+usd_price+"</td></tr>")
-          }
-          $("#balances-tbl").append(row)
-        }
-      }
+      appendDataToTable(balances)
+      // second ajax start
+      $.ajax({
+        url: "/get_usd_prices",
+      }).done(function(balancesWithUsd) {
+        appendDataToTable(balancesWithUsd)
+      })
+      // second ajax end
     }
   })
 
