@@ -266,9 +266,15 @@ class WalletsController < ApplicationController
 
     begin
       result = get_data_from_api(url)
+      # remove unwanted keys from input data
+      # to reduce json object size
+      required_keys = %w[balance asset_type asset_code asset_issuer]
+      data = result['balances'].map do |b|
+        b.select { |key| required_keys.include? key }
+      end
 
       if (result != 404) && (result != ACCOUNT_ERROR)
-        balances = result['balances']
+        balances = data
         session[:balances] = balances # if balances != ACCOUNT_ERROR
       end
 
