@@ -263,9 +263,19 @@ class WalletsController < ApplicationController
     endpoint = "/accounts/#{address}"
     url = STELLAR_API + endpoint
     session[:balances] = balances = FETCHING_BALANCES
+    # ToDo handle all failure from httparty properly
 
     begin
       result = get_data_from_api(url)
+    rescue StandardError # => e
+      # puts e
+      logger.debug '--> FAILED! Fetching balances failed.'
+      render js: "document.location.href='/failed?error_description=#{HTTPARTY_STANDARD_ERROR}'"
+      return
+      # render html: failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+    end
+
+    if (result != 404) && (result != ACCOUNT_ERROR)
       # remove unwanted keys from input data
       # to reduce json object size
       required_keys = %w[balance asset_type asset_code asset_issuer]
@@ -273,19 +283,15 @@ class WalletsController < ApplicationController
         b.select { |key| required_keys.include? key }
       end
 
-      if (result != 404) && (result != ACCOUNT_ERROR)
-        balances = data
-        session[:balances] = balances # if balances != ACCOUNT_ERROR
-      end
+      balances = data
+    else
+      balances = result
+    end
 
-      respond_to do |format|
-        format.json { render json: balances }
-      end
-    rescue StandardError # => e
-      # puts e
-      logger.debug '--> FAILED! Fetching balances failed.'
-      render js: "document.location.href='/failed?error_description=#{HTTPARTY_STANDARD_ERROR}'"
-      # render html: failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+    session[:balances] = balances if result != ACCOUNT_ERROR
+
+    respond_to do |format|
+      format.json { render json: balances }
     end
   end
 
