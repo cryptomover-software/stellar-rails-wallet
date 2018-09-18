@@ -267,7 +267,7 @@ class WalletsController < ApplicationController
     begin
       result = get_data_from_api(url)
 
-      if (balances != 404) && (balances != ACCOUNT_ERROR)
+      if (result != 404) && (result != ACCOUNT_ERROR)
         balances = result['balances']
         session[:balances] = balances # if balances != ACCOUNT_ERROR
       end
