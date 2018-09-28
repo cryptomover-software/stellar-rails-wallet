@@ -432,8 +432,8 @@ function appendDataToTable(balances) {
         }
         $(new_tbody).append(row)
       }
-      old_tbody.parentNode.replaceChild(new_tbody, old_tbody)
     }
+    old_tbody.parentNode.replaceChild(new_tbody, old_tbody)
 }
 // 
 // remove url param
