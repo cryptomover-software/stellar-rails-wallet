@@ -46,7 +46,7 @@
         - elsif @federation.present?
           Federation Address:
           #federation.address
-            = "#{@federation}*cryptomover.com"
+            = @federation
         - else
           %button.btn.btn-brown#create-federation-address-btn Create Federation Address
           #create-federation-account

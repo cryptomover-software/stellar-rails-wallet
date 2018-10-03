@@ -73,3 +73,4 @@ gem "figaro"
 gem 'sendgrid-ruby'
 # security fix
 gem 'rubyzip', '~> 1.2.2'
+gem 'toml-rb'
