@@ -80,13 +80,8 @@ class WalletsController < ApplicationController
     url = "https://#{domain}/.well-known/stellar.toml"
 
     begin
-      # Note and TODO:
-      # We are using file parsing solution instead of using TOML
-      # library for the time being. This is because there are some
-      # technical errors with TOML library and it will take time to fix it.
-      # In future we need to use TOML library to parse TOML input.
       response = HTTParty.get(url)
-      toml = Hash[*response.split(/=|\n/)]
+      toml = TomlRB.parse(response)
       url = toml['FEDERATION_SERVER']
       url.delete('\"')
     rescue HTTParty::Error, SocketError => e
@@ -112,7 +107,9 @@ class WalletsController < ApplicationController
     # They will be synced with our Stellar Federation server.
     return get_federation_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
 
-
+    # mark email_confirmed true if this federation is not on our server
+    # because it might not be an email and we don't have control over it.
+    session[:email_confirmed] = true
     server_url = get_federation_server_address(address)
     return server_url if server_url == HTTPARTY_STANDARD_ERROR
     
@@ -141,13 +138,13 @@ class WalletsController < ApplicationController
 
   def set_session_addresses(address)
     if address.include? '*'
-      session[:federation_address] = address.split('*')[0]
+      session[:federation_address] = address
       session[:address] = fetch_address_from_federation(address)
     else
       session[:address] = address
       if Federation.exists?(address: address)
         f = Federation.where(address: address).first
-        session[:federation_address] = f.username
+        session[:federation_address] = "#{f.username}*cryptomover.com"
         session[:email_confirmed] = f.email_confirmed
       end
     end
