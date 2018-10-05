@@ -37,7 +37,7 @@
                 %i.fas.fa-chevron-circle-down
         #collapseOne.collapse{"aria-labelledby" => "headingOne", "data-parent" => "#accordion"}
           .card-body
-            Low Threshold Mid Threshold High Threshold
+            = render partial: 'shared/change_threshold_form'
     #accordionTwo.mt-3
       .card
         #headingTwo.card-header
@@ -49,7 +49,7 @@
                 %i.fas.fa-chevron-circle-down
         #collapseTwo.collapse{"aria-labelledby" => "headingTwo", "data-parent" => "#accordion"}
           .card-body
-            Lits of Signers
+            = render partial: 'shared/add_remove_signer_form'
 
 :javascript
   $('#buttonOne').click(function() {

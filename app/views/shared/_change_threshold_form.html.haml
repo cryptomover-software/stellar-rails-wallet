@@ -1,0 +1,45 @@
+.row
+  .col
+    .form-label
+      Low Threshold
+    %input.form-control.mr-sm-2{id: "low-threshold", value: @low, type: "text"}
+  .col
+    .form-label
+      Medium Threshold
+    %input.form-control.mr-sm-2{id: "low-threshold", value: @medium, type: "text"}
+  .col
+    .form-label
+      High Threshold
+    %input.form-control.mr-sm-2{id: "low-threshold", value: @high, type: "text"}
+.p.mt-1
+  Change Threshold is a High Level Operation.
+  %br
+  Your High Threshold is:
+  = @high
+  %br
+  Master key weight is:
+  = @master_weight
+  .text-danger
+    This operation needs to be signed by signer(s) with individual or combined weight of >=
+    = @high
+.form-inline.mt-1
+  .form-check.form-check-inline
+    %input#inlineCheckbox1.form-check-input{:type => "checkbox", :value => "do_not_submit"}/
+    %label.form-check-label{:for => "inlineCheckbox1"} Do not submit, only create Transaction object.
+.form-group.mt-1
+  .form-label
+    Your Secret Seed
+  %input.form-control{id: "secret-seed", type: "password", placeholder: 'Enter your secret seed here'}
+
+.fee-prompt.mb-2.mt-2.text-danger
+  Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
+  .container-fluid
+    .row
+      .col-md-12.text-center
+        #progressbar
+          .progress-label
+            Processing. Please Wait...
+      .col-md-12
+        .text-right
+          %button{type: "button", class: "btn btn-brown", id: "change-threshold-btn"} Change Threshold
+          %button{type: "button", class: "btn btn-brown", id: "change-transaction-btn"} Create Transaction

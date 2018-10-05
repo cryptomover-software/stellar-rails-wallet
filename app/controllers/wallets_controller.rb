@@ -519,6 +519,7 @@ class WalletsController < ApplicationController
   end
 
   def advanced_settings
+    @low = @medium = @high = @master_weight = 0
   end
 
   private
