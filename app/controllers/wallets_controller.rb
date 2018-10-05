@@ -492,32 +492,34 @@ class WalletsController < ApplicationController
 
   def simulate_login_for_testing
     session[:testing] = true
-    session[:address] = 'GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJE66AZTNC77F6K2CN3K4OO'
+    session[:address] = 'GDZP53LPGV4LGIZVTIPDIYL2N6VC6YYUBSJ'\
+                        'E66AZTNC77F6K2CN3K4OO'
     session[:federation_address] = 'abhijit@cryptomover.com'
-    session[:balances] = [{"balance"=>"1.0000000",
-                          "limit"=>"1300.0000000",
-                          "asset_type"=>"credit_alphanum4",
-                          "asset_code"=>"HKDC",
-                          "asset_issuer"=>"GA4BYMUO5D7OLGVJWZ2D5FCWU7SB63FNZ4QUU574SMNA6ELK5TZD3SO3",
-                          "usd_price"=>0.0},
-                          {"balance"=>"0.0000000",
-                           "limit"=>"922337203685.4775807",
-                           "asset_type"=>"credit_alphanum12",
-                           "asset_code"=>"1043388008",
-                           "asset_issuer"=>"GD5AEHBCLSEURJGA5X7QOF7U36XV4F5DHSV7B46OONJYQC4DRNBUG5UN",
-                           "usd_price"=>"undetermined"},
-                          {"balance"=>"6.8995200",
-                           "asset_type"=>"native",
-                           "usd_price"=>1.51}]
+    session[:balances] = [{ 'balance' => '1.0000000',
+                            'limit' => '1300.0000000',
+                            'asset_type' => 'credit_alphanum4',
+                            'asset_code' => 'HKDC',
+                            'asset_issuer' => 'GA4BYMUO5D7OLGVJWZ2D5FCW'\
+                                             'U7SB63FNZ4QUU574SMNA6ELK5TZD3SO3',
+                            'usd_price' => 0.0 },
+                          { 'balance' => '0.0000000',
+                            'limit' => '922337203685.4775807',
+                            'asset_type' => 'credit_alphanum12',
+                            'asset_code' => '1043388008',
+                            'asset_issuer' => 'GD5AEHBCLSEURJGA5X7QOF7U'\
+                                             '36XV4F5DHSV7B46OONJYQC4DRNBUG5UN',
+                            'usd_price' => 'undetermined' },
+                          { 'balance' => '6.8995200',
+                            'asset_type' => 'native',
+                            'usd_price' => 1.51 }]
     render body: nil
   end
 
-  # def federation_account
-  #   @address = session[:address]
-  #   @federations = Federation.where(address: @address)
+  def sign_transaction
+  end
 
-  #   head :no_content
-  # end
+  def advanced_settings
+  end
 
   private
   def activate_account
