@@ -281,6 +281,8 @@ class WalletsController < ApplicationController
       end
 
       balances = data
+      session[:thresholds] = result['thresholds']
+      session[:signers] = result['signers']
     else
       balances = result
     end
@@ -519,7 +521,14 @@ class WalletsController < ApplicationController
   end
 
   def advanced_settings
-    @low = @medium = @high = @master_weight = 0
+    @low = session[:thresholds]['low_threshold']
+    @medium = session[:thresholds]['med_threshold']
+    @high = session[:thresholds]['high_threshold']
+    session[:signers].each do |s|
+      if s['key'] == session[:address]
+        @master_weight = s['weight']
+      end
+    end
   end
 
   private
