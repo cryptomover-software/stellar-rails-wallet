@@ -66,4 +66,17 @@
       $(this).find($("i")).removeClass('fa-times-circle').addClass('fa-chevron-circle-down')
     }
   })
-  
+  $("#inlineCheckbox1").change(function() {
+    if(this.checked) {
+      $('#change-threshold-btn').attr('disabled', true)
+    } else {
+      $('#change-threshold-btn').attr('disabled', false)
+    }
+  })
+  $("#inlineCheckbox2").change(function() {
+    if(this.checked) {
+      $('#submit-signer-btn').attr('disabled', true)
+    } else {
+      $('#submit-signer-btn').attr('disabled', false)
+    }
+  })

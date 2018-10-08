@@ -15,7 +15,7 @@
     = @high
 .form-inline.mt-1
   .form-check.form-check-inline
-    %input#inlineCheckbox1.form-check-input{:type => "checkbox", :value => "do_not_submit"}/
+    %input#inlineCheckbox2.form-check-input{:type => "checkbox", :value => "do_not_submit"}/
     %label.form-check-label{:for => "inlineCheckbox1"} Do not submit, only create Transaction object.
 .form-group.mt-1
   .form-label
@@ -39,5 +39,5 @@
             Processing. Please Wait...
       .col-md-12
         .text-right
-          %button{type: "button", class: "btn btn-brown", id: "change-threshold-btn"} Submit
+          %button{type: "button", class: "btn btn-brown", id: "submit-signer-btn"} Submit
           %button{type: "button", class: "btn btn-brown", id: "change-transaction-btn"} Create Transaction
