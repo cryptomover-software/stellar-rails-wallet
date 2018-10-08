@@ -50,6 +50,9 @@
         #collapseTwo.collapse{"aria-labelledby" => "headingTwo", "data-parent" => "#accordion"}
           .card-body
             = render partial: 'shared/add_remove_signer_form'
+    #progressbar.mt-2
+      .progress-label
+        Processing. Please Wait...
 
 :javascript
   $('#buttonOne').click(function() {
@@ -79,4 +82,24 @@
     } else {
       $('#submit-signer-btn').attr('disabled', false)
     }
+  })
+  $('#crtr-chng-thrshld-btn').click(function() {
+    var low = $('#low-threshold').data("low")
+    var med = $('#med-threshold').data("med")
+    var high = $('#high-threshold').data("high")
+    var newLow = document.getElementById('low-threshold').value.replace(/\s/g,'')
+    var newMed = document.getElementById('med-threshold').value.replace(/\s/g,'')
+    var newHigh = document.getElementById('high-threshold').value.replace(/\s/g,'')
+    if (allThresholdsAreValid(newLow, newMed, newHigh)) {
+      console.log("all valid")
+      disableAllAdvSettings()
+      $('#layout-alert').hide()
+      progressBar()
+    } else {
+      $("#layout-alert").show()
+      $("#layout-alert").html("ERROR! Invalid Threshold Limit. It must be an integer between 0-255.")
+      var scrollPos =  $("#layout-alert").offset().top;
+      $(window).scrollTop(scrollPos);
+    }
+    
   })

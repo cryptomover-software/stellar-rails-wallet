@@ -57,7 +57,57 @@ function progressBar() {
   progressBar.progressbar( "option", "value", false )
   progressBarValue.css({"background": "#00bfff"})
   $("#progressbar").show()
-  $("#progressbar").focus()
+  // $("#progressbar").focus()
+  var scrollPos =  $("#progressbar").offset().top;
+  $(window).scrollTop(scrollPos);
+}
+
+function disableAllAdvSettings() {
+  // disable all elements on change threshold form
+  $('#low-threshold').attr('disabled', true)
+  $('#med-threshold').attr('disabled', true)
+  $('#high-threshold').attr('disabled', true)
+  $('#secret-seed-one').attr('disabled', true)
+  $('#inlineCheckbox1').attr('disabled', true)
+  $('#change-threshold-btn').attr('disabled', true)
+  $('#crtr-chng-thrshld-btn').attr('disabled', true)
+  // disable all elements on add/remove signer form
+  $('#inlineCheckbox2').attr('disabled', true)
+  $('#secret-seed').attr('disabled', true)
+  $('#signer-public-key').attr('disabled', true)
+  $('#signer-weight').attr('disabled', true)
+  $('#submit-signer-btn').attr('disabled', true)
+  $('#crtr-signer-btn').attr('disabled', true)
+}
+
+function allThresholdsAreValid(newLow, newMed, newHigh) {
+  var thresholds = [newLow, newMed, newHigh]
+  var validLimit = true
+  var validIntegers = true
+  for(i = 0; i < thresholds.length; ++i) {
+    if(thresholds[i] % 1 === 0) {
+      continue
+    } else {
+      validIntegers = false
+      break
+    }
+  }
+
+  for(i = 0; i < thresholds.length; ++i) {
+    var value = parseInt(thresholds[i])
+    if (value >= 0 && value <= 255) {
+      continue
+    } else {
+      validLimit = false
+      break
+    }
+  }
+
+  if (validLimit && validIntegers) {
+    return true
+  } else {
+    return false
+  }
 }
 
 function initiateFundNewAccount() {

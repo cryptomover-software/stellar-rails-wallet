@@ -2,15 +2,21 @@
   .col
     .form-label
       Low Threshold
-    %input.form-control.mr-sm-2{id: "low-threshold", value: @low, type: "text"}
+      .text-muted.d-inline
+        (0-255)
+    %input.form-control.mr-sm-2{id: "low-threshold", value: @low, type: "text", "data-low": @low, pattern: "\d*"}
   .col
     .form-label
       Medium Threshold
-    %input.form-control.mr-sm-2{id: "med-threshold", value: @medium, type: "text"}
+      .text-muted.d-inline
+        (0-255)
+    %input.form-control.mr-sm-2{id: "med-threshold", value: @medium, type: "text", "data-med": @med}
   .col
     .form-label
       High Threshold
-    %input.form-control.mr-sm-2{id: "high-threshold", value: @high, type: "text"}
+      .text-muted.d-inline
+        (0-255)
+    %input.form-control.mr-sm-2{id: "high-threshold", value: @high, type: "text", "data-high": @high}
 .p.mt-1
   Change Threshold is a High Level Operation.
   %br
@@ -24,7 +30,7 @@
     = @high
 .form-inline.mt-1
   .form-check.form-check-inline
-    %input#inlineCheckbox1.form-check-input{:type => "checkbox", :value => "do_not_change_threshold"}/
+    %input#inlineCheckbox1.form-check-input{type: "checkbox", value: "do_not_change_threshold"}/
     %label.form-check-label{:for => "inlineCheckbox1"} Do not submit, only create Transaction object.
 .form-group.mt-1
   .form-label
@@ -35,12 +41,8 @@
   Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
   .container-fluid
     .row
-      .col-md-12.text-center
-        #progressbar
-          .progress-label
-            Processing. Please Wait...
       .col-md-12
         .text-right
           %button{type: "button", class: "btn btn-brown", id: "change-threshold-btn"} Change Threshold
-          %button{type: "button", class: "btn btn-brown", id: "change-transaction-btn"} Create Transaction
+          %button{type: "button", class: "btn btn-brown", id: "crtr-chng-thrshld-btn"} Create Transaction
 #ct-transaction
