@@ -146,7 +146,7 @@ function changeThresholdTransaction() {
             medThreshold: parseInt(newMed),
             highThreshold: parseInt(newHigh)
             })).build()
-          if (true) {
+          if (doNotSign) {
             transaction.sign(keypair)
           }
           xdr = transaction.toEnvelope().toXDR('base64')
@@ -191,7 +191,7 @@ function addRemoveSignerTransaction() {
               weight: newSignerWeight
             }
             })).build()
-          if (true) {
+          if (doNotSign) {
             transaction.sign(keypair)
           }
           xdr = transaction.toEnvelope().toXDR('base64')
