@@ -22,7 +22,7 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-.card#advanced-settings-card
+.card#advanced-settings-card{"data-address": @address}
   .card-header
     %h1 Advanced Settings
   .card-body
@@ -54,6 +54,7 @@
       .progress-label
         Processing. Please Wait...
 
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 :javascript
   $('#buttonOne').click(function() {
     if ($(this).find($("i")).hasClass('fa-chevron-circle-down')) {
@@ -69,20 +70,7 @@
       $(this).find($("i")).removeClass('fa-times-circle').addClass('fa-chevron-circle-down')
     }
   })
-  $("#inlineCheckbox1").change(function() {
-    if(this.checked) {
-      $('#change-threshold-btn').attr('disabled', true)
-    } else {
-      $('#change-threshold-btn').attr('disabled', false)
-    }
-  })
-  $("#inlineCheckbox2").change(function() {
-    if(this.checked) {
-      $('#submit-signer-btn').attr('disabled', true)
-    } else {
-      $('#submit-signer-btn').attr('disabled', false)
-    }
-  })
+
   $('#crtr-chng-thrshld-btn').click(function() {
     var low = $('#low-threshold').data("low")
     var med = $('#med-threshold').data("med")
@@ -90,16 +78,38 @@
     var newLow = document.getElementById('low-threshold').value.replace(/\s/g,'')
     var newMed = document.getElementById('med-threshold').value.replace(/\s/g,'')
     var newHigh = document.getElementById('high-threshold').value.replace(/\s/g,'')
-    if (allThresholdsAreValid(newLow, newMed, newHigh)) {
-      console.log("all valid")
-      disableAllAdvSettings()
-      $('#layout-alert').hide()
-      progressBar()
-    } else {
+    var seed = document.getElementById('secret-seed-one').value.replace(/\s/g,'')
+    var doNotSign = $('#inlineCheckbox1').is(":checked")
+
+    if (seed.length == 0) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("ERROR! Please enter your private seed.")
+      var scrollPos =  $("#layout-alert").offset().top;
+      $(window).scrollTop(scrollPos);
+    } else if (!allThresholdsAreValid(newLow, newMed, newHigh)) {
       $("#layout-alert").show()
       $("#layout-alert").html("ERROR! Invalid Threshold Limit. It must be an integer between 0-255.")
       var scrollPos =  $("#layout-alert").offset().top;
       $(window).scrollTop(scrollPos);
+    } else {
+      disableAllAdvSettings()
+      $('#layout-alert').hide()
+      progressBar()
+      var server = new StellarSdk.Server('https://horizon.stellar.org')
+      StellarSdk.Network.usePublicNetwork()
+      var publicKey = $('#advanced-settings-card').data("address")
+      var keypair = StellarSdk.Keypair.fromSecret(seed)
+        server.loadAccount(publicKey)
+          .then(function(account) {
+            var transaction = new StellarSdk.TransactionBuilder(account)
+            .addOperation(StellarSdk.Operation.setOptions({
+              lowThreshold: parseInt(newLow)
+              })).build()
+            xdr = transaction.toEnvelope().toXDR('base64')
+            $("#progressbar").hide()
+            $('#ct-transaction').html("Transaction Object: <br>" + xdr)
+            var scrollPos =  $("#ct-transaction").offset().top;
+            $(window).scrollTop(scrollPos);
+        })
     }
-    
   })
