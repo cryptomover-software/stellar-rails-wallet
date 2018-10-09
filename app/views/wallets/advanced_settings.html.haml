@@ -103,7 +103,9 @@
           .then(function(account) {
             var transaction = new StellarSdk.TransactionBuilder(account)
             .addOperation(StellarSdk.Operation.setOptions({
-              lowThreshold: parseInt(newLow)
+              lowThreshold: parseInt(newLow),
+              medThreshold: parseInt(newMed),
+              highThreshold: parseInt(newHigh)
               })).build()
             xdr = transaction.toEnvelope().toXDR('base64')
             $("#progressbar").hide()
