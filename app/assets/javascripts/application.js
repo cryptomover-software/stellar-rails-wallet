@@ -110,6 +110,99 @@ function allThresholdsAreValid(newLow, newMed, newHigh) {
   }
 }
 
+function changeThresholdTransaction() {
+  var low = $('#low-threshold').data("low")
+  var med = $('#med-threshold').data("med")
+  var high = $('#high-threshold').data("high")
+  var newLow = document.getElementById('low-threshold').value.replace(/\s/g,'')
+  var newMed = document.getElementById('med-threshold').value.replace(/\s/g,'')
+  var newHigh = document.getElementById('high-threshold').value.replace(/\s/g,'')
+  var seed = document.getElementById('secret-seed-one').value.replace(/\s/g,'')
+  var doNotSign = $('#inlineCheckbox1').is(":checked")
+
+  if (seed.length == 0) {
+    $("#layout-alert").show()
+    $("#layout-alert").html("ERROR! Please enter your private seed.")
+    var scrollPos =  $("#layout-alert").offset().top;
+    $(window).scrollTop(scrollPos);
+  } else if (!allThresholdsAreValid(newLow, newMed, newHigh)) {
+    $("#layout-alert").show()
+    $("#layout-alert").html("ERROR! Invalid Threshold Limit. It must be an integer between 0-255.")
+    var scrollPos =  $("#layout-alert").offset().top;
+    $(window).scrollTop(scrollPos);
+  } else {
+    disableAllAdvSettings()
+    $('#layout-alert').hide()
+    progressBar()
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    StellarSdk.Network.usePublicNetwork()
+    var publicKey = $('#advanced-settings-card').data("address")
+    var keypair = StellarSdk.Keypair.fromSecret(seed)
+      server.loadAccount(publicKey)
+        .then(function(account) {
+          var transaction = new StellarSdk.TransactionBuilder(account)
+          .addOperation(StellarSdk.Operation.setOptions({
+            lowThreshold: parseInt(newLow),
+            medThreshold: parseInt(newMed),
+            highThreshold: parseInt(newHigh)
+            })).build()
+          if (true) {
+            transaction.sign(keypair)
+          }
+          xdr = transaction.toEnvelope().toXDR('base64')
+          $("#progressbar").hide()
+          $('#ct-transaction').html("Transaction Object: <br>" + xdr)
+          var scrollPos =  $("#ct-transaction").offset().top;
+          $(window).scrollTop(scrollPos);
+      })
+  }
+}
+
+function addRemoveSignerTransaction() {
+  var newSignerPublicKey = document.getElementById('signer-public-key').value.replace(/\s/g,'')
+  var newSignerWeight = document.getElementById('signer-weight').value.replace(/\s/g,'')
+  var seed = document.getElementById('secret-seed-two').value.replace(/\s/g,'')
+  var doNotSign = $('#inlineCheckbox2').is(":checked")
+
+  if (seed.length == 0) {
+    $("#layout-alert").show()
+    $("#layout-alert").html("ERROR! Please enter your private seed.")
+    var scrollPos =  $("#layout-alert").offset().top;
+    $(window).scrollTop(scrollPos);
+  } else if (newSignerPublicKey.length == 0 || newSignerWeight == 0) {
+    $("#layout-alert").show()
+    $("#layout-alert").html("ERROR! Enter correct data fon new Signer.")
+    var scrollPos =  $("#layout-alert").offset().top;
+    $(window).scrollTop(scrollPos);
+  } else {
+    disableAllAdvSettings()
+    $('#layout-alert').hide()
+    progressBar()
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    StellarSdk.Network.usePublicNetwork()
+    var publicKey = $('#advanced-settings-card').data("address")
+    var keypair = StellarSdk.Keypair.fromSecret(seed)
+      server.loadAccount(publicKey)
+        .then(function(account) {
+          var transaction = new StellarSdk.TransactionBuilder(account)
+          .addOperation(StellarSdk.Operation.setOptions({
+            signer: {
+              ed25519PublicKey: newSignerPublicKey,
+              weight: newSignerWeight
+            }
+            })).build()
+          if (true) {
+            transaction.sign(keypair)
+          }
+          xdr = transaction.toEnvelope().toXDR('base64')
+          $("#progressbar").hide()
+          $('#signer-transaction').html("Transaction Object: <br>" + xdr)
+          var scrollPos =  $("#signer-transaction").offset().top;
+          $(window).scrollTop(scrollPos);
+      })
+  }
+}
+
 function initiateFundNewAccount() {
   $("#progressbar").hide()
 
