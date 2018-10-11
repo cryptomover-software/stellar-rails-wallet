@@ -87,13 +87,18 @@ class FederationsController < ApplicationController
 
   def create
     federation = Federation.new(federations_params)
+    if federation.username.empty?
+      format.js { render json: { error: 'empty_username' }, status: :unprocessable_entity }
+      return
+    end
+
     federation.address = session[:address]
     federation.email_confirmation_generated_at = DateTime.now
     # ToDo Rescue saving errors
     @username = federation.username
 
     respond_to do |format|
-      if federation.save
+      if federation.save!
         session[:federation_address] = @username
 
         FederationMailer.with(federation: @username,
