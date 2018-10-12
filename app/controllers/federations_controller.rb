@@ -55,7 +55,7 @@ class FederationsController < ApplicationController
 
     @federation.email_confirmed = true
     if @federation.save!
-      session[:federation_address] = @federation.username
+      session[:federation_address] = "#{@federation.username}*cryptomover.com"
       session[:email_confirmed] = @federation.email_confirmed
     else
       redirect_to failed_path(type: 'email',
