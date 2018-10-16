@@ -522,9 +522,10 @@ class WalletsController < ApplicationController
 
   def advanced_settings
     @address = session[:address]
-    @low = session[:thresholds]['low_threshold']
-    @medium = session[:thresholds]['med_threshold']
-    @high = session[:thresholds]['high_threshold']
+    low = session[:thresholds]['low_threshold']
+    med = session[:thresholds]['med_threshold']
+    high = session[:thresholds]['high_threshold']
+    @thresholds = { 'low': low, 'med': med, 'high': high }
     session[:signers].each do |s|
       if s['key'] == session[:address]
         @master_weight = s['weight']

@@ -37,7 +37,11 @@
                 %i.fas.fa-chevron-circle-down
         #collapseOne.collapse{"aria-labelledby" => "headingOne", "data-parent" => "#accordion"}
           .card-body
-            = render partial: 'shared/change_threshold_form'
+            #change_threshold_form
+            #thresholds_data{data: @thresholds.to_json, "data-master": @master_weight.to_json}
+            = javascript_pack_tag 'change_threshold_form'
+            #ct-transaction
+            -# = render partial: 'shared/change_threshold_form'
     #accordionTwo.mt-3
       .card
         #headingTwo.card-header
@@ -72,8 +76,11 @@
   })
 
   $('#crtr-chng-thrshld-btn').click(function() {
-    changeThresholdTransaction()
+    changeThresholdTransaction(false)
   })
   $('#crtr-signer-btn').click(function() {
-    addRemoveSignerTransaction()
+    addRemoveSignerTransaction(false)
+  })
+  $('#change-threshold-btn').click(function() {
+    changeThreshold()
   })
