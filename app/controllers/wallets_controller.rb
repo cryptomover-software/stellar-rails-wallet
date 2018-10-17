@@ -291,6 +291,7 @@ class WalletsController < ApplicationController
 
     respond_to do |format|
       format.json { render json: balances }
+      format.html
     end
   end
 
@@ -487,6 +488,7 @@ class WalletsController < ApplicationController
   end
 
   def success
+    get_balances
   end
 
   def failed

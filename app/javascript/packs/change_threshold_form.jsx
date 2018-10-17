@@ -25,45 +25,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import {progressBar, submitTransaction} from './helper';
 
-function progressBar() {
-    $("#progressbar").progressbar({
-      value: false
-    });
-
-    var progressBar = $("#progressbar");
-    var progressBarValue = progressBar.find(".ui-progressbar-value");
-    progressBar.progressbar( "option", "value", false );
-    progressBarValue.css({"background": "#00bfff"});
-    $("#progressbar").show();
-    // $("#progressbar").focus()
-    var scrollPos =  $("#progressbar").offset().top;
-    $(window).scrollTop(scrollPos);
-}
-function submitTransaction(transaction, server) {
-    StellarSdk.Network.usePublicNetwork();
-    server.submitTransaction(transaction)
-        .then(function(transactionResult) {
-            // console.log(JSON.stringify(transactionResult, null, 2));
-            // console.log('\nSuccess! View the transaction at: ');
-            // console.log(transactionResult._links.transaction.href);
-            var transactionURL = transactionResult._links.transaction.href;
-            var message = ' Threshold changed successfully.';
-            // $.post('/create_log', {message: '--> ' + message});
-            document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message;
-     })
-     .catch(function(err) {
-         var resultCode = err.data.extras.result_codes.transaction;
-         // console.log(err);
-         // console.log(resultCode);
-         var message = '';
-         if (resultCode == 'tx_bad_auth') {
-             message += 'Invalid Private Seed.';
-         }
-         // ajax.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err});
-         document.location.href = '/failed?error_description=' + message;
-     });
-}
 
 class ChangeThresholdForm extends React.Component {
     constructor (props) {
@@ -99,7 +62,7 @@ class ChangeThresholdForm extends React.Component {
         if(!fields[name]){
            formIsValid = false;
            errors[name] = "Cannot be empty";
-        } else if (!(parseInt(value) > 0) || !(parseInt(value) < 255)) {
+        } else if (!(parseInt(value) >= 0) || !(parseInt(value) <= 255)) {
             formIsValid = false;
             errors[name] = "Must be between 0-255";
         } else {
@@ -156,7 +119,7 @@ class ChangeThresholdForm extends React.Component {
                                     highThreshold: parseInt(high)
                                 })).build();
                                 transaction.sign(keypair);
-                            submitTransaction(transaction, server);
+                            submitTransaction(transaction, server, 'changeThreshold');
                         } else {
                             var message = "First add signer(s) with succifient weight before changing High Threshold Level. You tried to change High Threshold to " + high + ", but sum of your signers weight is only " + sum_weight.toString();
                             document.location.href = '/failed?error_description=' + message;
