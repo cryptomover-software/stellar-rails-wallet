@@ -40,6 +40,30 @@ function progressBar() {
     var scrollPos =  $("#progressbar").offset().top;
     $(window).scrollTop(scrollPos);
 }
+function submitTransaction(transaction, server) {
+    StellarSdk.Network.usePublicNetwork();
+    server.submitTransaction(transaction)
+        .then(function(transactionResult) {
+            // console.log(JSON.stringify(transactionResult, null, 2));
+            // console.log('\nSuccess! View the transaction at: ');
+            // console.log(transactionResult._links.transaction.href);
+            var transactionURL = transactionResult._links.transaction.href;
+            var message = ' Threshold changed successfully.';
+            // $.post('/create_log', {message: '--> ' + message});
+            document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message;
+     })
+     .catch(function(err) {
+         var resultCode = err.data.extras.result_codes.transaction;
+         // console.log(err);
+         // console.log(resultCode);
+         var message = '';
+         if (resultCode == 'tx_bad_auth') {
+             message += 'Invalid Private Seed.';
+         }
+         // ajax.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err});
+         document.location.href = '/failed?error_description=' + message;
+     });
+}
 
 class ChangeThresholdForm extends React.Component {
     constructor (props) {
@@ -87,28 +111,90 @@ class ChangeThresholdForm extends React.Component {
         this.setState({[name]: value});
         this.setState({formIsValid: formIsValid});
     }
-    createTranactionObject() {
+    changeThreshold() {
         if(!this.state.seed) {
             this.setState({formIsValid: false});
             this.setState({errors: {'seed': 'Seed can not be empty.'}});
         } else {
             this.setState({formIsValid: true});
-            this.setState({disabled: !this.state.disabled});
-            progressBar();
 
-            var server = new StellarSdk.Server('https://horizon.stellar.org');
-            StellarSdk.Network.usePublicNetwork();
-            var publicKey = $('#advanced-settings-card').data("address");
+            var card = document.getElementById('advanced-settings-card');
+            var publicKey = card.getAttribute("data-address");
             var low = this.state.low;
             var med = this.state.med;
             var high = this.state.high;
             var sign = this.state.sign;
             var seed = this.state.seed;
+            var keypair = '';
             try {
-                var xdr = '';
-                var keypair = StellarSdk.Keypair.fromSecret(seed);
+                keypair = StellarSdk.Keypair.fromSecret(seed);
+            } catch(error) {
+                $("#progressbar").hide();
+                $("#layout-alert").show();
+                $("#layout-alert").html("ERROR! Invalid Private Seed.");
+                var scrollPos =  $("#layout-alert").offset().top;
+                $(window).scrollTop(scrollPos);
+            }
+
+            if (keypair.length != 0) {
+                this.setState({disabled: !this.state.disabled});
+                progressBar();
+                var server = new StellarSdk.Server('https://horizon.stellar.org');
+                StellarSdk.Network.usePublicNetwork();
+
                 server.loadAccount(publicKey)
                     .then(function(account) {
+                        var sum_weight = 0;
+                        for (var i = 0; i < account.signers.length; i++) {
+                            sum_weight += parseInt(account.signers[i]['weight']);
+                        }
+                        if (high < sum_weight) {
+                            var transaction = new StellarSdk.TransactionBuilder(account)
+                                .addOperation(StellarSdk.Operation.setOptions({
+                                    lowThreshold: parseInt(low),
+                                    medThreshold: parseInt(med),
+                                    highThreshold: parseInt(high)
+                                })).build();
+                                transaction.sign(keypair);
+                            submitTransaction(transaction, server);
+                        } else {
+                            var message = "First add signer(s) with succifient weight before changing High Threshold Level. You tried to change High Threshold to " + high + ", but sum of your signers weight is only " + sum_weight.toString();
+                            document.location.href = '/failed?error_description=' + message;
+                        }
+                });
+            }
+        }
+    }
+    createTransactionObject() {
+        if(!this.state.seed) {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'seed': 'Seed can not be empty.'}});
+        } else {
+            this.setState({formIsValid: true});
+
+            var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
+            var low = this.state.low;
+            var med = this.state.med;
+            var high = this.state.high;
+            var sign = this.state.sign;
+            var seed = this.state.seed;
+            var server = new StellarSdk.Server('https://horizon.stellar.org');
+            var keypair = '';
+            StellarSdk.Network.usePublicNetwork();
+            try {
+                keypair = StellarSdk.Keypair.fromSecret(seed);
+            } catch(error) {
+                $("#progressbar").hide();
+                $("#layout-alert").show();
+                $("#layout-alert").html("ERROR! Invalid Private Seed.");
+                var scrollPos =  $("#layout-alert").offset().top;
+                $(window).scrollTop(scrollPos);
+            }
+            if (keypair.length != 0) {
+                this.setState({disabled: !this.state.disabled});
+                progressBar();
+                server.loadAccount(publicKey)
+                    .then(function(account) {   
                         var transaction = new StellarSdk.TransactionBuilder(account)
                             .addOperation(StellarSdk.Operation.setOptions({
                                 lowThreshold: parseInt(low),
@@ -116,22 +202,14 @@ class ChangeThresholdForm extends React.Component {
                                 highThreshold: parseInt(high)
                             })).build();
                         if (sign) {
+                            // ToDo: verify publickey and seed matches
                             transaction.sign(keypair);
                         }
-                      xdr = transaction.toEnvelope().toXDR('base64');
-                      console.log("finished");
-                      console.log(xdr);
-                      document.getElementById("progressbar").style.display = 'None';
-                      document.getElementById('ct-transaction').innerHTML = "Transaction Object: <br>" + xdr;
-                      // var scrollPos =  document.getElementById("ct-transaction").offset().top;
-                      // document.window.scrollTop(scrollPos);
-                    });
-            } catch(error) {
-                $("#progressbar").hide();
-                $("#layout-alert").show();
-                $("#layout-alert").html("ERROR! Invalid Private Seed.");
-                var scrollPos =  $("#layout-alert").offset().top;
-                $(window).scrollTop(scrollPos);
+                        var xdr = transaction.toEnvelope().toXDR('base64');
+                        document.getElementById("progressbar").style.display = 'None';
+                        // console.log("adding to ct-transaction div");
+                        document.getElementById('ct-transaction').innerHTML = "Transaction Object: <br>" + xdr;
+                    });                
             }
         }
     }
@@ -203,10 +281,10 @@ class ChangeThresholdForm extends React.Component {
                   <div className="row">
                     <div className="col-md-12">
                       <div className="text-right">
-                        <button type="button" className="btn btn-brown" id="change-threshold-btn" disabled={!this.state.formIsValid}>
+                        <button onClick={ () => this.changeThreshold() } type="button" className="btn btn-brown" id="change-threshold-btn" disabled={!this.state.formIsValid}>
                           Change Threshold
                         </button>
-                        <button onClick={ () => this.createTranactionObject()} type="button" className="btn btn-brown" id="crtr-chng-trshld-btn" disabled={!this.state.formIsValid}>
+                        <button onClick={ () => this.createTransactionObject()} type="button" className="btn btn-brown" id="crtr-chng-trshld-btn" disabled={!this.state.formIsValid}>
                           Create Transaction
                         </button>
                       </div>
@@ -214,8 +292,6 @@ class ChangeThresholdForm extends React.Component {
                   </div>
                 </div>
               </div>
-              {/* <div className="ct-transaction"> */}
-              {/* </div> */}
             </div>
         );
     }
