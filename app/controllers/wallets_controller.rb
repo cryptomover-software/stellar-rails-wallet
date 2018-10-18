@@ -528,8 +528,9 @@ class WalletsController < ApplicationController
     med = session[:thresholds]['med_threshold']
     high = session[:thresholds]['high_threshold']
     @thresholds = { 'low': low, 'med': med, 'high': high }
+    @signers = session[:signers]
     session[:signers].each do |s|
-      if s['key'] == session[:address]
+      if s['public_key'] == session[:address]
         @master_weight = s['weight']
       end
     end

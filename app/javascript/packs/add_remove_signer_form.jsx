@@ -31,14 +31,19 @@ class AddRemoveSignerForm extends React.Component {
     constructor (props) {
         super(props);
         this.state = {
-            'seedtwo': '',
-            sign: true,
+            seedTwo: '',
+            newPublicKey: '',
+            weight: 0,
+            signtwo: true,
             formIsValid: true,
             disabled: false,
             fields: {},
             errors: {}
         };
-        this.validateUserInput = this.validateUserInput.bind(this);
+        // this.validateUserInput = this.validateUserInput.bind(this);
+    }
+    signTransaction(e) {
+        this.setState({signtwo: !this.state.signtwo});
     }
     validateKeyInput(e) {
         const name = e.target.name;
@@ -47,14 +52,16 @@ class AddRemoveSignerForm extends React.Component {
 
         if(value.length != 0) {
             this.setState({formIsValid: true});
-            this.setState({errors: {name: null}});
-            this.setState({seed: value});
+            errors[name] = null;
+            this.setState({errors: errors});
+            this.setState({[name]: value});
         } else {
             this.setState({formIsValid: false});
             errors[name] = "This key can not be empty.";
             this.setState({errors: errors});
             this.setState({[name]: value});
         }
+        return this.state.formIsValid;
     }
     validateUserInput(e) {
         let formIsValid = this.state.formIsValid;
@@ -78,6 +85,65 @@ class AddRemoveSignerForm extends React.Component {
         this.setState({errors: errors});
         this.setState({[name]: value});
         this.setState({formIsValid: formIsValid});
+        return this.state.formIsValid;
+    }
+    createSignerTransactionObject() {
+        console.log("create signer txr obj");
+        if(!this.state.seedTwo) {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'seedTwo': 'Seed can not be empty.'}});
+        } else {
+            this.setState({formIsValid: true});
+
+            var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
+            var newSignerPublicKey = this.state.newPublicKey;
+            var newSignerWeight = this.state.weight;
+            var sign = this.state.signtwo;
+            var seed = this.state.seedTwo;
+            var server = new StellarSdk.Server('https://horizon.stellar.org');
+            var keypair = '';
+            StellarSdk.Network.usePublicNetwork();
+            try {
+                keypair = StellarSdk.Keypair.fromSecret(seed);
+            } catch(error) {
+                $("#progressbar").hide();
+                $("#layout-alert").show();
+                $("#layout-alert").html("ERROR! Invalid Private Seed.");
+                var scrollPos =  $("#layout-alert").offset().top;
+                $(window).scrollTop(scrollPos);
+            }
+            try {
+                StellarSdk.Keypair.fromPublicKey(this.state.newPublicKey);
+            } catch(error) {
+                $("#progressbar").hide();
+                $("#layout-alert").show();
+                $("#layout-alert").html("ERROR! Invalid Public Key for new Signer.");
+                var scrollPos =  $("#layout-alert").offset().top;
+                $(window).scrollTop(scrollPos);
+            }
+            if (keypair.length != 0) {
+                this.setState({disabled: !this.state.disabled});
+                progressBar();
+                server.loadAccount(publicKey)
+                    .then(function(account) {
+                        var transaction = new StellarSdk.TransactionBuilder(account)
+                            .addOperation(StellarSdk.Operation.setOptions({
+                                signer: {
+                                    ed25519PublicKey: newSignerPublicKey,
+                                    weight: newSignerWeight
+                                }
+                            })).build();
+                        if (sign) {
+                            // ToDo: verify publickey and seed matches
+                            transaction.sign(keypair);
+                        }
+                        var xdr = transaction.toEnvelope().toXDR('base64');
+                        document.getElementById("progressbar").style.display = 'None';
+                        // console.log("adding to ct-transaction div");
+                        document.getElementById('signer-transaction').innerHTML = "Transaction Object: <br>" + xdr;
+                });
+            }
+        }
     }
     render() {
         return (

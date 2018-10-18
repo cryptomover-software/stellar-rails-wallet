@@ -22,7 +22,7 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-.card#advanced-settings-card{"data-address": @address}
+.card#advanced-settings-card{"data-address": @address, "data-signers": @signers.to_json}
   .card-header
     %h1 Advanced Settings
   .card-body
@@ -53,7 +53,10 @@
                 %i.fas.fa-chevron-circle-down
         #collapseTwo.collapse{"aria-labelledby" => "headingTwo", "data-parent" => "#accordion"}
           .card-body
-            = render partial: 'shared/add_remove_signer_form'
+            #add_remove_signer_form
+            = javascript_pack_tag 'add_remove_signer_form'
+            #signer-transaction
+            -# = render partial: 'shared/add_remove_signer_form'
     #progressbar.mt-2
       .progress-label
         Processing. Please Wait...

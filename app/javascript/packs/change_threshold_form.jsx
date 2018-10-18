@@ -42,16 +42,19 @@ class ChangeThresholdForm extends React.Component {
             fields: {},
             errors: {}
         };
-        this.handleUserInput = this.handleUserInput.bind(this);
+        this.validateUserInput = this.validateUserInput.bind(this);
     }
-    handleSeedInput(e) {
+    signTransaction(e) {
+        this.setState({signtwo: !this.state.signtwo});
+    }
+    validateSeedInput(e) {
         if(e.target.value) {
             this.setState({formIsValid: true});
             this.setState({errors: {'seed': null}});
             this.setState({seed: e.target.value});
         }
     }
-    handleUserInput(e) {
+    validateUserInput(e) {
         let formIsValid = this.state.formIsValid;
         let fields = this.state.fields;
         let errors = this.state.errors;
@@ -128,7 +131,7 @@ class ChangeThresholdForm extends React.Component {
             }
         }
     }
-    createTransactionObject() {
+    createThresholdTransactionObject() {
         if(!this.state.seed) {
             this.setState({formIsValid: false});
             this.setState({errors: {'seed': 'Seed can not be empty.'}});
@@ -188,7 +191,7 @@ class ChangeThresholdForm extends React.Component {
                       (0-255)
                     </div>
                   </div>
-                  <input onChange={(event) => this.handleUserInput(event)} className="form-control mr-sm-2" id="low-threshold" value={this.state.low} type="text" name="low" pattern="\d*" disabled={this.state.disabled}/>
+                  <input onChange={(event) => this.validateUserInput(event)} className="form-control mr-sm-2" id="low-threshold" value={this.state.low} type="text" name="low" pattern="\d*" disabled={this.state.disabled}/>
                   <span style={{color: "red"}}>{this.state.errors["low"]}</span>
                 </div>
                 <div className="col">
@@ -198,7 +201,7 @@ class ChangeThresholdForm extends React.Component {
                       (0-255)
                     </div>
                   </div>
-                  <input onChange={(event) => this.handleUserInput(event)} className="form-control mr-sm-2" id="med-threshold" value={this.state.med} type="text" pattern="\d*" name="med" disabled={this.state.disabled}/>
+                  <input onChange={(event) => this.validateUserInput(event)} className="form-control mr-sm-2" id="med-threshold" value={this.state.med} type="text" pattern="\d*" name="med" disabled={this.state.disabled}/>
                   <span style={{color: "red"}}>{this.state.errors["med"]}</span>
                 </div>
                 <div className="col">
@@ -208,7 +211,7 @@ class ChangeThresholdForm extends React.Component {
                       (0-255)
                     </div>
                   </div>
-                  <input onChange={(event) => this.handleUserInput(event)} className="form-control mr-sm-2" id="high-threshold" value={this.state.high} type="text" pattern="\d*" name="high" disabled={this.state.disabled}/>
+                  <input onChange={(event) => this.validateUserInput(event)} className="form-control mr-sm-2" id="high-threshold" value={this.state.high} type="text" pattern="\d*" name="high" disabled={this.state.disabled}/>
                   <span style={{color: "red"}}>{this.state.errors["high"]}</span>
                 </div>
               </div>
@@ -227,7 +230,7 @@ class ChangeThresholdForm extends React.Component {
               </div>
               <div className="form-inline mt-1">
                 <div className="form-check form-check-inline">
-                  <input className="form-check-input" id="inlineCheckbox1" type="checkbox" value="do_not_change_threshold" name="sign" disabled={this.state.disabled}/>
+                  <input onChange={(event) => this.signTransaction(event)} className="form-check-input" id="inlineCheckbox1" type="checkbox" value="do_not_change_threshold" name="sign" disabled={this.state.disabled}/>
                 <label className="form-check-label" htmlFor="inlineCheckbox1">Do not sign transaction object.</label>
                 </div>
               </div>
@@ -235,7 +238,7 @@ class ChangeThresholdForm extends React.Component {
                 <div className="form-label">
                   Your Secret Seed
                 </div>
-                <input onChange={(event) => this.handleSeedInput(event)} className="form-control" id="secret-seed-one" type="password" value={this.state.seed} name="seed" placeholder="Enter your privade seed here" disabled={this.state.disabled}/>
+                <input onChange={(event) => this.validateSeedInput(event)} className="form-control" id="secret-seed-one" type="password" value={this.state.seed} name="seed" placeholder="Enter your privade seed here" disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["seed"]}</span>
               </div>
               <div className="fee-prompt mb-2 mt-2 text-danger">
@@ -247,7 +250,7 @@ class ChangeThresholdForm extends React.Component {
                         <button onClick={ () => this.changeThreshold() } type="button" className="btn btn-brown" id="change-threshold-btn" disabled={!this.state.formIsValid}>
                           Change Threshold
                         </button>
-                        <button onClick={ () => this.createTransactionObject()} type="button" className="btn btn-brown" id="crtr-chng-trshld-btn" disabled={!this.state.formIsValid}>
+                        <button onClick={ () => this.createThresholdTransactionObject()} type="button" className="btn btn-brown" id="crtr-chng-trshld-btn" disabled={!this.state.formIsValid}>
                           Create Transaction
                         </button>
                       </div>
@@ -261,11 +264,6 @@ class ChangeThresholdForm extends React.Component {
 }
 
 // ========================================
-
-// ReactDOM.render(
-//   <ChangeThresholdForm />,
-//   document.getElementById('change_threshold_form')
-// );
 
 const node = document.getElementById('thresholds_data');
 const thresholdData = JSON.parse(node.getAttribute('data'));
