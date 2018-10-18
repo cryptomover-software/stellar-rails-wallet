@@ -62,51 +62,6 @@ function progressBar() {
   $(window).scrollTop(scrollPos);
 }
 
-function addRemoveSignerTransaction(submit) {
-  var newSignerPublicKey = document.getElementById('signer-public-key').value.replace(/\s/g,'')
-  var newSignerWeight = document.getElementById('signer-weight').value.replace(/\s/g,'')
-  var seed = document.getElementById('secret-seed-two').value.replace(/\s/g,'')
-  var doNotSign = $('#inlineCheckbox2').is(":checked")
-
-  if (seed.length == 0) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("ERROR! Please enter your private seed.")
-    var scrollPos =  $("#layout-alert").offset().top;
-    $(window).scrollTop(scrollPos);
-  } else if (newSignerPublicKey.length == 0 || newSignerWeight == 0) {
-    $("#layout-alert").show()
-    $("#layout-alert").html("ERROR! Enter correct data fon new Signer.")
-    var scrollPos =  $("#layout-alert").offset().top;
-    $(window).scrollTop(scrollPos);
-  } else {
-    disableAllAdvSettings()
-    $('#layout-alert').hide()
-    progressBar()
-    var server = new StellarSdk.Server('https://horizon.stellar.org')
-    StellarSdk.Network.usePublicNetwork()
-    var publicKey = $('#advanced-settings-card').data("address")
-    var keypair = StellarSdk.Keypair.fromSecret(seed)
-      server.loadAccount(publicKey)
-        .then(function(account) {
-          var transaction = new StellarSdk.TransactionBuilder(account)
-          .addOperation(StellarSdk.Operation.setOptions({
-            signer: {
-              ed25519PublicKey: newSignerPublicKey,
-              weight: newSignerWeight
-            }
-            })).build()
-          if (doNotSign) {
-            transaction.sign(keypair)
-          }
-          xdr = transaction.toEnvelope().toXDR('base64')
-          $("#progressbar").hide()
-          $('#signer-transaction').html("Transaction Object: <br>" + xdr)
-          var scrollPos =  $("#signer-transaction").offset().top;
-          $(window).scrollTop(scrollPos);
-      })
-  }
-}
-
 function initiateFundNewAccount() {
   $("#progressbar").hide()
 

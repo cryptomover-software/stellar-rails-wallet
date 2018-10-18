@@ -87,14 +87,45 @@ class AddRemoveSignerForm extends React.Component {
         this.setState({formIsValid: formIsValid});
         return this.state.formIsValid;
     }
-    createSignerTransactionObject() {
-        console.log("create signer txr obj");
-        if(!this.state.seedTwo) {
+    formValidForSubmission() {
+        var seed = this.state.seedTwo;
+        var errors = {};
+        if(!seed) {
             this.setState({formIsValid: false});
             this.setState({errors: {'seedTwo': 'Seed can not be empty.'}});
-        } else {
-            this.setState({formIsValid: true});
-
+            return false;
+        }
+        try {
+            StellarSdk.Keypair.fromSecret(seed);
+        } catch(error) {
+            errors = {'seedTwo': 'Invalid Private Seed'};
+            this.setState({errors: errors});
+            this.setState({formIsValid: false});
+            return false;
+        }
+        try {
+            StellarSdk.Keypair.fromPublicKey(this.state.newPublicKey);
+        } catch(error) {
+            errors = {'newPublicKey': 'Invalid Public Key for new signer.'};
+            this.setState({errors: errors});
+            this.setState({formIsValid: false});
+            return false;
+        }
+        var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
+        var kp1 = StellarSdk.Keypair.fromPublicKey(publicKey);
+        var kp2 = StellarSdk.Keypair.fromSecret(seed);
+        if (kp1.publicKey() != kp2.publicKey()) {
+            errors = {'seedTwo': 'Privase Seed does not match with your Account.'};
+            this.setState({errors: errors});
+            this.setState({formIsValid: false});
+            return false;
+        }
+        this.setState({formIsValid: true});
+        return true;
+    };
+    createSignerTransactionObject() {
+        console.log("create signer txr obj");
+        if (this.formValidForSubmission()) {
             var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
             var newSignerPublicKey = this.state.newPublicKey;
             var newSignerWeight = this.state.weight;
@@ -103,24 +134,7 @@ class AddRemoveSignerForm extends React.Component {
             var server = new StellarSdk.Server('https://horizon.stellar.org');
             var keypair = '';
             StellarSdk.Network.usePublicNetwork();
-            try {
-                keypair = StellarSdk.Keypair.fromSecret(seed);
-            } catch(error) {
-                $("#progressbar").hide();
-                $("#layout-alert").show();
-                $("#layout-alert").html("ERROR! Invalid Private Seed.");
-                var scrollPos =  $("#layout-alert").offset().top;
-                $(window).scrollTop(scrollPos);
-            }
-            try {
-                StellarSdk.Keypair.fromPublicKey(this.state.newPublicKey);
-            } catch(error) {
-                $("#progressbar").hide();
-                $("#layout-alert").show();
-                $("#layout-alert").html("ERROR! Invalid Public Key for new Signer.");
-                var scrollPos =  $("#layout-alert").offset().top;
-                $(window).scrollTop(scrollPos);
-            }
+            keypair = StellarSdk.Keypair.fromSecret(seed);
             if (keypair.length != 0) {
                 this.setState({disabled: !this.state.disabled});
                 progressBar();
@@ -134,13 +148,47 @@ class AddRemoveSignerForm extends React.Component {
                                 }
                             })).build();
                         if (sign) {
-                            // ToDo: verify publickey and seed matches
                             transaction.sign(keypair);
                         }
                         var xdr = transaction.toEnvelope().toXDR('base64');
                         document.getElementById("progressbar").style.display = 'None';
                         // console.log("adding to ct-transaction div");
                         document.getElementById('signer-transaction').innerHTML = "Transaction Object: <br>" + xdr;
+                });
+            }
+        }
+    }
+    submitSignerTransaction() {
+        if (this.formValidForSubmission()) {
+            var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
+            var newSignerPublicKey = this.state.newPublicKey;
+            var newSignerWeight = this.state.weight;
+            var sign = this.state.signtwo;
+            var seed = this.state.seedTwo;
+            var server = new StellarSdk.Server('https://horizon.stellar.org');
+            var keypair = '';
+            StellarSdk.Network.usePublicNetwork();
+            keypair = StellarSdk.Keypair.fromSecret(seed);
+            if (keypair.length != 0) {
+                this.setState({disabled: !this.state.disabled});
+                progressBar();
+                server.loadAccount(publicKey)
+                    .then(function(account) {
+                        var transaction = new StellarSdk.TransactionBuilder(account)
+                            .addOperation(StellarSdk.Operation.setOptions({
+                                signer: {
+                                    ed25519PublicKey: newSignerPublicKey,
+                                    weight: newSignerWeight
+                                }
+                            }))
+                            .addMemo(StellarSdk.Memo.text('modifying signer.'))
+                            .build();
+                        transaction.sign(keypair);
+                        var trxType = 'addSigner';
+                        if (newSignerWeight == 0) {
+                            trxType = 'removeSigner';
+                        }
+                        submitTransaction(transaction, server, trxType);
                 });
             }
         }
@@ -159,12 +207,12 @@ class AddRemoveSignerForm extends React.Component {
               Master Key Weight: &nbsp;
               {this.props.master_weight}
               <p className="text-danger">
-                This operation needs to be signer by signer(s) with individual or combined weight of >=
+                This operation needs to be signed by signer(s) with individual or combined weight of >=
                 {this.props.thresholds.high}
               </p>
               <div className="form-inline">
                 <div className="form-check form-check-inline">
-                  <input id="inlineCheckbox2" className="form-check-input" type="checkbox" value="do_not_submit" />
+                  <input onChange={(event) => this.signTransaction(event)} id="inlineCheckbox2" className="form-check-input" type="checkbox" value="do_not_submit" name="signtwo"/>
                   <label className="form-check-label" htmlFor="inlineCheckbox2">Do not sign transaction object.</label>
                 </div>
               </div>
@@ -172,15 +220,15 @@ class AddRemoveSignerForm extends React.Component {
                 <div className="form-label">
                   Your Secret Seed
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="secret-seed-two" type="password" placeholder="Enter your secret seed here" name="seedtwo"/>
-                <span style={{color: "red"}}>{this.state.errors["seedtwo"]}</span>
+                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="secret-seed-two" type="password" placeholder="Enter your secret seed here" name="seedTwo"/>
+                <span style={{color: "red"}}>{this.state.errors["seedTwo"]}</span>
               </div>
               <div className="form-group mt-1">
                 <div className="form-label">
                   New Signer Public Key
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="signer-public-key" type="text" placeholder="Enter new signer public key here." name="new-public-key"/>
-                <span style={{color: "red"}}>{this.state.errors["new-public-key"]}</span>
+                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="signer-public-key" type="text" placeholder="Enter new signer public key here." name="newPublicKey"/>
+                <span style={{color: "red"}}>{this.state.errors["newPublicKey"]}</span>
               </div>
               <div className="form-group mt-1">
                 <div className="form-label">
@@ -189,8 +237,8 @@ class AddRemoveSignerForm extends React.Component {
                     (0-255)
                   </div>
                 </div>
-                <input onChange={(event) => this.validateUserInput(event)} className="form-control" id="signer-weight" type="text" placeholder="Enter new signer weight here." name="new-weight"/>
-                <span style={{color: "red"}}>{this.state.errors["new-weight"]}</span>
+                <input onChange={(event) => this.validateUserInput(event)} className="form-control" id="signer-weight" type="text" placeholder="Enter new signer weight here." name="weight"/>
+                <span style={{color: "red"}}>{this.state.errors["weight"]}</span>
               </div>              
               <div className="fee-prompt mb-2 mt-2 text-danger">
                 Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
@@ -199,10 +247,10 @@ class AddRemoveSignerForm extends React.Component {
                 <div className="row">
                   <div className="col-md-12">
                     <div className="text-right">
-                      <button type="button" className="btn btn-brown" id="sumit-signer-btn" disabled={!this.state.formIsValid}>
+                      <button onClick={ () => this.submitSignerTransaction()} type="button" className="btn btn-brown" id="sumit-signer-btn" disabled={!this.state.formIsValid}>
                         Submit
                       </button>
-                      <button type="button" className="btn btn-brown" id="crtr-signer-btn" disabled={!this.state.formIsValid}>
+                      <button onClick={ () => this.createSignerTransactionObject()} type="button" className="btn btn-brown" id="crtr-signer-btn" disabled={!this.state.formIsValid}>
                         Create Transaction
                       </button>
                     </div>
@@ -220,6 +268,7 @@ const thresholdData = JSON.parse(node1.getAttribute('data'));
 const masterData = JSON.parse(node1.getAttribute('data-master'));
 const node2 = document.getElementById('advanced-settings-card');
 const signersData = JSON.parse(node2.getAttribute('data-signers'));
+
 const signers = signersData.map((signer) => 
         <div key={signer.key}>
           {signer.public_key}, {signer.weight}

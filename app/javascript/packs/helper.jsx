@@ -22,8 +22,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-var successMessages = {'changeThreshold': ' Threshold changed successfully.'};
-var errorMessages = {'changeThreshold': 'Invalid Private Seed.'};
+var successMessages = {
+    'changeThreshold': ' Threshold changed successfully.',
+    'addSigner': 'New signer added successfully.',
+    'removeSigner': 'Signer removed successfully.'
+};
 
 export const progressBar = function () {
     $("#progressbar").progressbar({
@@ -58,7 +61,7 @@ export const submitTransaction = function (transaction, server, trxType) {
          // console.log(resultCode);
          var message = '';
          if (resultCode == 'tx_bad_auth') {
-             message += errorMessages[trxType];
+             message += 'Invalid Private Seed.';
          }
          $.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err});
          document.location.href = '/failed?error_description=' + message;

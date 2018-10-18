@@ -47,6 +47,34 @@ class ChangeThresholdForm extends React.Component {
     signTransaction(e) {
         this.setState({signtwo: !this.state.signtwo});
     }
+    formValidForSubmission() {
+        var errors = {};
+        var seed = this.state.seed;
+        if(!this.state.seed) {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'seed': 'Seed can not be empty.'}});
+            return false;
+        }
+        try {
+            StellarSdk.Keypair.fromSecret(seed);
+        } catch(error) {
+            errors = {'seed': 'Invalid Private Seed.'};
+            this.setState({errors: errors});
+            this.setState({formIsValid: false});
+            return false;
+        }
+        var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
+        var kp1 = StellarSdk.Keypair.fromPublicKey(publicKey);
+        var kp2 = StellarSdk.Keypair.fromSecret(seed);
+        if (kp1.publicKey() != kp2.publicKey()) {
+            errors = {'seed': 'Privase Seed does not match with your Account.'};
+            this.setState({errors: errors});
+            this.setState({formIsValid: false});
+            return false;
+        }
+        this.setState({formIsValid: true});
+        return false;
+    }
     validateSeedInput(e) {
         if(e.target.value) {
             this.setState({formIsValid: true});
@@ -78,12 +106,7 @@ class ChangeThresholdForm extends React.Component {
         this.setState({formIsValid: formIsValid});
     }
     changeThreshold() {
-        if(!this.state.seed) {
-            this.setState({formIsValid: false});
-            this.setState({errors: {'seed': 'Seed can not be empty.'}});
-        } else {
-            this.setState({formIsValid: true});
-
+        if (this.formValidForSubmission()) {
             var card = document.getElementById('advanced-settings-card');
             var publicKey = card.getAttribute("data-address");
             var low = this.state.low;
@@ -92,15 +115,7 @@ class ChangeThresholdForm extends React.Component {
             var sign = this.state.sign;
             var seed = this.state.seed;
             var keypair = '';
-            try {
-                keypair = StellarSdk.Keypair.fromSecret(seed);
-            } catch(error) {
-                $("#progressbar").hide();
-                $("#layout-alert").show();
-                $("#layout-alert").html("ERROR! Invalid Private Seed.");
-                var scrollPos =  $("#layout-alert").offset().top;
-                $(window).scrollTop(scrollPos);
-            }
+            keypair = StellarSdk.Keypair.fromSecret(seed);
 
             if (keypair.length != 0) {
                 this.setState({disabled: !this.state.disabled});
@@ -120,7 +135,9 @@ class ChangeThresholdForm extends React.Component {
                                     lowThreshold: parseInt(low),
                                     medThreshold: parseInt(med),
                                     highThreshold: parseInt(high)
-                                })).build();
+                                }))
+                                .addMemo(StellarSdk.Memo.text('modifying threshold.'))
+                                .build();
                                 transaction.sign(keypair);
                             submitTransaction(transaction, server, 'changeThreshold');
                         } else {
@@ -132,12 +149,7 @@ class ChangeThresholdForm extends React.Component {
         }
     }
     createThresholdTransactionObject() {
-        if(!this.state.seed) {
-            this.setState({formIsValid: false});
-            this.setState({errors: {'seed': 'Seed can not be empty.'}});
-        } else {
-            this.setState({formIsValid: true});
-
+        if (this.formValidForSubmission()) {
             var publicKey = document.getElementById('advanced-settings-card').getAttribute("data-address");
             var low = this.state.low;
             var med = this.state.med;
@@ -147,15 +159,8 @@ class ChangeThresholdForm extends React.Component {
             var server = new StellarSdk.Server('https://horizon.stellar.org');
             var keypair = '';
             StellarSdk.Network.usePublicNetwork();
-            try {
-                keypair = StellarSdk.Keypair.fromSecret(seed);
-            } catch(error) {
-                $("#progressbar").hide();
-                $("#layout-alert").show();
-                $("#layout-alert").html("ERROR! Invalid Private Seed.");
-                var scrollPos =  $("#layout-alert").offset().top;
-                $(window).scrollTop(scrollPos);
-            }
+            keypair = StellarSdk.Keypair.fromSecret(seed);
+
             if (keypair.length != 0) {
                 this.setState({disabled: !this.state.disabled});
                 progressBar();
@@ -168,7 +173,6 @@ class ChangeThresholdForm extends React.Component {
                                 highThreshold: parseInt(high)
                             })).build();
                         if (sign) {
-                            // ToDo: verify publickey and seed matches
                             transaction.sign(keypair);
                         }
                         var xdr = transaction.toEnvelope().toXDR('base64');

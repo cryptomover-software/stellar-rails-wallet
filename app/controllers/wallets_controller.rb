@@ -524,6 +524,7 @@ class WalletsController < ApplicationController
 
   def advanced_settings
     @address = session[:address]
+    @federation = session[:federation_address]
     low = session[:thresholds]['low_threshold']
     med = session[:thresholds]['med_threshold']
     high = session[:thresholds]['high_threshold']

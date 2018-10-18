@@ -26,7 +26,16 @@
   .card-header
     %h1 Advanced Settings
   .card-body
-    #accordionOne
+    Your Account
+    - if @federation.present?
+      %br
+      #federation.address
+        = @federation
+    %br
+    .address
+      = session[:address]
+    %br
+    #accordionOne.mt-2
       .card
         #headingOne.card-header
           .row
