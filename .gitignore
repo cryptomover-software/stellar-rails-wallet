@@ -5,6 +5,9 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 *~
 config/puma.rb
+config/deploy.rb
+config/initializers/recaptcha.rb
+lib/tasks
 # Ignore bundler config.
 /.bundle
 
@@ -91,3 +94,6 @@ bower.json
 /node_modules
 yarn-debug.log*
 .yarn-integrity
+*#
+package-lock.json
+/public/components
