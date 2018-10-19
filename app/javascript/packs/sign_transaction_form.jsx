@@ -33,13 +33,15 @@ class SignTransactionForm extends React.Component {
         super(props);
         this.state = {
             seed: '',
+            sign: true,
             formIsValid: true,
+            disabled: false,
             fields: {},
             errors: {}
         };
     }
     signTransaction(e) {
-        this.setState({signtwo: !this.state.signtwo});
+        this.setState({sign: !this.state.sign});
     }
     validateKeyInput(e) {
         const name = e.target.name;
@@ -96,45 +98,29 @@ class SignTransactionForm extends React.Component {
         return true;
     }
     signAndSubmitTransaction() {
-        // if (this.formValidForSubmission()) {
-        //     var low = this.state.low;
-        //     var med = this.state.med;
-        //     var high = this.state.high;
-        //     var sign = this.state.sign;
-        //     var seed = this.state.seed;
-        //     var keypair = '';
-        //     keypair = StellarSdk.Keypair.fromSecret(seed);
+        if (this.formValidForSubmission()) {
+            var sign = this.state.sign;
+            var seed = this.state.seed;
+            var trxObject = this.state.trxObject;
+            var server = new StellarSdk.Server('https://horizon.stellar.org');
+            var keypair = '';
+            StellarSdk.Network.usePublicNetwork();
+            keypair = StellarSdk.Keypair.fromSecret(seed);
 
-        //     if (keypair.length != 0) {
-        //         this.setState({disabled: !this.state.disabled});
-        //         progressBar();
-        //         var server = new StellarSdk.Server('https://horizon.stellar.org');
-        //         StellarSdk.Network.usePublicNetwork();
-
-        //         server.loadAccount(publicKey)
-        //             .then(function(account) {
-        //                 var sum_weight = 0;
-        //                 for (var i = 0; i < account.signers.length; i++) {
-        //                     sum_weight += parseInt(account.signers[i]['weight']);
-        //                 }
-        //                 if (high < sum_weight) {
-        //                     var transaction = new StellarSdk.TransactionBuilder(account)
-        //                         .addOperation(StellarSdk.Operation.setOptions({
-        //                             lowThreshold: parseInt(low),
-        //                             medThreshold: parseInt(med),
-        //                             highThreshold: parseInt(high)
-        //                         }))
-        //                         .addMemo(StellarSdk.Memo.text('modifying threshold.'))
-        //                         .build();
-        //                         transaction.sign(keypair);
-        //                     submitTransaction(transaction, server, 'changeThreshold');
-        //                 } else {
-        //                     var message = "First add signer(s) with succifient weight before changing High Threshold Level. You tried to change High Threshold to " + high + ", but sum of your signers weight is only " + sum_weight.toString();
-        //                     document.location.href = '/failed?error_description=' + message;
-        //                 }
-        //         });
-        //     }
-        // }
+            if (keypair.length != 0) {
+                this.setState({formIsValid: false});
+                this.setState({disabled: !this.state.disabled});
+                progressBar();
+                server.loadAccount(publicKey)
+                    .then(function(account) {   
+                        var transaction = new StellarSdk.Transaction(trxObject);
+                        if (sign) {
+                            transaction.sign(keypair);
+                        }
+                        submitTransaction(transaction, server, 'signAndSubmitTrx');
+                    });
+            }
+        }
     }
     createSignTransactionObject() {
         if (this.formValidForSubmission()) {
@@ -147,12 +133,12 @@ class SignTransactionForm extends React.Component {
             keypair = StellarSdk.Keypair.fromSecret(seed);
 
             if (keypair.length != 0) {
+                this.setState({formIsValid: false});
                 this.setState({disabled: !this.state.disabled});
                 progressBar();
                 server.loadAccount(publicKey)
                     .then(function(account) {   
                         var transaction = new StellarSdk.Transaction(trxObject);
-                        //     })).build();
                         transaction.sign(keypair);
                         var xdr = transaction.toEnvelope().toXDR('base64');
                         document.getElementById("progressbar").style.display = 'None';
@@ -184,6 +170,12 @@ class SignTransactionForm extends React.Component {
                 </div>
                 <textarea onChange={(event) => this.validateKeyInput(event)} className="form-control" id="transaction-object" disabled={this.state.disabled} type="d" name="trxObject" placeholder="Enter transaction object here"/>
                 <span style={{color: "red"}}>{this.state.errors["trxObject"]}</span>
+              </div>
+              <div className="form-inline mt-1">
+                <div className="form-check form-check-inline">
+                  <input onChange={(event) => this.signTransaction(event)} className="form-check-input" id="inlineCheckbox1" type="checkbox" value="do_not_change_threshold" name="sign" disabled={this.state.disabled}/>
+                <label className="form-check-label" htmlFor="inlineCheckbox1">Do not sign transaction object.</label>
+                </div>
               </div>
               <hr></hr>
               <div className="fee-prompt mb-2 mt-2 text-danger">

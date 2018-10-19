@@ -25,7 +25,8 @@
 var successMessages = {
     'changeThreshold': ' Threshold changed successfully.',
     'addSigner': 'New signer added successfully.',
-    'removeSigner': 'Signer removed successfully.'
+    'removeSigner': 'Signer removed successfully.',
+    'signAndSubmitTrx': 'Transaction Signed and Submitted to Stellar Network Successfully.'
 };
 
 export const progressBar = function () {
@@ -62,6 +63,10 @@ export const submitTransaction = function (transaction, server, trxType) {
          var message = '';
          if (resultCode == 'tx_bad_auth') {
              message += 'Invalid Private Seed.';
+         } else if (resultCode == 'tx_bad_auth_extra') {
+             message += 'This transaction object already has enough signatures. Do not sign it. Submit it without signing.';
+         } else {
+             message += resultCode;
          }
          $.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err});
          document.location.href = '/failed?error_description=' + message;
