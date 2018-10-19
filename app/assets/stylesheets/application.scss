@@ -79,7 +79,8 @@ body {
 .btn-brown { 
     color: #FFFFFF; 
     background-color: #51504E; 
-    border-color: #51504E; 
+    border-color: #51504E;
+    margin: 0 5px 0 5px;
 } 
 
 .btn-brown:hover, 
@@ -192,7 +193,7 @@ nav.navbar.navbar-expand-md {
         margin: 0 5% 0 5%;
     }
 }
-#transfer-assets-card, #trust-asset-card {
+#transfer-assets-card, #trust-asset-card, #sign-transaction-card, #advanced-settings-card {
     @media(min-width: 750px) {
         margin: 0 10% 0 10%;      
     }
