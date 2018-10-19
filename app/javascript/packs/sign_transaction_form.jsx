@@ -185,13 +185,11 @@ class SignTransactionForm extends React.Component {
                     <div className="col-md-12">
                       <div className="text-right">
                         <button onClick={ () => this.signAndSubmitTransaction() } type="button" className="btn btn-danger" id="submit-transaction-btn" disabled={!this.state.formIsValid}>
-                          Sign & Submit
+                          Submit
                         </button>
                         <button onClick={ () => this.createSignTransactionObject()} type="button" className="btn btn-brown" id="create-sign-transaction-btn" disabled={!this.state.formIsValid}>
-                          Sign & Create Transaction
+                          Create Transaction
                         </button>
-                        <a href="/" className="btn btn-brown" id="cancel-btn"> Cancel
-                        </a>
                       </div>
                     </div>
                   </div>

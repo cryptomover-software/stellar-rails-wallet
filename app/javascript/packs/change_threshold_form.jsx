@@ -251,7 +251,7 @@ class ChangeThresholdForm extends React.Component {
                   <div className="row">
                     <div className="col-md-12">
                       <div className="text-right">
-                        <button onClick={ () => this.changeThreshold() } type="button" className="btn btn-brown" id="change-threshold-btn" disabled={!this.state.formIsValid}>
+                        <button onClick={ () => this.changeThreshold() } type="button" className="btn btn-danger" id="change-threshold-btn" disabled={!this.state.formIsValid}>
                           Change Threshold
                         </button>
                         <button onClick={ () => this.createThresholdTransactionObject()} type="button" className="btn btn-brown" id="crtr-chng-trshld-btn" disabled={!this.state.formIsValid}>

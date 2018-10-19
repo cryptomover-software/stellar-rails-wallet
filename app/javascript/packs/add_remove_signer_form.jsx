@@ -275,7 +275,7 @@ class AddRemoveSignerForm extends React.Component {
                 <div className="row">
                   <div className="col-md-12">
                     <div className="text-right">
-                      <button onClick={ () => this.submitSignerTransaction()} type="button" className="btn btn-brown" id="sumit-signer-btn" disabled={!this.state.formIsValid}>
+                      <button onClick={ () => this.submitSignerTransaction()} type="button" className="btn btn-danger" id="sumit-signer-btn" disabled={!this.state.formIsValid}>
                         Submit
                       </button>
                       <button onClick={ () => this.createSignerTransactionObject()} type="button" className="btn btn-brown" id="crtr-signer-btn" disabled={!this.state.formIsValid}>
