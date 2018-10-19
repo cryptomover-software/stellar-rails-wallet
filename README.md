@@ -2,7 +2,7 @@
 Stellar-Rails is an open source web browser based Stellar wallet created using Ruby on Rails web application framework.  
 Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.svg?branch=master)](https://travis-ci.org/cryptomover-code/stellar-rails) | Development: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.svg?branch=development)](https://travis-ci.org/cryptomover-code/stellar-rails)
 
-## Version 1.0.1
+## Version 1.0.2
 
 ## Functionalities of the current website  
   1. Check account balances.  
@@ -34,9 +34,10 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails.sv
   11. Access `http://localhost:3000` in your web browser.  
   
 ## ToDo  
-  1. Show the real-time NAV of cryptomover Index funds in USD.  
-  2. Display customer's total NAV and history in USD.  
-  3. Add Optional Database Backend Facility.  
+  1. Move to ReactJS
+  2. Show the real-time NAV of cryptomover Index funds in USD.  
+  3. Display customer's total NAV and history in USD.  
+  4. Add Optional Database Backend Facility.  
 
 ## LICENSE
 

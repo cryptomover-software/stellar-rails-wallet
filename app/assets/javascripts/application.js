@@ -57,7 +57,9 @@ function progressBar() {
   progressBar.progressbar( "option", "value", false )
   progressBarValue.css({"background": "#00bfff"})
   $("#progressbar").show()
-  $("#progressbar").focus()
+  // $("#progressbar").focus()
+  var scrollPos =  $("#progressbar").offset().top;
+  $(window).scrollTop(scrollPos);
 }
 
 function initiateFundNewAccount() {
