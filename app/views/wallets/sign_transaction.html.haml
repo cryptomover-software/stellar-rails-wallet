@@ -22,40 +22,23 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-.card#sign-transaction-card
+.card#sign-transaction-card{"data-address": @address.to_json}
   .card-header
     %h1 Sign Transaction
   .card-body
-    .form-group
-      .form-label
-        - if @federation
-          #federation.address
-            = @federation
-          %br
-    .form-group
-      .form-label
-        Your Public Key 
-      %input.form-control{id: "source-account", value: session[:address], disabled: true, type: "text"}
-    .form-group
-      .form-label
-        Your Private Seed 
-      %input.form-control{id: "secret-seed-two", type: "password", placeholder: 'Enter your private seed here'}
-    .form-group
-      .form-label
-        Transaction Object
-      %textarea.form-control{id: "transaction-object", type: "text", placeholder: 'Enter transaction object here'}
-    %hr
-    .fee-prompt.mb-2.mt-2.text-danger
-      Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
-    .container-fluid
-      .row
-        .col-md-12.text-center
-          #progressbar
-            .progress-label
-              Processing. Please Wait...
-        .col-md-12
-          .text-right
-            %button{type: "button", class: "btn btn-danger", id: "sign-submit-btn"} Sign & Submit
-            %button{type: "button", class: "btn btn-brown", id: "create-transaction-btn"} Create Transaction
-            = link_to "Cancel", root_path, class: "btn btn-brown", id: "cancel-btn"
-#st-transaction
+    Your Account
+    - if @federation.present?
+      %br
+      #federation.address
+        = @federation
+    %br
+    .address
+      = session[:address]
+    %br
+    #sign-transaction-form
+    = javascript_pack_tag 'sign_transaction_form'
+    #progressbar
+      .progress-label
+        Processing. Please Wait...
+    #st-transaction
+%script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}

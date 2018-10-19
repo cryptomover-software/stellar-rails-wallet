@@ -73,7 +73,7 @@ class ChangeThresholdForm extends React.Component {
             return false;
         }
         this.setState({formIsValid: true});
-        return false;
+        return true;
     }
     validateSeedInput(e) {
         if(e.target.value) {

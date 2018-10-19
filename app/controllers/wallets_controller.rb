@@ -520,6 +520,7 @@ class WalletsController < ApplicationController
   end
 
   def sign_transaction
+    @address = session[:address]
   end
 
   def advanced_settings

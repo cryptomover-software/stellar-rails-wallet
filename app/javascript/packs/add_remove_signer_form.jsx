@@ -34,6 +34,7 @@ class AddRemoveSignerForm extends React.Component {
             seedTwo: '',
             newPublicKey: '',
             weight: 0,
+            memo: '',
             signtwo: true,
             formIsValid: true,
             disabled: false,
@@ -212,7 +213,7 @@ class AddRemoveSignerForm extends React.Component {
               </p>
               <div className="form-inline">
                 <div className="form-check form-check-inline">
-                  <input onChange={(event) => this.signTransaction(event)} id="inlineCheckbox2" className="form-check-input" type="checkbox" value="do_not_submit" name="signtwo"/>
+                  <input onChange={(event) => this.signTransaction(event)} id="inlineCheckbox2" className="form-check-input" type="checkbox" value="do_not_submit" name="signtwo"  disabled={this.state.disabled}/>
                   <label className="form-check-label" htmlFor="inlineCheckbox2">Do not sign transaction object.</label>
                 </div>
               </div>
@@ -220,14 +221,14 @@ class AddRemoveSignerForm extends React.Component {
                 <div className="form-label">
                   Your Secret Seed
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="secret-seed-two" type="password" placeholder="Enter your secret seed here" name="seedTwo"/>
+                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="secret-seed-two" type="password" placeholder="Enter your secret seed here" name="seedTwo"  disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["seedTwo"]}</span>
               </div>
               <div className="form-group mt-1">
                 <div className="form-label">
                   New Signer Public Key
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="signer-public-key" type="text" placeholder="Enter new signer public key here." name="newPublicKey"/>
+                <input onChange={(event) => this.validateKeyInput(event)} className="form-control" id="signer-public-key" type="text" placeholder="Enter new signer public key here." name="newPublicKey"  disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["newPublicKey"]}</span>
               </div>
               <div className="form-group mt-1">
@@ -237,9 +238,36 @@ class AddRemoveSignerForm extends React.Component {
                     (0-255)
                   </div>
                 </div>
-                <input onChange={(event) => this.validateUserInput(event)} className="form-control" id="signer-weight" type="text" placeholder="Enter new signer weight here." name="weight"/>
+                <input onChange={(event) => this.validateUserInput(event)} className="form-control" id="signer-weight" type="text" placeholder="Enter new signer weight here." name="weight"  disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["weight"]}</span>
-              </div>              
+              </div>
+              {/* <label> */}
+              {/*   Meto Type: */}
+              {/* </label> */}
+              {/* <div className="form-check form-check-inline" id="memo-types"> */}
+              {/*   <label className="radio-inline"> */}
+              {/*     <input className="form-check-input" name="memotype" type="radio" value="text"/>TEXT */}
+              {/*   </label> */}
+              {/*   <label className="radio-inline"> */}
+              {/*     <input className="form-check-input" name="memotype" type="radio" value="id"/>ID */}
+              {/*   </label> */}
+              {/*   <label className="radio-inline"> */}
+              {/*     <input className="form-check-input" name="memotype" type="radio" value="hash"/>HASH */}
+              {/*   </label> */}
+              {/*   <label className="radio-inline"> */}
+              {/*     <input className="form-check-input" name="memotype" type="radio" value="return"/>RETURN */}
+              {/*   </label> */}
+              {/* </div> */}
+              {/* <div className="form-group mt-1"> */}
+              {/*   <div className="form-label"> */}
+              {/*     Memo */}
+              {/*     <div className="text-muted d-inline"> */}
+              {/*       (Optional) */}
+              {/*     </div> */}
+              {/*   </div> */}
+              {/*   <input onChange={(event) => this.validateUserInput(event)} className="form-control" id="signer-memo" type="text" placeholder="Enter memo here." name="signerMemo"/> */}
+              {/*   <span style={{color: "red"}}>{this.state.errors["signerMemo"]}</span> */}
+              {/* </div>               */}
               <div className="fee-prompt mb-2 mt-2 text-danger">
                 Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
               </div>
