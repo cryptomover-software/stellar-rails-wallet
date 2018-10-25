@@ -94,9 +94,9 @@ function hideFormControls() {
 }
 
 function amountNotWithinLimit(amount) {
-  balance = $("#available-balance").text().split(" ")[0]
+  var balance = $("#available-balance").text().split(" ")[0]
 
-  if (parseFloat(amount) < parseFloat(balance)) {
+  if (parseFloat(amount) <= parseFloat(balance)) {
     return false
   } else {
     return true
