@@ -71,6 +71,7 @@ class WalletsController < ApplicationController
 
     @federation = session[:federation_address]
     @email_confirmed = session[:email_confirmed]
+    @address = session[:address]
   end
 
   def get_federation_server_address(address)

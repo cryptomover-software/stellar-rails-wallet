@@ -29,8 +29,8 @@
     .row
       .col-md-12.col-lg-11
         Your Address:
-        .address#source-public-key
-          = session[:address]
+        .address#public-address{"data-address": @address.to_json}
+          = @address
       .col-md-12.col-lg-1
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
     .row
@@ -48,9 +48,8 @@
           #federation.address
             = @federation
         - else
-          %button.btn.btn-brown#create-federation-address-btn Create Federation Address
           #create-federation-account
-            = render partial: 'shared/create_federation_account'
+          = javascript_pack_tag 'create_federation_address'
           -# ToDo
           -# %button.btn.btn-brown#renew-token Renew Verification Token
     %br
@@ -71,14 +70,6 @@
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"}
 
 :javascript
-  $('#create-federation-address-btn').attr('disabled', 'disabled')
-  $('#resend-confirmation-email-btn').attr('disabled', 'disabled')
-  $('#create-federation-account').hide()
-  $('#create-federation-address-btn').click(function() {
-    $(this).hide()
-    $('#create-federation-account').show()
-  })
-
   progressBar()
   new Clipboard('#copy_address')
 
