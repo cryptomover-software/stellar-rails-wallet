@@ -22,7 +22,7 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-.card#transfer-assets-card
+.card#transfer-assets-card{"data-assets": @assets.to_json}
   .card-header
     %h1 Send Lumens/Assets
   .card-body
@@ -43,7 +43,9 @@
       %br
       We are in no way responsible for any loss occurred due to any unexpected server software behaviour or wrong account address.
     %hr
-    = render partial: "shared/transfer_assets_form"
+    -# = render partial: "shared/transfer_assets_form"
+    #transfer-assets-form
+    = javascript_pack_tag 'send_assets'
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 
