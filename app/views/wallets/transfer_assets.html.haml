@@ -51,19 +51,9 @@
 
 :javascript
   $(document).ready(function() {
-    var selectedValue = $(this).val()
-    var assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
-
     // Display Maximum allowed amount to send,
     // on page load
-    $.ajax({
-      method: "GET",
-      url: "/get_balance",
-      data: {code: "XLM"}
-    }).done(function(result) {
-      $("#available-balance").text(result[0])
-      $("#send-max").text("Send Maximum Allowed: " + result[1])
-    })
+    
   })
   
   // Display Maximum allowed amount to send,
@@ -87,32 +77,6 @@
   //    $("#send-max").text("Send Maximum Allowed: " + result[1])
   //  })
   //})
-  
-  $("input[name=memotype]").click(function() {
-    $("#memo").prop("disabled", false)
-  })
-
-  $("input[name=address]").focusout(function() {
-    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
-    if (inputKey.includes('*') == true) {
-      $('#resolve-fed-address').show()
-      $('#send_money').attr('disabled', 'disabled')
-      $.ajax({
-            method: 'GET',
-            url: "/get_federation_address",
-            data: {address: inputKey},
-            success: function(publicKey) {
-              $('#resolve-fed-address').text(' Resolved to: ' + publicKey)
-              $('#send_money').removeAttr('disabled')
-      }})
-    }
-  })
-
-  // set the amount to the max amount allowed
-  $('#send-max').click(function() {
-    var amount = parseFloat($(this).text().split(":")[1])
-    $("#amount-to-send").val(amount)
-  })
 
   // initiate send money
   $('#send_money').click(function(event) {

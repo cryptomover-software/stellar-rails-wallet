@@ -41,6 +41,14 @@ class SendAssets extends React.Component {
             errors: {},
             rows: []
         };
+        $.ajax({
+            method: "GET",
+            url: "/get_balance",
+            data: {code: "XLM"}
+        }).done(function(result) {
+            $("#available-balance").text(result[0]);
+            $("#send-max").text("Send Maximum Allowed: " + result[1]);
+        });
     }
     assetBalance(e) {
         const name = e.target.name;
@@ -64,6 +72,32 @@ class SendAssets extends React.Component {
             $("#send-max").text("Send Maximum Allowed: " + result[1]);
         });
     }
+    resolveFederationAddress(e) {
+        const value = e.target.value.replace(/\s/g,'');
+        if (value.includes('*') == true) {
+            $('#resolve-fed-address').show();
+            // disable button while we are resolving
+            $('#send_money').attr('disabled', 'disabled');
+            $.ajax({
+                method: 'GET',
+                url: "/get_federation_address",
+                data: {address: inputKey},
+                success: function(publicKey) {
+                    $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
+                    $('#send_money').removeAttr('disabled');
+                }
+            });
+        }
+    }
+    // set the amount to the max amount allowed
+    sendMaxAmount(e) {
+        const value = $('#send-max').text();
+        var amount = parseFloat(value.split(":")[1]);
+        $("#amount-to-send").val(amount);
+    }
+    enableMemoInput() {
+        $("#memo").prop("disabled", false);
+    }
     render() {
         return (
             <div>
@@ -71,7 +105,7 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Recipients Public Key OR Federation Address
                 </div>
-                <input className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" required="" type="text"/>
+                <input onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" required="" type="text"/>
                 <span className="text-danger mt-1" id="resolve-fed-address">
                   Resolving Federation Address...
                 </span>
@@ -92,8 +126,8 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Amount
                   <input className="form-control" id="amount-to-send" name="amount" placeholder="Amount to Transfer" required="" type="number"/>
-                  <button className="btn btn-brown bt-lg mt-2" id="send-max">
-                    Send Maximum Allowed: 3.39918
+                  <button onClick={() => this.sendMaxAmount()} className="btn btn-brown bt-lg mt-2" id="send-max">
+                    Send Maximum Allowed:
                   </button>
                 </div>
               </div>
@@ -106,7 +140,7 @@ class SendAssets extends React.Component {
               Memo Type
               <div className="form-check form-check-inline" id="memo-types">
                 <label className="radio-inline">
-                  <input className="form-check-input" name="memotype" type="radio" value="text"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="text"/>
                   TEXT
                 </label>
                 <label className="radio-inline">
@@ -126,7 +160,7 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Memo
                 </div>
-                <input className="form-control" disabled="" id="memo" placeholder="Type Memo" type="text"/>
+                <input className="form-control" disabled="disabled" id="memo" placeholder="Type Memo" type="text"/>
               </div>
               <div className="form-check">
                 <label className="form-check-label">
