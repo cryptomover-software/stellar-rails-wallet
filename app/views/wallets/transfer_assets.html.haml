@@ -68,25 +68,25 @@
   
   // Display Maximum allowed amount to send,
   // on asset type change
-  $('#asset-type').change(function() {
-    var selectedValue = $(this).val()
-    var assetCode = "XLM"
-    if (selectedValue != "Lumens") {
-      assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
-    }
-    $('#send-max').text("Fetching...")
-    $("#amount-to-send").val("")
-    $("#amount-to-send").attr("placeholder", "Amount to Transfer")
+  //$('#asset-type').change(function() {
+  //  var selectedValue = $(this).val()
+  //  var assetCode = "XLM"
+  //  if (selectedValue != "Lumens") {
+  //    assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
+  //  }
+  //  $('#send-max').text("Fetching...")
+  //  $("#amount-to-send").val("")
+  //   $("#amount-to-send").attr("placeholder", "Amount to Transfer")
 
-    $.ajax({
-      method: "GET",
-      url: "/get_balance",
-      data: {code: assetCode}
-    }).done(function(result) {
-      $("#available-balance").text(result[0] + " ")
-      $("#send-max").text("Send Maximum Allowed: " + result[1])
-    })
-  })
+  //  $.ajax({
+  //    method: "GET",
+  //    url: "/get_balance",
+  //    data: {code: assetCode}
+  //  }).done(function(result) {
+  //    $("#available-balance").text(result[0] + " ")
+  //    $("#send-max").text("Send Maximum Allowed: " + result[1])
+  //  })
+  //})
   
   $("input[name=memotype]").click(function() {
     $("#memo").prop("disabled", false)

@@ -42,6 +42,28 @@ class SendAssets extends React.Component {
             rows: []
         };
     }
+    assetBalance(e) {
+        const name = e.target.name;
+        const value = e.target.value;
+        var assetCode = "XLM";
+        if (value != "Lumens") {
+            // get first part before comma from the string
+            // and remove all the whitespaces in that string
+            assetCode = value.split(',')[0].replace(/\s/g,'');
+        }
+        $('#send-max').text("Fetching...");
+        $("#amount-to-send").val("");
+        $("#amount-to-send").attr("placeholder", "Amount to Transfer");
+
+        $.ajax({
+            method: "GET",
+            url: "/get_balance",
+            data: {code: assetCode}
+        }).done(function(result) {
+            $("#available-balance").text(result[0] + " ");
+            $("#send-max").text("Send Maximum Allowed: " + result[1]);
+        });
+    }
     render() {
         return (
             <div>
@@ -57,13 +79,13 @@ class SendAssets extends React.Component {
               <div className="form-group">
                 <div className="form-label">
                   Asset Type
-                  <select name="asset_name" id="asset-type" className="form-control">
-                    {this.props.assets.map((x, y)=><option value={x}>{x}</option>)};
+                  <select onChange={(event) => this.assetBalance(event)} name="asset_name" id="asset-type" className="form-control">
+                    {this.props.assets.map((x, y)=><option key={y} value={x}>{x}</option>)};
                   </select>
                 </div>
                 <div className="text-muted mt-1">
                   Balance: &nbsp;
-                  <span id="available-balance">4.89919</span>
+                  <span id="available-balance"></span>
                 </div>
               </div>
               <div className="form-group">
