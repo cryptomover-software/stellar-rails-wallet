@@ -41,6 +41,7 @@ class SendAssets extends React.Component {
             errors: {},
             rows: []
         };
+        // get balance data
         $.ajax({
             method: "GET",
             url: "/get_balance",
@@ -54,6 +55,7 @@ class SendAssets extends React.Component {
         const name = e.target.name;
         const value = e.target.value;
         var assetCode = "XLM";
+
         if (value != "Lumens") {
             // get first part before comma from the string
             // and remove all the whitespaces in that string
@@ -98,6 +100,58 @@ class SendAssets extends React.Component {
     enableMemoInput() {
         $("#memo").prop("disabled", false);
     }
+    validateKeyInput(e, type) {
+        const name = e.target.name;
+        const value = e.target.value;
+        if (type=='targetKey') {
+            if(e.target.value) {
+                this.setState({formIsValid: true});
+                this.setState({errors: {'targetKey': null}});
+                this.setState({seed: e.target.value});
+            } else {
+                this.setState({formIsValid: false});
+                this.setState({errors: {'targetKey': 'Please enter Key.'}});
+                this.setState({seed: e.target.value});
+            }
+        } else if (type=='seed') {
+            if(e.target.value) {
+                this.setState({formIsValid: true});
+                this.setState({errors: {'seed': null}});
+                this.setState({seed: e.target.value});
+            } else {
+                this.setState({formIsValid: false});
+                this.setState({errors: {'seed': 'Please enter Key.'}});
+                this.setState({seed: e.target.value});
+            }
+        }
+    }
+    validateInput(e, type) {
+        console.log("validating");
+        const name = e.target.name;
+        const value = e.target.value;
+
+        if (type=='amount') {
+            if(e.target.value) {
+                this.setState({formIsValid: true});
+                this.setState({errors: {'amount': null}});
+                this.setState({seed: e.target.value});
+            } else {
+                this.setState({formIsValid: false});
+                this.setState({errors: {'amount': 'Amount can not be empty.'}});
+                this.setState({seed: e.target.value});
+            }
+        } else if (type=='memo') {
+            if(e.target.value) {
+                this.setState({formIsValid: true});
+                this.setState({errors: {'memo': null}});
+                this.setState({seed: e.target.value});
+            } else {
+                this.setState({formIsValid: false});
+                this.setState({errors: {'memo': 'Memo can not be empty.'}});
+                this.setState({seed: e.target.value});
+            }
+        }
+    }
     render() {
         return (
             <div>
@@ -105,7 +159,8 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Recipients Public Key OR Federation Address
                 </div>
-                <input onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" required="" type="text"/>
+                <input onChange={(event) => this.validateKeyInput(event, 'targetKey')} onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" required="" type="text"/>
+                <span style={{color: "red"}}>{this.state.errors["targetKey"]}</span>
                 <span className="text-danger mt-1" id="resolve-fed-address">
                   Resolving Federation Address...
                 </span>
@@ -113,8 +168,8 @@ class SendAssets extends React.Component {
               <div className="form-group">
                 <div className="form-label">
                   Asset Type
-                  <select onChange={(event) => this.assetBalance(event)} name="asset_name" id="asset-type" className="form-control">
-                    {this.props.assets.map((x, y)=><option key={y} value={x}>{x}</option>)};
+                  <select onChange={(event) => this.assetBalance(event)} name="asset_name" id="asset-type" className="form-control" defaultValue="Lumens">
+                    {this.props.assets.map((x, y)=><option key={y} value={x} >{x}</option>)};
                   </select>
                 </div>
                 <div className="text-muted mt-1">
@@ -125,7 +180,8 @@ class SendAssets extends React.Component {
               <div className="form-group">
                 <div className="form-label">
                   Amount
-                  <input className="form-control" id="amount-to-send" name="amount" placeholder="Amount to Transfer" required="" type="number"/>
+                  <input onChange={(event) => this.validateInput(event, 'amount')} className="form-control" id="amount-to-send" name="amount" placeholder="Amount to Transfer" type="number"/>
+                  <span className="d-block mt-1" style={{color: "red"}}>{this.state.errors["amount"]}</span>
                   <button onClick={() => this.sendMaxAmount()} className="btn btn-brown bt-lg mt-2" id="send-max">
                     Send Maximum Allowed:
                   </button>
@@ -135,7 +191,8 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Type your Secret Key
                 </div>
-                <input className="form-control" id="secret-seed" placeholder="Your Secret Key" required="" type="password"/>
+                <input onChange={(event) => this.validateKeyInput(event, 'seed')} className="form-control" id="secret-seed" placeholder="Your Secret Key" required="" type="password"/>
+                <span style={{color: "red"}}>{this.state.errors["seed"]}</span>
               </div>
               Memo Type
               <div className="form-check form-check-inline" id="memo-types">
@@ -144,15 +201,15 @@ class SendAssets extends React.Component {
                   TEXT
                 </label>
                 <label className="radio-inline">
-                  <input className="form-check-input" name="memotype" type="radio" value="id"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="id"/>
                   ID
                 </label>
                 <label className="radio-inline">
-                  <input className="form-check-input" name="memotype" type="radio" value="hash"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="hash"/>
                   HASH
                 </label>
                 <label className="radio-inline">
-                  <input className="form-check-input" name="memotype" type="radio" value="return"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="return"/>
                   RETURN
                 </label>
               </div>
@@ -160,7 +217,8 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Memo
                 </div>
-                <input className="form-control" disabled="disabled" id="memo" placeholder="Type Memo" type="text"/>
+                <input onChange={(event) => this.validateInput(event, 'memo')} className="form-control" disabled="disabled" id="memo" placeholder="Type Memo" type="text"/>
+                <span style={{color: "red"}}>{this.state.errors["memo"]}</span>
               </div>
               <div className="form-check">
                 <label className="form-check-label">

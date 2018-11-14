@@ -88,7 +88,6 @@ function createTrustTransaction(limit, account, asset) {
   }
 }
 export const trustAssets = function (assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey){
-    console.log("trusing assets");
   try {
       var server = new StellarSdk.Server('https://horizon.stellar.org');
       var asset = new StellarSdk.Asset(assetCode, assetIssuer);
