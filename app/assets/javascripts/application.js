@@ -40,7 +40,7 @@
 //= require jquery-ui
 //= require components
 //= require turbolinks
-// require popper
+//= require popper.min
 // require bootstrap.min
 // require chartjs/Chart.min.js
 //= require pace.min
@@ -89,8 +89,9 @@ function hideFormControls() {
     $("input[name=memotype]").attr("disabled", "disabled")
     $("input[name=fund-new]").attr("disabled", "disabled")
     $("#memo").prop("disabled", true)
-    $("#send_money").hide()
-    $("#cancel-btn").hide()
+    $("#send_money").prop("disabled", true)
+    $("#cancel-btn").prop("disabled", true)
+    $('#create-send-money-trx').prop("disabled", true)
 }
 
 function amountNotWithinLimit(amount) {
@@ -306,7 +307,7 @@ function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPu
   return transaction
 } // buildTransaction end
 
-function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
+function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx = false) {
   server.accounts()
     .accountId(receiverPublicKey)
     .call()
@@ -318,11 +319,11 @@ function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoT
     }).catch(function (err) {
       // statusCode = err["message"]["status"]
       $.post('/create_log', {message: '--> Funding New Account Began for' + receiverPublicKey})
-      fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset)
+      fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx)
     })
 } // alreadyFunded end
 
-function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
+function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx = false) {
     var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey)
     var sourcePublicKey = sourceKeypair.publicKey()
 
@@ -331,7 +332,13 @@ function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo
       .call()
       .then(function(accountResult) {
         var transaction = buildTransaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo)
-        submitTransaction(server, transaction, receiverPublicKey, amount)
+        if (createTrx) {
+            var xdr = transaction.toEnvelope().toXDR('base64');
+            document.getElementById("progressbar").style.display = 'None';
+            document.getElementById('ct-send-money').innerHTML = "Transaction Object: <br>" + xdr; 
+        } else {
+            submitTransaction(server, transaction, receiverPublicKey, amount)
+        }
       })
       .catch(function (err) {
         // console.log(err)
@@ -456,5 +463,78 @@ function removeURLParam(url, param) {
        return urlparts[0]
   } else {
     return url
+  }
+}
+// below is temp fix for create trx.
+// moving to react with better code.
+function createTransaction(fundAccount, receiverPublicKey, federationAddress) {
+  try {
+    // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
+    var server = new StellarSdk.Server('https://horizon.stellar.org')
+    StellarSdk.Network.usePublicNetwork()
+    // StellarSdk.Network.useTestNetwork()
+
+    var sourceSecretKey = document.getElementById('secret-seed').value.replace(/\s/g,'')
+    // var receiverPublicKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    var amount = document.getElementById('amount-to-send').value.replace(/\s/g,'')
+
+    var memoType = $("input[name=memotype]:checked").val()
+    var memoInput = document.getElementById('memo').value
+    var memoData = checkMemoSize(memoInput, memoType)
+    var memo = memoData[1]
+    var memoSizeExceedsLimit = memoData[0]
+
+    var assetTag = document.getElementById('asset-type')
+    var asset = assetTag.options[assetTag.selectedIndex].text
+
+    if (asset == "Lumens") {
+      asset = StellarSdk.Asset.native()
+    } else {
+      var assetArr = asset.split(',')
+
+      var assetCode = assetArr[0].replace(/\s/g,'')
+
+      var assetIssuer = assetArr[1].replace(/\s/g,'')
+
+      asset = new StellarSdk.Asset(assetCode, assetIssuer)
+    }
+
+    if (sourceSecretKey.length == 0 || receiverPublicKey.length == 0 || amount.length == 0) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Please Enter All Details.")
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
+      return
+
+    } else if (amountNotWithinLimit(amount)) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Amount you entered exceeds your balance.")
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
+      return
+    } else if (memoSizeExceedsLimit) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Memo Error: " + memo)
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
+      return
+    } else {
+      $("#layout-alert").hide()
+      hideFormControls()
+      progressBar()
+      if (fundAccount) {
+        // first check if account is already funded
+        // or not before begining fundNewAccount
+        alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, true)
+      } else {
+        $.post('/create_log', {message: '--> Sending asset(s) to existing account ' + receiverPublicKey})
+        // console.log("sending money")
+        sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, true)
+      }
+    }
+  } catch(error) {
+    // console.log(error.message)
+    $.post('/create_log', {message: '--> ERROR! Wrong input in Asset Transfer form.'})
+    document.location.href = '/failed?error_description=Wrong Input. Please enter Correct Target Account Address, Correct Private Key and other details. Error Message: ' + error.message
   }
 }
