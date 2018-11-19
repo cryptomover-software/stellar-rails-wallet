@@ -64,14 +64,15 @@
       Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
     .container-fluid
       .row
-        .col-md-12.text-center
-          #progressbar
-            .progress-label
-              Processing. Please Wait...
-        .col-md-12
+        .col
           .text-right
             %button{type: "button", class: "btn btn-danger", id: "trust-btn"} Trust Asset
+            %button{type: "button", class: "btn btn-brown", id: "create-trust-asset-trx", "data-toggle": "tooltip", "data-placement": "top", title: "Beta version. Use at your own risk."} Create Transaction
             = link_to "Cancel", root_path, class: "btn btn-brown", id: "cancel-btn"
+      #progressbar.mt-2
+        .progress-label
+          Processing. Please Wait...
+    #ct-trust-asset
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 
@@ -85,8 +86,9 @@
     $('#asset-code').prop("disabled", true)
     $('#asset-issuer').prop("disabled", true)
     $('#limit').prop("disabled", true)
-    $('#trust-btn').hide()
-    $('#cancel-btn').hide()
+    $("#trust-btn").prop("disabled", true)
+    $("#cancel-btn").prop("disabled", true)
+    $('#create-trust-asset-trx').prop("disabled", true)
   }
 
   $('#trust-btn').click(function(){
@@ -100,7 +102,26 @@
       hideAssetsFormControls()
       progressBar()
       $("#layout-alert").hide()
-      trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey)
+      trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey, false)
+    } else {
+      $("#layout-alert").show()
+      $("#layout-alert").html("All fields are compulsory.")
+    }
+  })
+  // below is tem code
+  // moving to reactjs with better code
+  $('#create-trust-asset-trx').click(function(){
+    var assetCode = document.getElementById('asset-code').value
+    var assetIssuer = document.getElementById('asset-issuer').value
+    var limit = document.getElementById('limit').value
+    var sourcePublicKey = document.getElementById('source-account').value
+    var sourceSecretKey = document.getElementById('secret-seed').value
+
+    if (assetCode && assetIssuer && sourcePublicKey && sourceSecretKey) {
+      hideAssetsFormControls()
+      progressBar()
+      $("#layout-alert").hide()
+      trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey, true)
     } else {
       $("#layout-alert").show()
       $("#layout-alert").html("All fields are compulsory.")

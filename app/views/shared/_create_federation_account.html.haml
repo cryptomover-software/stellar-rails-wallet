@@ -61,8 +61,8 @@
         = form.text_field :username, id: "fed-address", class: "form-control", width: "70%", placeholder: 'Enter Email'
         %span#fed-address-error.alert.alert-danger
         *cryptomover.com
-      .text-muted.mb-1
-        You will receive 2 XLM after verifying your email address.
+      -# .text-muted.mb-1
+        -# You will receive 2 XLM after verifying your email address.
       // TODO report errors for wrong username
       = form.submit 'Save Federation Address', id: "fed-address-submit", class: "btn btn-brown"
 

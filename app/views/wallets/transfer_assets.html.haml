@@ -44,11 +44,16 @@
       We are in no way responsible for any loss occurred due to any unexpected server software behaviour or wrong account address.
     %hr
     = render partial: "shared/transfer_assets_form"
+    #ct-send-money
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
 
 :javascript
   $(document).ready(function() {
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+
     var selectedValue = $(this).val()
     var assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
 
@@ -145,3 +150,38 @@
     }
     
   }) // btn click end
+  // create send money transaction
+  // temp code. moving to react with better code.
+  $('#create-send-money-trx').click(function(event) {
+    console.log("creating snd money trx");
+    if ($("#agree-terms-chk").is(":checked") == false) {
+      $("#layout-alert").show()
+      $("#layout-alert").html("Please read and Accept Terms and Conditions.")
+      var scrollPos = $('#layout-alert').offset().top
+      $(window).scrollTop(scrollPos)
+      return 
+    }
+
+    var fundAccount = false
+    if ($("#fund-new-chk").is(":checked")) {
+      fundAccount = true
+    }
+    //processTransfer(fundAccount)
+
+    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
+    var values = []
+
+    if (inputKey.includes('*') == true) {
+      console.log("CALLING GET FED ADD")
+      $.ajax({
+        method: 'GET',
+        url: "/get_federation_address",
+        data: {address: inputKey},
+        success: function(publicKey) {
+          createTransaction(fundAccount, publicKey, inputKey)
+        }})
+    } else {
+      createTransaction(fundAccount, inputKey, null)
+    }
+    
+  })
