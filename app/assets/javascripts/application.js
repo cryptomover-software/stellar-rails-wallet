@@ -363,7 +363,7 @@ function createTrustTransaction(limit, account, asset) {
   }
 }
 
-function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey){
+function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey, createTrx = false){
   try {
     var server = new StellarSdk.Server('https://horizon.stellar.org')
     var asset = new StellarSdk.Asset(assetCode, assetIssuer)
@@ -375,28 +375,34 @@ function trustAssets(assetCode, assetIssuer, limit, sourcePublicKey, sourceSecre
     .then(function(account){
       var transaction = createTrustTransaction(limit, account, asset)
       transaction.sign(sourceKeyPair)
-      server.submitTransaction(transaction)
-        .then(function(result){
-          // console.log(result)
-          var link = result['_links']['transaction']['href']
-          var message = 'Asset ' + assetCode + ' trusted successfully in account ' + sourcePublicKey
-          $.post('/create_log', {message: '--> SUCCESS! ' + message})
-          document.location.href = '/success?transaction_url=' + link + '&message=' + message
-          $.ajax({
-            url: "/get_balances"
-          })
-        })
-        .catch(function(err) {
-          // console.log("ERROR!" + err)
-          if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
-            var message = 'Low Base Reserve in account ' + sourcePublicKey + '. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
-            $.post('/create_log', {message: '--> ERROR! ' + message})
-            document.location.href = '/failed?error_description=' + message
-          } else {
-            $.post('/create_log', {message: '--> ERROR! ' + err})
-            document.location.href = '/failed?error_description=' + err
-          }
-        })
+      if (createTrx == true) {
+            var xdr = transaction.toEnvelope().toXDR('base64');
+            document.getElementById("progressbar").style.display = 'None';
+            document.getElementById('ct-trust-asset').innerHTML = "Transaction Object: <br>" + xdr; 
+      } else {
+          server.submitTransaction(transaction)
+            .then(function(result){
+              // console.log(result)
+              var link = result['_links']['transaction']['href']
+              var message = 'Asset ' + assetCode + ' trusted successfully in account ' + sourcePublicKey
+              $.post('/create_log', {message: '--> SUCCESS! ' + message})
+              document.location.href = '/success?transaction_url=' + link + '&message=' + message
+              $.ajax({
+                url: "/get_balances"
+              })
+            })
+            .catch(function(err) {
+              // console.log("ERROR!" + err)
+              if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
+                var message = 'Low Base Reserve in account ' + sourcePublicKey + '. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.'
+                $.post('/create_log', {message: '--> ERROR! ' + message})
+                document.location.href = '/failed?error_description=' + message
+              } else {
+                $.post('/create_log', {message: '--> ERROR! ' + err})
+                document.location.href = '/failed?error_description=' + err
+              }
+            })
+      }
     })
     .catch(function(error){
       // console.log('ERROR!', error)
