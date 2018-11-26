@@ -56,15 +56,8 @@
     #progressbar
       .progress-label
         Fetching Data...
-    .table-responsive
-      %table#balances-tbl.table.table-striped
-        %thead
-          %tr
-            %th Coin
-            %th Issuer
-            %th Balance
-            %th USD Value
-        %tbody
+    #portfolio-table
+    = javascript_pack_tag 'portfolio_table'
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"}
@@ -75,35 +68,6 @@
 
   $("#balances-tbl").on("click", ".short-address", function() {
     $(this).css("maxWidth", "100%")
-  })
-  
-  $.ajax({
-    url: "/get_balances",
-  }).done(function(balances) {
-    if (balances == 404) {
-      $.post('/create_log', {message: '--> ERROR! Inactive Account.'})
-      document.location.href = "/inactive_account"
-    } else if (balances == "account_error") {
-      var message = 'Something Wrong with your account. Please check with Stellar Support or Contact Cryptomover Support.'
-      $.post('/create_log', {message: '--> ERROR! ' + message})
-      document.location.href = '/failed?error_description=' + message
-    } else if (balances == undefined) {
-      var message = 'Unable to reach Stellar Server. Check Network Connection Or Try again later.'
-      $.post('/create_log', {message: '--> ERROR! ' + message})
-      document.location.href = '/failed?error_description=' + message
-    } else {
-      $("#progressbar").hide()
-      $('#create-federation-address-btn').removeAttr('disabled')
-      $('#resend-confirmation-email-btn').removeAttr('disabled')
-      appendDataToTable(balances)
-      // second ajax start
-      $.ajax({
-        url: "/get_usd_prices",
-      }).done(function(balancesWithUsd) {
-        appendDataToTable(balancesWithUsd)
-      })
-      // second ajax end
-    }
   })
 
   $("#resend-confirmation-email-btn").click(function() {
