@@ -34,10 +34,12 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wa
   11. Access `http://localhost:3000` in your web browser.  
   
 ## ToDo  
-  1. Move to ReactJS
-  2. Show the real-time NAV of cryptomover Index funds in USD.  
-  3. Display customer's total NAV and history in USD.  
-  4. Add Optional Database Backend Facility.  
+  1. Added Tests for new ReactJS code.  
+  2. Add any pending tests for Rails code  
+  3. Renew email verification token functionality  
+  4. Show the real-time NAV of cryptomover Index funds in USD.  
+  5. Display customer's total NAV and history in USD.  
+  6. Add Optional Database Backend Facility.  
 
 ## LICENSE
 

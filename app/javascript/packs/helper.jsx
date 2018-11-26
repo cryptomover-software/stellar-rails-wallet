@@ -142,33 +142,40 @@ export const appendDataToTable = function (balances) {
     var usd_price = '';
 
     if(balances.length == 1) {
-      // special case of only one asset in account
+        // special case of only one asset in account
         usd_price = 'Calculating';
-      if ('usd_price' in balances[0]) {
-          usd_price = numeral(balances[0]["usd_price"]).format('$0,0.00');
-      }
-        row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[0]["balance"]+"</td><td>" + usd_price + "</td></tr>");
+        if ('usd_price' in balances[0]) {
+            usd_price = numeral(balances[0]["usd_price"]).format('$0,0.00');
+        }
+        row = $("<tr><td>Lumens</td><td>--</td><td>" + balances[0]["balance"] +
+                "</td><td>" + usd_price + "</td></tr>");
         $(new_tbody).append(row);
     } else {
-      // multiple assets in accounts
+        // second case of multiple assets in accounts
         for(var i=0;i < balances.length;i++) {
             usd_price = '';
-        if (balances[i]["asset_type"] == "native") {
-            usd_price = 'Calculating';
-          if ('usd_price' in balances[i]) {
-              usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00');
-          }
-            row = $("<tr><td>Lumens</td><td>--</td><td>"+balances[i]["balance"]+"</td><td>" + usd_price + "</td></tr>");
-        } else {
-            usd_price = 'Calculating';
-          if ('usd_price' in balances[i]) {
-              usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00');
-          }
-            row = $("<tr><td>"+balances[i]["asset_code"]+"</td><td class='short-address'>"+balances[i]["asset_issuer"]+"</td><td>"+balances[i]["balance"]+"</td><td>" + usd_price + "</td></tr>");
+            if (balances[i]["asset_type"] == "native") {
+                usd_price = 'Calculating';
+                if ('usd_price' in balances[i]) {
+                    usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00');
+                }
+                row = $("<tr><td>Lumens</td><td>--</td><td>" +
+                        balances[i]["balance"] + "</td><td>" + usd_price +
+                        "</td></tr>");
+            } else {
+                usd_price = 'Calculating';
+                if ('usd_price' in balances[i]) {
+                    usd_price = numeral(balances[i]["usd_price"]).format('$0,0.00');
+                }
+                row = $("<tr><td>" + balances[i]["asset_code"] +
+                        "</td><td class='short-address'>" +
+                        balances[i]["asset_issuer"] + "</td><td>" +
+                        balances[i]["balance"] + "</td><td>" + usd_price +
+                        "</td></tr>");
+            }
+            $(new_tbody).append(row);
         }
-          $(new_tbody).append(row);
-      }
     }
     old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
 };
-//
+// end append data to table
