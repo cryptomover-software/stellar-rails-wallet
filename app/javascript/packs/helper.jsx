@@ -245,8 +245,10 @@ function alertFundNewAccount() {
     $("input[name=memotype]").removeAttr("disabled");
     $("input[name=fund-new]").removeAttr("disabled");
     $("#memo").prop("disabled", false);
-    $("#send_money").show();
-    $("#cancel-btn").show();
+    $("#send_money").prop("disabled", false);
+    $('#create-send-money-trx').prop("disabled", false);
+    $('#send-max').prop("disabled", false);
+    $("#cancel-btn").prop("disabled", false);
 
     $("#layout-alert").show();
     $("#layout-alert").html("Target account is not active Yet. Select Fund New Account option to activate it by sending 1 XLM.");
