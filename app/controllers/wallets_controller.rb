@@ -479,6 +479,7 @@ class WalletsController < ApplicationController
   def transfer_assets
     @federation = session[:federation_address]
     @balances = session[:balances]
+    @address = session[:address]
     
     @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
 

@@ -34,7 +34,7 @@ class SendAssets extends React.Component {
             address: this.props.address,
             targetFedAddress: '',
             formIsValid: false,
-            disabled: 'true',
+            disabled: false,
             seed: "",
             assetCode: "XLM",
             assetIssuer: "",
@@ -98,9 +98,9 @@ class SendAssets extends React.Component {
                 url: "/get_federation_address",
                 data: {address: value},
                 success: function(publicKey) {
-                    // self.setState({targetFedAddress: publicKey});
-                    // $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
-                    // $('#send_money').removeAttr('disabled');
+                    self.setState({targetFedAddress: publicKey});
+                    $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
+                    $('#send_money').removeAttr('disabled');
                 }
             });
         }
@@ -115,7 +115,6 @@ class SendAssets extends React.Component {
         $("#memo").prop("disabled", false);
     }
     validateKeyInput(e, type) {
-        console.log("validate key");
         const name = e.target.name;
         const value = e.target.value;
         if (type=='targetKey') {
@@ -177,17 +176,17 @@ class SendAssets extends React.Component {
         if (!this.state.targetKey) {
             this.setState({formIsValid: false});
             this.setState({errors: {'targetKey': 'Please enter Key.'}});
-            this.setState({targetKey: e.target.value});
+            this.setState({targetKey: ''});
             return false;
         } else if (!this.state.amount) {
             this.setState({formIsValid: false});
             this.setState({errors: {'amount': 'Amount can not be empty.'}});
-            this.setState({amount: e.target.value});
+            this.setState({amount: ''});
             return false;
         } else if (!this.state.seed) {
             this.setState({formIsValid: false});
             this.setState({errors: {'seed': 'Please enter Key.'}});
-            this.setState({seed: e.target.value});
+            this.setState({seed: ''});
             return false;
         }
         return true;
@@ -206,21 +205,17 @@ class SendAssets extends React.Component {
             } else {
                 $("#layout-alert").hide();
             }
+            this.setState({disabled: true});
+            $("#memo").prop("disabled", "disabled");
+            progressBar();
 
-            // var values = [];
-
-            // if (this.state.targetKey.includes('*') == true) {
-            //     $.ajax({
-            //         method: 'GET',
-            //         url: "/get_federation_address",
-            //         data: {address: inputKey},
-            //         success: function(publicKey) {
-            //             processTransfer(fundAccount, targetKey, targetFedAddress);
-            //         }
-            //     });
-            // } else {
-            //     processTransfer(fundAccount, targetKey, null);
-            // }
+            if (this.state.targetKey.includes('*') == true) {
+                var address = $('#resolve-fed-address').text().split(':')[1];
+                var targetFedAddress = address.replace(/\s/g,'');
+                processTransfer(fundAccount, targetKey, targetFedAddress);
+            } else {
+                processTransfer(fundAccount, targetKey, null);
+            }
         }
     }
     render() {
@@ -230,7 +225,7 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Recipients Public Key OR Federation Address
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event, 'targetKey')} onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" type="text"/>
+                <input onChange={(event) => this.validateKeyInput(event, 'targetKey')} onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" type="text" disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["targetKey"]}</span>
                 <span onChange={(event) => this.readFedAddress(event)} className="text-danger mt-1" id="resolve-fed-address">
                   Resolving Federation Address...
@@ -239,7 +234,7 @@ class SendAssets extends React.Component {
               <div className="form-group">
                 <div className="form-label">
                   Asset Type
-                  <select onChange={(event) => this.assetBalance(event)} name="asset_name" id="asset-type" className="form-control" defaultValue="Lumens">
+                  <select onChange={(event) => this.assetBalance(event)} name="asset_name" id="asset-type" className="form-control" defaultValue="Lumens" disabled={this.state.disabled}>
                     {this.props.assets.map((x, y)=><option key={y} value={x} >{x}</option>)};
                   </select>
                 </div>
@@ -251,9 +246,9 @@ class SendAssets extends React.Component {
               <div className="form-group">
                 <div className="form-label">
                   Amount
-                  <input onChange={(event) => this.validateInput(event, 'amount')} className="form-control" id="amount-to-send" name="amount" placeholder="Amount to Transfer" type="number"/>
+                  <input onChange={(event) => this.validateInput(event, 'amount')} className="form-control" id="amount-to-send" name="amount" placeholder="Amount to Transfer" type="number" disabled={this.state.disabled}/>
                   <span className="d-block mt-1" style={{color: "red"}}>{this.state.errors["amount"]}</span>
-                  <button onClick={() => this.sendMaxAmount()} className="btn btn-brown bt-lg mt-2" id="send-max">
+                  <button onClick={() => this.sendMaxAmount()} className="btn btn-brown bt-lg mt-2" id="send-max" disabled={this.state.disabled}>
                     Send Maximum Allowed:
                   </button>
                 </div>
@@ -262,25 +257,25 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Type your Secret Key
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event, 'seed')} className="form-control" id="secret-seed" placeholder="Your Secret Key" required="" type="password"/>
+                <input onChange={(event) => this.validateKeyInput(event, 'seed')} className="form-control" id="secret-seed" placeholder="Your Secret Key" required="" type="password" disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["seed"]}</span>
               </div>
               Memo Type
               <div className="form-check form-check-inline" id="memo-types">
                 <label className="radio-inline">
-                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="text"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="text" disabled={this.state.disabled}/>
                   TEXT
                 </label>
                 <label className="radio-inline">
-                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="id"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="id" disabled={this.state.disabled}/>
                   ID
                 </label>
                 <label className="radio-inline">
-                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="hash"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="hash" disabled={this.state.disabled}/>
                   HASH
                 </label>
                 <label className="radio-inline">
-                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="return"/>
+                  <input onChange={() => this.enableMemoInput()} className="form-check-input" name="memotype" type="radio" value="return" disabled={this.state.disabled}/>
                   RETURN
                 </label>
               </div>
@@ -288,23 +283,24 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Memo
                 </div>
-                <input onChange={(event) => this.validateInput(event, 'memo')} className="form-control" disabled="disabled" id="memo" placeholder="Type Memo" type="text"/>
+                <input onChange={(event) => this.validateInput(event, 'memo')} className="form-control" id="memo" placeholder="Type Memo" type="text" disabled="disabled"/>
                 <span style={{color: "red"}}>{this.state.errors["memo"]}</span>
               </div>
               <div className="form-check">
                 <label className="form-check-label">
-                  <input onClick={(event) => this.fundAccount(event)} className="form-check-input" id="fund-new-chk" name="fund-new" type="checkbox" value="fund-new"/>
+                  <input onClick={(event) => this.fundAccount(event)} className="form-check-input" id="fund-new-chk" name="fund-new" type="checkbox" value="fund-new" disabled={this.state.disabled}/>
                   Fund New Account
                 </label>
               </div>
               <hr></hr>
               <div className="form-check">
                 <label className="form-check-label">
-                  <input onClick={(event) => this.agreeTerms(event)} className="form-check-input" id="agree-terms-chk" name="agree-transfer-terms" type="checkbox" value="agree-terms"/>
+                  <input onClick={(event) => this.agreeTerms(event)} className="form-check-input" id="agree-terms-chk" name="agree-transfer-terms" type="checkbox" value="agree-terms" disabled={this.state.disabled}/>
                   I agree to
                   <a href="https://github.com/cryptomover-code/stellar-rails/blob/master/LICENSE">Terms &amp; Conditions.</a>
                 </label>
               </div>
+              <div id="progressbar" className="mt-2 mb-1"></div>
               <div className="fee-prompt mb-2 mt-2 text-danger">
                 Stellar Network charges a transaction fee of 0.00001 XLM for each transaction
               </div>
@@ -312,10 +308,10 @@ class SendAssets extends React.Component {
                 <div className="row">
                   <div className="col">
                     <div className="text-right">
-                      <button onClick={ () => this.sendMoney() } className="btn btn-danger" id="send_money" type="button">
+                      <button onClick={ () => this.sendMoney() } className="btn btn-danger" id="send_money" type="button" disabled={this.state.disabled}>
                         Send Money
                       </button>
-                      <button className="btn btn-brown" id="create-send-money-trx" type="button">
+                      <button className="btn btn-brown" id="create-send-money-trx" type="button" disabled={this.state.disabled}>
                         Create Transaction
                       </button>
                       <a className="btn btn-brown" id="cancel-btn" href="/">Cancel</a>
