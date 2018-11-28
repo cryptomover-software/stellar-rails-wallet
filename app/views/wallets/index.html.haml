@@ -64,20 +64,3 @@
   $("#balances-tbl").on("click", ".short-address", function() {
     $(this).css("maxWidth", "100%")
   })
-
-  $("#resend-confirmation-email-btn").click(function() {
-    $("#verify-warning").text("Sending...")
-    $("#verify-warning").addClass("alert")
-    $("#verify-warning").addClass("alert-success")
-
-    $.ajax({
-      type: "GET",
-      url: "/resend_confirmation_email"
-    }).done(function(data) {
-        if (data.split('!')[0] == 'ERROR') {
-          $("#verify-warning").removeClass("alert-success")
-          $("#verify-warning").addClass("alert-danger")
-        }
-        $("#verify-warning").text(data)
-    })
-  })

@@ -34,13 +34,29 @@ class VerifyEmailBtn extends React.Component {
         this.state = {};
         
     }
+    resendEmail() {
+        $("#verify-warning").text("Sending...");
+        $("#verify-warning").addClass("alert");
+        $("#verify-warning").addClass("alert-success");
+
+        $.ajax({
+            type: "GET",
+            url: "/resend_confirmation_email"
+        }).done(function(data) {
+            if (data.split('!')[0] == 'ERROR') {
+                $("#verify-warning").removeClass("alert-success");
+                $("#verify-warning").addClass("alert-danger");
+            }
+            $("#verify-warning").text(data);
+        });
+    }
     render() {
         return (
             <div>
               <div className="alert alert-warning mt-1">
                 Please verify your email {this.props.federationEmail} to activate Federation account.
                 <br></br>
-                <button className="btn btn-brown mt-1" id="resend-confirmation-email-btn">
+                <button onClick={ () => this.resendEmail() } className="btn btn-brown mt-1" id="resend-confirmation-email-btn">
                   Resend Verification Email
                 </button>
               </div>
