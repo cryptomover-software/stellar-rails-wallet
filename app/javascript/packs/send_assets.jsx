@@ -25,21 +25,25 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {progressBar, trustAssets} from './helper';
+import {progressBar, scrollToDiv, processTransfer} from './helper';
 
 class SendAssets extends React.Component {
     constructor (props) {
     super(props);
         this.state = {
             address: this.props.address,
+            targetFedAddress: '',
             formIsValid: false,
             disabled: 'true',
             seed: "",
-            assedCode: "",
+            assetCode: "XLM",
             assetIssuer: "",
-            limit: 0.0,
+            targetKey: "",
+            memo: "",
+            amount: 0.0,
             errors: {},
-            rows: []
+            agreeTerms: false,
+            fundAccount: false
         };
         // get balance data
         $.ajax({
@@ -55,12 +59,18 @@ class SendAssets extends React.Component {
         const name = e.target.name;
         const value = e.target.value;
         var assetCode = "XLM";
+        var assetIssuer = "";
 
         if (value != "Lumens") {
             // get first part before comma from the string
             // and remove all the whitespaces in that string
             assetCode = value.split(',')[0].replace(/\s/g,'');
+            assetIssuer = value.split(',')[1].replace(/\s/g,'');
+            // set asset code and issuer.
+            this.setState({assetCode: assetCode});
+            this.setState({assetIssuer: assetIssuer});
         }
+        
         $('#send-max').text("Fetching...");
         $("#amount-to-send").val("");
         $("#amount-to-send").attr("placeholder", "Amount to Transfer");
@@ -74,7 +84,10 @@ class SendAssets extends React.Component {
             $("#send-max").text("Send Maximum Allowed: " + result[1]);
         });
     }
+    setFedAddress(key) {
+    }
     resolveFederationAddress(e) {
+        const self = this;
         const value = e.target.value.replace(/\s/g,'');
         if (value.includes('*') == true) {
             $('#resolve-fed-address').show();
@@ -83,10 +96,11 @@ class SendAssets extends React.Component {
             $.ajax({
                 method: 'GET',
                 url: "/get_federation_address",
-                data: {address: inputKey},
+                data: {address: value},
                 success: function(publicKey) {
-                    $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
-                    $('#send_money').removeAttr('disabled');
+                    // self.setState({targetFedAddress: publicKey});
+                    // $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
+                    // $('#send_money').removeAttr('disabled');
                 }
             });
         }
@@ -94,24 +108,25 @@ class SendAssets extends React.Component {
     // set the amount to the max amount allowed
     sendMaxAmount(e) {
         const value = $('#send-max').text();
-        var amount = parseFloat(value.split(":")[1]);
-        $("#amount-to-send").val(amount);
+        const amount = parseFloat(value.split(":")[1]);
+        $("#amount-to-send").val(amount.replace(/\s/g,''));
     }
     enableMemoInput() {
         $("#memo").prop("disabled", false);
     }
     validateKeyInput(e, type) {
+        console.log("validate key");
         const name = e.target.name;
         const value = e.target.value;
         if (type=='targetKey') {
-            if(e.target.value) {
+            if(value) {
                 this.setState({formIsValid: true});
                 this.setState({errors: {'targetKey': null}});
-                this.setState({seed: e.target.value});
+                this.setState({targetKey: e.target.value});
             } else {
                 this.setState({formIsValid: false});
                 this.setState({errors: {'targetKey': 'Please enter Key.'}});
-                this.setState({seed: e.target.value});
+                this.setState({targetKey: e.target.value});
             }
         } else if (type=='seed') {
             if(e.target.value) {
@@ -126,7 +141,6 @@ class SendAssets extends React.Component {
         }
     }
     validateInput(e, type) {
-        console.log("validating");
         const name = e.target.name;
         const value = e.target.value;
 
@@ -134,22 +148,79 @@ class SendAssets extends React.Component {
             if(e.target.value) {
                 this.setState({formIsValid: true});
                 this.setState({errors: {'amount': null}});
-                this.setState({seed: e.target.value});
+                this.setState({amount: e.target.value});
             } else {
                 this.setState({formIsValid: false});
                 this.setState({errors: {'amount': 'Amount can not be empty.'}});
-                this.setState({seed: e.target.value});
+                this.setState({amount: e.target.value});
             }
         } else if (type=='memo') {
             if(e.target.value) {
                 this.setState({formIsValid: true});
                 this.setState({errors: {'memo': null}});
-                this.setState({seed: e.target.value});
+                this.setState({memo: e.target.value});
             } else {
                 this.setState({formIsValid: false});
                 this.setState({errors: {'memo': 'Memo can not be empty.'}});
-                this.setState({seed: e.target.value});
+                this.setState({memo: e.target.value});
             }
+        }
+    }
+    agreeTerms(e) {
+        this.setState({agreeTerms: e.target.checked});
+    }
+    fundAccount(e) {
+        this.setState({fundAccount: e.target.checked});
+    }
+    formValidForSubmission() {
+        var errors = {};
+        if (!this.state.targetKey) {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'targetKey': 'Please enter Key.'}});
+            this.setState({targetKey: e.target.value});
+            return false;
+        } else if (!this.state.amount) {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'amount': 'Amount can not be empty.'}});
+            this.setState({amount: e.target.value});
+            return false;
+        } else if (!this.state.seed) {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'seed': 'Please enter Key.'}});
+            this.setState({seed: e.target.value});
+            return false;
+        }
+        return true;
+    }
+    sendMoney() {
+        if (this.formValidForSubmission()) {
+            const fundAccount = this.state.fundAccount;
+            const targetKey = this.state.targetKey;
+            const sourcePublicKey = this.state.adderss;
+
+            if (!this.state.agreeTerms) {
+                $("#layout-alert").show();
+                $("#layout-alert").html("Please read and Accept Terms and Conditions.");
+                scrollToDiv('#layout-alert');
+                return ;
+            } else {
+                $("#layout-alert").hide();
+            }
+
+            // var values = [];
+
+            // if (this.state.targetKey.includes('*') == true) {
+            //     $.ajax({
+            //         method: 'GET',
+            //         url: "/get_federation_address",
+            //         data: {address: inputKey},
+            //         success: function(publicKey) {
+            //             processTransfer(fundAccount, targetKey, targetFedAddress);
+            //         }
+            //     });
+            // } else {
+            //     processTransfer(fundAccount, targetKey, null);
+            // }
         }
     }
     render() {
@@ -159,9 +230,9 @@ class SendAssets extends React.Component {
                 <div className="form-label">
                   Recipients Public Key OR Federation Address
                 </div>
-                <input onChange={(event) => this.validateKeyInput(event, 'targetKey')} onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" required="" type="text"/>
+                <input onChange={(event) => this.validateKeyInput(event, 'targetKey')} onBlur={(event) => this.resolveFederationAddress(event)} className="form-control" id="target-account" name="address" placeholder="Recipient's public key or Federation address" type="text"/>
                 <span style={{color: "red"}}>{this.state.errors["targetKey"]}</span>
-                <span className="text-danger mt-1" id="resolve-fed-address">
+                <span onChange={(event) => this.readFedAddress(event)} className="text-danger mt-1" id="resolve-fed-address">
                   Resolving Federation Address...
                 </span>
               </div>
@@ -222,14 +293,14 @@ class SendAssets extends React.Component {
               </div>
               <div className="form-check">
                 <label className="form-check-label">
-                  <input className="form-check-input" id="fund-new-chk" name="fund-new" type="checkbox" value="fund-new"/>
+                  <input onClick={(event) => this.fundAccount(event)} className="form-check-input" id="fund-new-chk" name="fund-new" type="checkbox" value="fund-new"/>
                   Fund New Account
                 </label>
               </div>
               <hr></hr>
               <div className="form-check">
                 <label className="form-check-label">
-                  <input className="form-check-input" id="agree-terms-chk" name="agree-transfer-terms" type="checkbox" value="agree-terms"/>
+                  <input onClick={(event) => this.agreeTerms(event)} className="form-check-input" id="agree-terms-chk" name="agree-transfer-terms" type="checkbox" value="agree-terms"/>
                   I agree to
                   <a href="https://github.com/cryptomover-code/stellar-rails/blob/master/LICENSE">Terms &amp; Conditions.</a>
                 </label>
@@ -241,7 +312,7 @@ class SendAssets extends React.Component {
                 <div className="row">
                   <div className="col">
                     <div className="text-right">
-                      <button className="btn btn-danger" id="send_money" type="button">
+                      <button onClick={ () => this.sendMoney() } className="btn btn-danger" id="send_money" type="button">
                         Send Money
                       </button>
                       <button className="btn btn-brown" id="create-send-money-trx" type="button">
@@ -260,9 +331,9 @@ class SendAssets extends React.Component {
 
 const node = document.getElementById('transfer-assets-card');
 const assets = JSON.parse(node.getAttribute('data-assets'));
-// const address = JSON.parse(node.getAttribute('data-address'));
+const address = JSON.parse(node.getAttribute('data-address'));
 
 ReactDOM.render(
-    <SendAssets assets={assets}/>,
+    <SendAssets assets={assets} address={address}/>,
    document.getElementById('transfer-assets-form'),
 );
