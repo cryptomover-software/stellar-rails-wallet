@@ -27,9 +27,9 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {progressBar, scrollToDiv, processTransfer} from './helper';
 
-// const limit = 10;
-const limit = 3;
-const api_url = 'https://horizon.stellar.org';
+const limit = 10;
+const apiURL = 'https://horizon.stellar.org';
+
 class TransactionHistory extends React.Component {
     constructor (props) {
     super(props);
@@ -61,7 +61,7 @@ class TransactionHistory extends React.Component {
     }
     componentDidMount() {
         var endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit;
-        var url = api_url + endpoint;
+        var url = apiURL + endpoint;
         this.callAPI(url);
         }
     fetchTransaction(type) {
@@ -73,11 +73,11 @@ class TransactionHistory extends React.Component {
             this.callAPI(this.state.prev);
         } else if (type=='first' || !type) {
             endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit;
-            url = api_url + endpoint;
+            url = apiURL + endpoint;
             this.callAPI(url);
         } else if (type=='last') {
             endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit + "&order=desc";
-            url = api_url + endpoint;
+            url = apiURL + endpoint;
             this.callAPI(url);
         }
         
