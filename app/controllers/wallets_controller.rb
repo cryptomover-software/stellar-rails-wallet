@@ -368,7 +368,7 @@ class WalletsController < ApplicationController
   end
 
   def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=3"
+    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
 
     endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
 
@@ -398,18 +398,19 @@ class WalletsController < ApplicationController
   end
 
   def transactions
-    begin
-      result = get_transactions()
-      @transactions = result[0]
-      @transactions = @transactions.reverse if params[:order] == 'asc_order'
-      @next_cursor = result[1]
-      @prev_cursor = result[2]
-    rescue StandardError => e
-      puts "------------"
-      puts e
-      logger.debug '--> FAILED! Fetching transactions history failed.'
-      redirect_to failed_path(error_description: e)
-    end
+    @address = session[:address]
+    # begin
+    #   result = get_transactions()
+    #   @transactions = result[0]
+    #   @transactions = @transactions.reverse if params[:order] == 'asc_order'
+    #   @next_cursor = result[1]
+    #   @prev_cursor = result[2]
+    # rescue StandardError => e
+    #   puts "------------"
+    #   puts e
+    #   logger.debug '--> FAILED! Fetching transactions history failed.'
+    #   redirect_to failed_path(error_description: e)
+    # end
   end
 
   def get_assets

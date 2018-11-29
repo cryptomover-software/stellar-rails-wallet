@@ -22,7 +22,7 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-#transactions-card
+#transactions-card{"data-address": @address.to_json}
   .card
     .card-header
       .row
@@ -30,64 +30,65 @@
           %h1 Transactions
         .col-md-9.right-col.mt-3
           .address
-            = session[:address]
+            = @address
     .card-body
       #history-nav
-        .prev
-          %button{class: "btn btn-brown", id: "prev-btn", "data-prev": @prev_cursor} << Prev
-        .first
-          %button{class: "btn btn-brown", id: "first-btn"} First
-        .last
-          %button{class: "btn btn-brown", id: "last-btn"} Last
-        .next
-          %button{class: "btn btn-brown", id: "next-btn", "data-next": @next_cursor} Next >>
-      .table-responsive
-        %table#transactions-tbl.table.table-striped.table-sm
-          %thead
-            %tr
-              %th Transaction ID
-              %th Time
-              %th Type
-              %th Asset Code
-              %th From
-              %th To
-              %th Amount
-            %tbody
-              - @transactions.each do |transaction|
-                %tr
-                  %td
-                    = transaction['id']
-                  %td
-                    = transaction['created_at']
-                  %td
-                    = transaction['type']
-                  %td
-                    = transaction['asset_code'] || 'XLM'
-                  %td.short-address
-                    = transaction['from']
-                  %td.short-address
-                    = transaction['to']
-                  %td
-                    = transaction['amount']
+      = javascript_pack_tag 'transactions_history'
+      -# .prev
+      -#     %button{class: "btn btn-brown", id: "prev-btn", "data-prev": @prev_cursor} << Prev
+      -#   .first
+      -#     %button{class: "btn btn-brown", id: "first-btn"} First
+      -#   .last
+      -#     %button{class: "btn btn-brown", id: "last-btn"} Last
+      -#   .next
+      -#     %button{class: "btn btn-brown", id: "next-btn", "data-next": @next_cursor} Next >>
+      -# .table-responsive
+      -#   %table#transactions-tbl.table.table-striped.table-sm
+      -#     %thead
+      -#       %tr
+      -#         %th Transaction ID
+      -#         %th Time
+      -#         %th Type
+      -#         %th Asset Code
+      -#         %th From
+      -#         %th To
+      -#         %th Amount
+      -#       %tbody
+      -#         - @transactions.each do |transaction|
+      -#           %tr
+      -#             %td
+      -#               = transaction['id']
+      -#             %td
+      -#               = transaction['created_at']
+      -#             %td
+      -#               = transaction['type']
+      -#             %td
+      -#               = transaction['asset_code'] || 'XLM'
+      -#             %td.short-address
+      -#               = transaction['from']
+      -#             %td.short-address
+      -#               = transaction['to']
+      -#             %td
+      -#               = transaction['amount']
 
 :javascript
   $("#transactions-tbl").on("click", ".short-address", function() {
     $(this).css("maxWidth", "100%")
   })
   
-  $("#next-btn").click(function() {
-    console.log("next...")
-    var cursor = $(this).data("next")
-    document.location.href = '/transactions?cursor='+ cursor
-  })
-  $("#prev-btn").click(function() {
-    console.log("prev...")
-    var cursor = $(this).data("prev")
-    document.location.href = '/transactions?order=asc&cursor='+ cursor
-  })
-  $('#first-btn').click(function() {
-    document.location.href = '/transactions'
-  })
-  $('#last-btn').click(function() {
-    document.location.href = '/transactions?order=asc'
-  })
+  //$("#next-btn").click(function() {
+  //  console.log("next...")
+  //  var cursor = $(this).data("next")
+  //  document.location.href = '/transactions?cursor='+ cursor
+  //})
+  //$("#prev-btn").click(function() {
+  //  console.log("prev...")
+  //  var cursor = $(this).data("prev")
+  //  document.location.href = '/transactions?order=asc&cursor='+ cursor
+  //})
+  //$('#first-btn').click(function() {
+  //  document.location.href = '/transactions'
+  //})
+  //$('#last-btn').click(function() {
+  //  document.location.href = '/transactions?order=asc'
+  //})
