@@ -35,6 +35,7 @@ class PortfolioTable extends React.Component {
         
     }
     componentDidMount() {
+        progressBar();
         var message = '';
         $.ajax({
             url: "/get_balances",
