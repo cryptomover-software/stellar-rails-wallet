@@ -40,46 +40,9 @@
 //= require jquery-ui
 //= require components
 //= require turbolinks
-// require popper
+//= require popper.min
 // require bootstrap.min
 // require chartjs/Chart.min.js
 //= require pace.min
 //= require clipboard 
 //= require_tree .
-
-// function progressBar() {
-//   $("#progressbar").progressbar({
-//     value: false
-//   });
-
-//   var progressBar = $("#progressbar")
-//   var progressBarValue = progressBar.find(".ui-progressbar-value")
-//   progressBar.progressbar( "option", "value", false )
-//   progressBarValue.css({"background": "#00bfff"})
-//   $("#progressbar").show()
-//   // $("#progressbar").focus()
-//   var scrollPos =  $("#progressbar").offset().top;
-//   $(window).scrollTop(scrollPos);
-// }
-
-// remove url param
-// function removeURLParam(url, param) {
-//     var urlparts = url.split('?');
-
-//   if (urlparts.length >= 2) {
-//       var prefix = encodeURIComponent(param) + '=';
-//       var pars = urlparts[1].split(/[&;]/g);
-
-//    for (let i=pars.length; i-- > 0;)
-//      if (pars[i].indexOf(prefix, 0) == 0)
-//          pars.splice(i, 1);
-
-//      if (pars.length > 0)
-//          return urlparts[0] + '?' + pars.join('&');
-//      else
-//          return urlparts[0];
-//   } else {
-//       return url;
-//   }
-// }
-

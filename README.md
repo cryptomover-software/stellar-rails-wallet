@@ -39,9 +39,10 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wa
   3. Check and offer support for all Browsers old and new.  
   4. Renew email verification token functionality  
   5. Search form in Browse asset.  
-  6. Show the real-time NAV of cryptomover Index funds in USD.  
-  7. Display customer's total NAV and history in USD.  
-  8. Add Optional Database Backend Facility.  
+  6. Ruby Sass is deprecated and will be unmaintained as of 26 March 2019. Replace Ruby Sass.  
+  7. Show the real-time NAV of cryptomover Index funds in USD.  
+  8. Display customer's total NAV and history in USD.  
+  9. Add Optional Database Backend Facility.  
 
 ## LICENSE
 
