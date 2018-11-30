@@ -187,7 +187,7 @@ export const appendDataToTable = function (balances) {
     old_tbody.parentNode.replaceChild(new_tbody, old_tbody);
 };
 // end append data to table
-function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo) {
+function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPublicKey, amount, memo, createTrx, self) {
     var account = new StellarSdk.Account(sourcePublicKey, sequence);
 
   var transaction = new StellarSdk.TransactionBuilder(account)
@@ -198,7 +198,13 @@ function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPu
     .addMemo(memo)
       .build();
 
-    transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey));
+    if (createTrx) {
+        if (self.state.sign) {
+            transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey));
+        }
+    } else {
+        transaction.sign(StellarSdk.Keypair.fromSecret(sourceSecretKey));
+    }
     return transaction;
 } // buildTransaction end
 
@@ -257,79 +263,89 @@ function alertFundNewAccount() {
     $(window).scrollTop(scrollPos);
 }
 // transfer to existing active account
-function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
+function sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx, self) {
     // Derive Keypair object and public key (that starts with a G) from the secret
-    var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey);
+    var sourceKeyPair = StellarSdk.Keypair.fromSecret(sourceSecretKey);
 
-    var sourcePublicKey = sourceKeypair.publicKey();
+    var sourcePublicKey = sourceKeyPair.publicKey();
 
     server.loadAccount(sourcePublicKey)
-     .then(function(account) {
-       var transaction = new StellarSdk.TransactionBuilder(account)
-         // Add a payment operation to the transaction
-         .addOperation(StellarSdk.Operation.payment({
-           destination: receiverPublicKey,
-           // The term native asset refers to lumens
-           // asset: StellarSdk.Asset.native(),
-           asset: asset,
-           // Lumens are divisible to seven digits past the decimal.
-           // They are represented in JS Stellar SDK in string format
-           amount: amount
-         }))
-         .addMemo(memo)
-           .build();
+        .then(function(account) {
+            var transaction = new StellarSdk.TransactionBuilder(account)
+            // Add a payment operation to the transaction
+                .addOperation(StellarSdk.Operation.payment({
+                    destination: receiverPublicKey,
+                    // The term native asset refers to lumens
+                    // asset: StellarSdk.Asset.native(),
+                    asset: asset,
+                    // Lumens are divisible to seven digits past the decimal.
+                    // They are represented in JS Stellar SDK in string format
+                    amount: amount
+                }))
+                .addMemo(memo)
+                .build();
 
-       // Sign this transaction with the secret key
-         transaction.sign(sourceKeypair);
-
-       server.submitTransaction(transaction)
-         .then(function(transactionResult) {
-           // console.log(JSON.stringify(transactionResult, null, 2))
-           // console.log('\nSuccess! View the transaction at: ')
-           // console.log(transactionResult._links.transaction.href)
-             var transactionURL = transactionResult._links.transaction.href;
-             var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.';
-             $.post('/create_log', {message: '--> ' + message});
-             document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message;
-           $.ajax({
-             url: "/get_balances"
-           });
-         })
-         .catch(function(err) {
-           // console.log('An error has occured:')
-           // console.log(err)
-             var resultCode = err.data.extras.result_codes.operations[0];
-             $.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err});
-             var message = '';
-
-           if (resultCode == 'op_no_destination') {
-               alertFundNewAccount();
-           } else if (resultCode == 'op_underfunded') {
-               message = "You do not have enough balance.";
-               document.location.href = '/failed?error_description=' + message;
-           } else if (resultCode == 'op_no_trust') {
-               message = "The target address " + receiverPublicKey + " do not trust asset " + asset.code + ".";
-               document.location.href = '/failed?error_description=' + message;
-           } else {
-               document.location.href = '/failed?error_description=' + "Unkown Error. Please Check Network Connection.";
-           }
-         }); // submit transaction end
-     })
-     .catch(function(e) {
-       // console.log(e.message.detail)
-       // console.error(e)
-       if (e.message.detail == undefined) {
-           $.post('/create_log', {message: '--> ERROR! ' + e});
-           document.location.href = '/failed?error_description=' + e;
-       } else {
-           $.post('/create_log', {message: '--> ERROR! ' + e.message.detail});
-           document.location.href = '/failed?error_description=' + e.message.detail;
-       }
-     }); // load account end
+            if (createTrx) {
+                // just create trx object and display it.
+                if (self.state.sign) {
+                    transaction.sign(sourceKeyPair);
+                }
+                var xdr = transaction.toEnvelope().toXDR('base64');
+                document.getElementById('ct-send-assets').innerHTML = "Transaction Object: <br>" + xdr;
+                $('#progressbar').hide();
+            } else {
+                // Submit transaction to network.
+                // Sign this transaction with the secret key
+                transaction.sign(sourceKeyPair);
+                server.submitTransaction(transaction)
+                    .then(function(transactionResult) {
+                        // console.log(JSON.stringify(transactionResult, null, 2))
+                        // console.log('\nSuccess! View the transaction at: ')
+                        // console.log(transactionResult._links.transaction.href)
+                        var transactionURL = transactionResult._links.transaction.href;
+                        var message = 'Amount ' + amount + ' ' + asset.code + ' transferred to ' + receiverPublicKey + ' successfully.';
+                        $.post('/create_log', {message: '--> ' + message});
+                        document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message;
+                        // update our balances data again
+                        $.ajax({
+                            url: "/get_balances"
+                        });
+                    })
+                    .catch(function(err) {
+                        // console.log('An error has occured:')
+                        // console.log(err)
+                        var resultCode = err.data.extras.result_codes.operations[0];
+                        $.post('/create_log', {message: '--> ERROR! Code: ' + resultCode + ' Full Error ' + err});
+                        var message = '';
+                        if (resultCode == 'op_no_destination') {
+                            alertFundNewAccount();
+                        } else if (resultCode == 'op_underfunded') {
+                            message = "You do not have enough balance.";
+                            document.location.href = '/failed?error_description=' + message;
+                        } else if (resultCode == 'op_no_trust') {
+                            message = "The target address " + receiverPublicKey + " do not trust asset " + asset.code + ".";
+                            document.location.href = '/failed?error_description=' + message;
+                        } else {
+                            document.location.href = '/failed?error_description=' + "Unkown Error. Please Check Network Connection.";
+                        }
+                    }); // submit transaction end
+            }
+        })
+        .catch(function(e) {
+            // console.log(e.message.detail)
+            // console.error(e)
+            if (e.message.detail == undefined) {
+                $.post('/create_log', {message: '--> ERROR! ' + e});
+                document.location.href = '/failed?error_description=' + e;
+            } else {
+                $.post('/create_log', {message: '--> ERROR! ' + e.message.detail});
+                document.location.href = '/failed?error_description=' + e.message.detail;
+            }
+        }); // load account end
 } // send money function end
 
 // check if account is already funded or not
-function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
+function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx, self) {
   server.accounts()
     .accountId(receiverPublicKey)
     .call()
@@ -341,38 +357,44 @@ function alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoT
     }).catch(function (err) {
       // statusCode = err["message"]["status"]
         $.post('/create_log', {message: '--> Funding New Account Began for' + receiverPublicKey});
-        fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset);
+        fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx, self);
     });
 } // alreadyFunded end
 
-function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset) {
-    var sourceKeypair = StellarSdk.Keypair.fromSecret(sourceSecretKey);
-    var sourcePublicKey = sourceKeypair.publicKey();
+function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx, self) {
+    var sourceKeyPair = StellarSdk.Keypair.fromSecret(sourceSecretKey);
+    var sourcePublicKey = sourceKeyPair.publicKey();
 
     server.accounts()
       .accountId(sourcePublicKey)
       .call()
         .then(function(accountResult) {
-            var transaction = buildTransaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo);
-            server.submitTransaction(transaction)
-                .then(function(transactionResult) {
-                    // console.log(JSON.stringify(transactionResult, null, 2))
-                    // console.log('\nSuccess! View the transaction at: ')
-                    //console.log(transactionResult._links.transaction.href)
-                    var transactionURL = transactionResult._links.transaction.href;
-                    var message = 'New Account with adderess ' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.';
-                    $.post('/create_log', {message: '--> SUCCESS! ' + message});
-                    document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message;
-                    $.ajax({
-                        url: "/get_balances"
+            var transaction = buildTransaction(sourceSecretKey, sourcePublicKey, accountResult.sequence, receiverPublicKey, amount, memo, createTrx, self);
+            if (createTrx) {
+                var xdr = transaction.toEnvelope().toXDR('base64');
+                document.getElementById('ct-send-assets').innerHTML = "Transaction Object: <br>" + xdr;
+                $('#progressbar').hide();
+            } else {
+                server.submitTransaction(transaction)
+                    .then(function(transactionResult) {
+                        // console.log(JSON.stringify(transactionResult, null, 2))
+                        // console.log('\nSuccess! View the transaction at: ')
+                        //console.log(transactionResult._links.transaction.href)
+                        var transactionURL = transactionResult._links.transaction.href;
+                        var message = 'New Account with adderess ' + receiverPublicKey + ', Funded with amount ' + amount + ' and Activated.';
+                        $.post('/create_log', {message: '--> SUCCESS! ' + message});
+                        document.location.href = '/success?transaction_url=' + transactionURL + '&message=' + message;
+                        $.ajax({
+                            url: "/get_balances"
+                        });
+                    })
+                    .catch(function(err) {
+                        // console.log('An error has occured:')
+                        // console.log(err)
+                        $.post('/create_log', {message: '--> ERROR! ' + err.message});
+                        document.location.href = '/failed?error_description=' + err.message;
                     });
-                })
-                .catch(function(err) {
-                    // console.log('An error has occured:')
-                    // console.log(err)
-                    $.post('/create_log', {message: '--> ERROR! ' + err.message});
-                    document.location.href = '/failed?error_description=' + err.message;
-                });
+            }
         })
       .catch(function (err) {
         // console.log(err)
@@ -382,7 +404,7 @@ function fundNewAccount(server, sourceSecretKey, receiverPublicKey, amount, memo
 } // fund new account block end
 
 // process transfer
-export const processTransfer = function (fundAccount, receiverPublicKey, federationAddress) {
+export const processTransfer = function (fundAccount, receiverPublicKey, federationAddress, createTrx, self) {
     try {
         // var server = new StellarSdk.Server('https://horizon-testnet.stellar.org')
         var server = new StellarSdk.Server('https://horizon.stellar.org');
@@ -435,10 +457,10 @@ export const processTransfer = function (fundAccount, receiverPublicKey, federat
             if (fundAccount) {
                 // first check if account is already funded
                 // or not before begining fundNewAccount
-                alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset);
+                alreadyFunded(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx, self);
             } else {
                 $.post('/create_log', {message: '--> Sending asset(s) to existing account ' + receiverPublicKey});
-                sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset);
+                sendMoney(server, sourceSecretKey, receiverPublicKey, amount, memoType, memo, asset, createTrx, self);
             }
         }
     } catch(error) {

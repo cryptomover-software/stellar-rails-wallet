@@ -35,6 +35,7 @@ class SendAssets extends React.Component {
             targetFedAddress: '',
             formIsValid: false,
             disabled: false,
+            sign: true,
             seed: "",
             assetCode: "XLM",
             assetIssuer: "",
@@ -191,7 +192,7 @@ class SendAssets extends React.Component {
         }
         return true;
     }
-    sendMoney() {
+    sendMoney(createTrx) {
         if (this.formValidForSubmission()) {
             const fundAccount = this.state.fundAccount;
             const targetKey = this.state.targetKey;
@@ -212,11 +213,14 @@ class SendAssets extends React.Component {
             if (this.state.targetKey.includes('*') == true) {
                 var address = $('#resolve-fed-address').text().split(':')[1];
                 var targetFedAddress = address.replace(/\s/g,'');
-                processTransfer(fundAccount, targetKey, targetFedAddress);
+                processTransfer(fundAccount, targetKey, targetFedAddress, createTrx, this);
             } else {
-                processTransfer(fundAccount, targetKey, null);
+                processTransfer(fundAccount, targetKey, null, createTrx, this);
             }
         }
+    }
+    signTransaction(e) {
+        this.setState({sign: !this.state.sign});
     }
     render() {
         return (
@@ -292,6 +296,12 @@ class SendAssets extends React.Component {
                   Fund New Account
                 </label>
               </div>
+              <div className="form-inline mt-1">
+                <div className="form-check form-check-inline">
+                  <input onChange={(event) => this.signTransaction(event)} className="form-check-input" id="inlineCheckbox1" type="checkbox" value="do_not_change_threshold" name="sign" disabled={this.state.disabled}/>
+                <label className="form-check-label" htmlFor="inlineCheckbox1">Do not sign transaction object.</label>
+                </div>
+              </div>
               <hr></hr>
               <div className="form-check">
                 <label className="form-check-label">
@@ -308,10 +318,10 @@ class SendAssets extends React.Component {
                 <div className="row">
                   <div className="col">
                     <div className="text-right">
-                      <button onClick={ () => this.sendMoney() } className="btn btn-danger" id="send_money" type="button" disabled={this.state.disabled}>
+                      <button onClick={ () => this.sendMoney(false) } className="btn btn-danger" id="send_money" type="button" disabled={this.state.disabled}>
                         Send Money
                       </button>
-                      <button className="btn btn-brown" id="create-send-money-trx" type="button" disabled={this.state.disabled}>
+                      <button onClick={() => this.sendMoney(true)} className="btn btn-brown" id="create-send-money-trx" type="button" disabled={this.state.disabled}>
                         Create Transaction
                       </button>
                       <a className="btn btn-brown" id="cancel-btn" href="/">Cancel</a>
