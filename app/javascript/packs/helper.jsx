@@ -233,12 +233,13 @@ function checkMemoSize(memo, memoType) {
 // amount limit
 function amountNotWithinLimit(amount) {
     var balance = $("#available-balance").text().split(" ")[0];
-
-  if (parseFloat(amount) <= parseFloat(balance)) {
-      return false;
-  } else {
-      return true;
-  }
+    if (parseFloat(amount) <= parseFloat(balance)) {
+        // Amount entered by user is within balance limit.
+        return false;
+    } else {
+        // Amount entered by user is NOT within balance limit.
+        return true;
+    }
 }
 // inform user that this account does not exist yet
 // and that he needs to fund it first

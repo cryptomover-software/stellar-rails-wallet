@@ -75,3 +75,5 @@ gem 'sendgrid-ruby'
 gem 'rubyzip', '~> 1.2.2'
 gem 'toml-rb'
 gem 'webpacker', '~> 3.5'
+# rbnacl-libsodium is not supported by rbnacl 6.0+.
+gem 'rbnacl', '5.0.0'
