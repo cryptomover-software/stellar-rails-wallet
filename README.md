@@ -36,10 +36,11 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wa
 ## ToDo  
   1. Added Tests for new ReactJS code.  
   2. Add any pending tests for Rails code  
-  3. Renew email verification token functionality  
-  4. Show the real-time NAV of cryptomover Index funds in USD.  
-  5. Display customer's total NAV and history in USD.  
-  6. Add Optional Database Backend Facility.  
+  3. Check and offer support for all Browsers old and new.  
+  4. Renew email verification token functionality  
+  5. Show the real-time NAV of cryptomover Index funds in USD.  
+  6. Display customer's total NAV and history in USD.  
+  7. Add Optional Database Backend Facility.  
 
 ## LICENSE
 

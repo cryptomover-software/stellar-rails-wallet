@@ -32,13 +32,14 @@ const apiURL = 'https://horizon.stellar.org';
 
 class BrowseAssets extends React.Component {
     constructor (props) {
-    super(props);
+        super(props);
         this.state = {
             data: [],
             next: '',
             prev: '',
             errors: {}
         };
+        progressBar();
     }
     componentDidMount() {
         var endpoint = "/assets?limit=" + limit;
@@ -50,9 +51,41 @@ class BrowseAssets extends React.Component {
         const issuer = e.target.getAttribute('data-asset-issuer');
         document.location.href = '/trust_asset?asset_code='+ code + '&asset_issuer=' + issuer;
     }
+    fetchAssets(type) {
+        progressBar();
+        var endpoint = '';
+        var url = '';
+        if (type=='next') {
+            historyAndAssetsAPI(this.state.next, this);
+        } else if (type=='prev') {
+            historyAndAssetsAPI(this.state.prev, this);
+        } else if (type=='first' || !type) {
+            endpoint = "/assets?limit=" + limit;
+            url = apiURL + endpoint;
+            historyAndAssetsAPI(url, this);
+        } else if (type=='last') {
+            endpoint = "/assets?limit=" + limit + "&order=desc";
+            url = apiURL + endpoint;
+            historyAndAssetsAPI(url, this);
+        }
+    }
     render() {
         return (
             <div>
+              <div className="mb-1">
+                <button onClick={ () => this.fetchAssets('first') } className="btn btn-brown">
+                  First
+                </button>
+                <button onClick={ () => this.fetchAssets('prev') } className="btn btn-brown">
+                  Prev
+                </button>
+                <button onClick={ () => this.fetchAssets('next') } className="btn btn-brown">
+                  Next
+                </button>
+                <button onClick={ () => this.fetchAssets('last') } className="btn btn-brown">
+                  Last
+                </button>
+              </div>
               <div className="table-responsive">
                 <table id="assets-tbl" className="table table-striped">
                   <thead>
