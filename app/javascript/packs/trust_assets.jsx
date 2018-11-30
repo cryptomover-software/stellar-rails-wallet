@@ -25,7 +25,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {progressBar, trustAssets} from './helper';
+import {progressBar, trustAssets, createTrustTransaction} from './helper';
 const queryString = require('query-string');
 
 class TrustAssets extends React.Component {
@@ -34,7 +34,8 @@ class TrustAssets extends React.Component {
         this.state = {
             address: this.props.address,
             formIsValid: false,
-            disabled: 'true',
+            disabled: null,
+            sign: true,
             seed: "",
             assetCode: "",
             assetIssuer: "",
@@ -116,6 +117,30 @@ class TrustAssets extends React.Component {
                         this.state.seed);
         }
     }
+    trustTransaction() {
+        if (this.formValidForSubmission()) {
+            this.setState({disabled: 'disabled'});
+            var server = new StellarSdk.Server('https://horizon.stellar.org');
+            var asset = new StellarSdk.Asset(this.state.assetCode, this.state.assetIssuer);
+            var sourceKeyPair = StellarSdk.Keypair.fromSecret(this.state.seed);
+            var limit = this.state.limit;
+            var sign = this.state.sign;
+
+            StellarSdk.Network.usePublicNetwork();
+            server.loadAccount(this.state.address)
+                .then(function(account){
+                    var transaction = createTrustTransaction(limit, account, asset);
+                    if (sign) {
+                        transaction.sign(sourceKeyPair);
+                    }
+                    var xdr = transaction.toEnvelope().toXDR('base64');
+                    document.getElementById('ct-trust-assets').innerHTML = "Transaction Object: <br>" + xdr;
+                });
+        }
+    }
+    signTransaction(e) {
+        this.setState({sign: !this.state.sign});
+    }
     render() {
         return (
             <div>
@@ -135,32 +160,38 @@ class TrustAssets extends React.Component {
                 <div className="form-label">
                   Secret Seed
                 </div>
-                <input onChange={(event) => this.validateSeedInput(event)} className="form-control" id="secret-seed" type="password" autoComplete="off" name="seed" placeholder="Enter your privade seed"/>
+                <input onChange={(event) => this.validateSeedInput(event)} className="form-control" id="secret-seed" type="password" autoComplete="off" name="seed" placeholder="Enter your privade seed" disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["seed"]}</span>
               </div>
               <div className="form-group">
                 <div className="form-label">
                   Asset Code
                 </div>
-                <input onChange={(event) => this.validateInput(event, 'code')} className="form-control" id="asset-code" required="" type="text" autoComplete="off" placeholder="Enter Asset Code" name="assetCode" value={this.state.assetCode}/>
+                <input onChange={(event) => this.validateInput(event, 'code')} className="form-control" id="asset-code" required="" type="text" autoComplete="off" placeholder="Enter Asset Code" name="assetCode" value={this.state.assetCode} disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["assetCode"]}</span>
               </div>
               <div className="form-group">
                 <div className="form-label">
                   Asset Issuer
                 </div>
-                <input onChange={(event) => this.validateInput(event, 'issuer')} className="form-control" id="asset-issuer" required="" type="text" placeholder="Enter Asset Issuer" name="assetIssuer" value={this.state.assetIssuer}/>
+                <input onChange={(event) => this.validateInput(event, 'issuer')} className="form-control" id="asset-issuer" required="" type="text" placeholder="Enter Asset Issuer" name="assetIssuer" value={this.state.assetIssuer} disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["assetIssuer"]}</span>
               </div>
               <div className="form-group">
                 <div className="form-label">
                   Limit
                   <span className="text-muted">
-                    &nbsp; (Optional)
+                    &nbsp; (Optional. To delete asset from your account trust it with limit zero.)
                   </span>
                 </div>
-                <input onChange={(event) => this.validateInput(event, 'limit')} className="form-control" id="limit" required="" type="number" placeholder="Setting limit is optional." name="limit"/>
+                <input onChange={(event) => this.validateInput(event, 'limit')} className="form-control" id="limit" required="" type="number" placeholder="Setting limit is optional." name="limit" disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["limit"]}</span>
+              </div>
+              <div className="form-inline mt-1">
+                <div className="form-check form-check-inline">
+                  <input onChange={(event) => this.signTransaction(event)} className="form-check-input" id="inlineCheckbox1" type="checkbox" value="do_not_change_threshold" name="sign" disabled={this.state.disabled}/>
+                <label className="form-check-label" htmlFor="inlineCheckbox1">Do not sign transaction object.</label>
+                </div>
               </div>
               <hr></hr>
               <div className="fee-prompt mb-2 mt-2 text-danger">
@@ -173,7 +204,7 @@ class TrustAssets extends React.Component {
                       <button onClick={ () => this.trustAsset() } disabled={!this.state.formIsValid} className="btn btn-danger" id="trust-btn" type="button">
                         Trust Asset
                       </button>
-                      <button className="btn btn-brown" id="create-trust-asset-trx" type="button" disabled={!this.state.formIsValid}>
+                      <button onClick={ () => this.trustTransaction() } className="btn btn-brown" id="create-trust-asset-trx" type="button" disabled={!this.state.formIsValid}>
                         Create Transaction
                       </button>
                       <a className="btn btn-brown" id="cancel-btn" href="/">

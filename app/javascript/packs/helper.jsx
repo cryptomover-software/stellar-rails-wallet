@@ -79,7 +79,7 @@ export const submitTransaction = function (transaction, server, trxType) {
      });
 };
 // Trust Assets
-function createTrustTransaction(limit, account, asset) {
+export const createTrustTransaction = function(limit, account, asset) {
   if (limit.length > 0) {
     return new StellarSdk.TransactionBuilder(account)
     .addOperation(StellarSdk.Operation.changeTrust({
@@ -92,49 +92,50 @@ function createTrustTransaction(limit, account, asset) {
       asset: asset
     })).build();
   }
-}
+};
 export const trustAssets = function (assetCode, assetIssuer, limit, sourcePublicKey, sourceSecretKey){
   try {
       var server = new StellarSdk.Server('https://horizon.stellar.org');
       var asset = new StellarSdk.Asset(assetCode, assetIssuer);
       var sourceKeyPair = StellarSdk.Keypair.fromSecret(sourceSecretKey);
-    // var sourceKeypair = StellarSdk.Keypair.fromPublicKey(sourcePublicKey)
+      var message = '';
+      if (limit != 0) {
+          message = 'Asset ' + assetCode + ' trusted successfully in account ' + sourcePublicKey;
+      } else {
+          message = 'Asset ' + assetCode + ' removed successfully from account ' + sourcePublicKey;
+      }
 
       StellarSdk.Network.usePublicNetwork();
-    server.loadAccount(sourcePublicKey)
-    .then(function(account){
-        var transaction = createTrustTransaction(limit, account, asset);
-        transaction.sign(sourceKeyPair);
-      server.submitTransaction(transaction)
-        .then(function(result){
-          // console.log(result)
-            var link = result['_links']['transaction']['href'];
-            var message = 'Asset ' + assetCode + ' trusted successfully in account ' + sourcePublicKey;
-            $.post('/create_log', {message: '--> SUCCESS! ' + message});
-            document.location.href = '/success?transaction_url=' + link + '&message=' + message;
-          $.ajax({
-            url: "/get_balances"
+      server.loadAccount(sourcePublicKey)
+          .then(function(account){
+              var transaction = createTrustTransaction(limit, account, asset);
+              transaction.sign(sourceKeyPair);
+              server.submitTransaction(transaction)
+                  .then(function(result){
+                      var link = result['_links']['transaction']['href'];
+                      $.post('/create_log', {message: '--> SUCCESS! ' + message});
+                      document.location.href = '/success?transaction_url=' + link + '&message=' + message;
+                      // Update our balances again.
+                      $.ajax({
+                          url: "/get_balances"
+                      });
+                  })
+                  .catch(function(err) {
+                      if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
+                          var message = 'Low Base Reserve in account ' + sourcePublicKey + '. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.';
+                          $.post('/create_log', {message: '--> ERROR! ' + message});
+                          document.location.href = '/failed?error_description=' + message;
+                      } else {
+                          $.post('/create_log', {message: '--> ERROR! ' + err});
+                          document.location.href = '/failed?error_description=' + err;
+                      }
+                  });
+          })
+          .catch(function(error){
+              $.post('/create_log', {message: '--> ERROR! ' + error});
+              document.location.href = '/failed?error_description=' + error;
           });
-        })
-        .catch(function(err) {
-          // console.log("ERROR!" + err)
-          if (err.data.extras.result_codes.operations[0] == "op_low_reserve") {
-              var message = 'Low Base Reserve in account ' + sourcePublicKey + '. Visit https://www.stellar.org/developers/guides/concepts/fees.html for more details.';
-              $.post('/create_log', {message: '--> ERROR! ' + message});
-              document.location.href = '/failed?error_description=' + message;
-          } else {
-              $.post('/create_log', {message: '--> ERROR! ' + err});
-              document.location.href = '/failed?error_description=' + err;
-          }
-        });
-    })
-    .catch(function(error){
-      // console.log('ERROR!', error)
-        $.post('/create_log', {message: '--> ERROR! ' + error});
-        document.location.href = '/failed?error_description=' + error;
-    });
   } catch(error) {
-      // console.log('ERROR!', error)
       $.post('/create_log', {message: '--> ERROR! ' + error.message});
       document.location.href = '/failed?error_description=' + error.message;
   }
