@@ -64,7 +64,6 @@ class TransactionHistory extends React.Component {
             url = apiURL + endpoint;
             historyAndAssetsAPI(url, this);
         }
-        
     }
     render() {
         return (
