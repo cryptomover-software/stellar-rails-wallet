@@ -22,7 +22,7 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-.card#transfer-assets-card
+.card#transfer-assets-card{"data-assets": @assets.to_json, "data-address": @address.to_json}
   .card-header
     %h1 Send Lumens/Assets
   .card-body
@@ -33,7 +33,7 @@
         = @federation
     %br
     .address
-      = session[:address]
+      = @address
     %br
     .alert.alert-warning.mt-1
       %b
@@ -43,145 +43,8 @@
       %br
       We are in no way responsible for any loss occurred due to any unexpected server software behaviour or wrong account address.
     %hr
-    = render partial: "shared/transfer_assets_form"
-    #ct-send-money
+    #transfer-assets-form
+    = javascript_pack_tag 'send_assets'
+    #ct-send-assets
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/stellar-sdk/0.8.0/stellar-sdk.min.js"}
-
-:javascript
-  $(document).ready(function() {
-    $(function () {
-      $('[data-toggle="tooltip"]').tooltip()
-    })
-
-    var selectedValue = $(this).val()
-    var assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
-
-    // Display Maximum allowed amount to send,
-    // on page load
-    $.ajax({
-      method: "GET",
-      url: "/get_balance",
-      data: {code: "XLM"}
-    }).done(function(result) {
-      $("#available-balance").text(result[0])
-      $("#send-max").text("Send Maximum Allowed: " + result[1])
-    })
-  })
-  
-  // Display Maximum allowed amount to send,
-  // on asset type change
-  $('#asset-type').change(function() {
-    var selectedValue = $(this).val()
-    var assetCode = "XLM"
-    if (selectedValue != "Lumens") {
-      assetCode = selectedValue.split(',')[0].replace(/\s/g,'')
-    }
-    $('#send-max').text("Fetching...")
-    $("#amount-to-send").val("")
-    $("#amount-to-send").attr("placeholder", "Amount to Transfer")
-
-    $.ajax({
-      method: "GET",
-      url: "/get_balance",
-      data: {code: assetCode}
-    }).done(function(result) {
-      $("#available-balance").text(result[0] + " ")
-      $("#send-max").text("Send Maximum Allowed: " + result[1])
-    })
-  })
-  
-  $("input[name=memotype]").click(function() {
-    $("#memo").prop("disabled", false)
-  })
-
-  $("input[name=address]").focusout(function() {
-    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
-    if (inputKey.includes('*') == true) {
-      $('#resolve-fed-address').show()
-      $('#send_money').attr('disabled', 'disabled')
-      $.ajax({
-            method: 'GET',
-            url: "/get_federation_address",
-            data: {address: inputKey},
-            success: function(publicKey) {
-              $('#resolve-fed-address').text(' Resolved to: ' + publicKey)
-              $('#send_money').removeAttr('disabled')
-      }})
-    }
-  })
-
-  // set the amount to the max amount allowed
-  $('#send-max').click(function() {
-    var amount = parseFloat($(this).text().split(":")[1])
-    $("#amount-to-send").val(amount)
-  })
-
-  // initiate send money
-  $('#send_money').click(function(event) {
-    if ($("#agree-terms-chk").is(":checked") == false) {
-      $("#layout-alert").show()
-      $("#layout-alert").html("Please read and Accept Terms and Conditions.")
-      var scrollPos = $('#layout-alert').offset().top
-      $(window).scrollTop(scrollPos)
-      return 
-    }
-
-    var fundAccount = false
-    if ($("#fund-new-chk").is(":checked")) {
-      fundAccount = true
-    }
-    //processTransfer(fundAccount)
-
-    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
-    var values = []
-
-    if (inputKey.includes('*') == true) {
-      console.log("CALLING GET FED ADD")
-      $.ajax({
-        method: 'GET',
-        url: "/get_federation_address",
-        data: {address: inputKey},
-        success: function(publicKey) {
-          processTransfer(fundAccount, publicKey, inputKey)
-        }})
-    } else {
-      processTransfer(fundAccount, inputKey, null)
-    }
-    
-  }) // btn click end
-  // create send money transaction
-  // temp code. moving to react with better code.
-  $('#create-send-money-trx').click(function(event) {
-    console.log("creating snd money trx");
-    if ($("#agree-terms-chk").is(":checked") == false) {
-      $("#layout-alert").show()
-      $("#layout-alert").html("Please read and Accept Terms and Conditions.")
-      var scrollPos = $('#layout-alert').offset().top
-      $(window).scrollTop(scrollPos)
-      return 
-    }
-
-    var fundAccount = false
-    if ($("#fund-new-chk").is(":checked")) {
-      fundAccount = true
-    }
-    //processTransfer(fundAccount)
-
-    var inputKey = document.getElementById('target-account').value.replace(/\s/g,'')
-    var values = []
-
-    if (inputKey.includes('*') == true) {
-      console.log("CALLING GET FED ADD")
-      $.ajax({
-        method: 'GET',
-        url: "/get_federation_address",
-        data: {address: inputKey},
-        success: function(publicKey) {
-          createTransaction(fundAccount, publicKey, inputKey)
-        }})
-    } else {
-      createTransaction(fundAccount, inputKey, null)
-    }
-    
-  })

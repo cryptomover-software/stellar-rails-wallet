@@ -27,69 +27,74 @@
     .card-header
       %h1 Assets List
     .card-body
-      .table-responsive
-        %table#assets-tbl.table.table-striped
-          %thead
-            %tr
-              %th Asset Code
-              %th Asset Type
-              %th Asset Issuer
-              %th Action
-              %th TOML URL
-          %tbody
-            - @assets.each do |asset|
-            - asset_code = asset['asset_code']
-            - asset_type = asset['asset_type']
-            - asset_issuer = asset['asset_issuer']
-            - url = asset['_links']['toml']['href']
-              %tr
-                %td
-                  = asset_code
-                %td
-                  = asset_type
-                %td
-                  = asset_issuer
-                %td
-                  %button{class: "btn btn-brown trust-btn", "data-asset-code": asset_code, "data-asset-issuer": asset_issuer} Trust
-                %td
-                  = url
-      .load-more-assets.text-center.mt-1.mb-1
-        %button#load-more-assets-btn{class: "btn btn-brown", "data-next-url": @next_url} Load More
+      #progressbar.mb-1
+        .progress-label
+          Please Wait...
+      #browse-assets
+      = javascript_pack_tag 'browse_assets'
+      -# .table-responsive
+      -#   %table#assets-tbl.table.table-striped
+      -#     %thead
+      -#       %tr
+      -#         %th Asset Code
+      -#         %th Asset Type
+      -#         %th Asset Issuer
+      -#         %th Action
+      -#         %th TOML URL
+      -#     %tbody
+      -#       - @assets.each do |asset|
+      -#       - asset_code = asset['asset_code']
+      -#       - asset_type = asset['asset_type']
+      -#       - asset_issuer = asset['asset_issuer']
+      -#       - url = asset['_links']['toml']['href']
+      -#         %tr
+      -#           %td
+      -#             = asset_code
+      -#           %td
+      -#             = asset_type
+      -#           %td
+      -#             = asset_issuer
+      -#           %td
+      -#             %button{class: "btn btn-brown trust-btn", "data-asset-code": asset_code, "data-asset-issuer": asset_issuer} Trust
+      -#           %td
+      -#             = url
+      -# .load-more-assets.text-center.mt-1.mb-1
+      -#   %button#load-more-assets-btn{class: "btn btn-brown", "data-next-url": @next_url} Load More
 
 :javascript  
   $("#assets-tbl").on("click", ".short-address", function(e) {
     $(this).css("maxWidth", "100%")
   })
   
-  $("#assets-tbl").on('click', ".trust-btn", function() {
-    var asset_code = $(this).data("asset-code")
-    var asset_issuer = $(this).data("asset-issuer")
-    document.location.href = '/trust_asset?asset_code='+asset_code+'&asset_issuer='+asset_issuer
-  })
+  //$("#assets-tbl").on('click', ".trust-btn", function() {
+  //  var asset_code = $(this).data("asset-code")
+  //  var asset_issuer = $(this).data("asset-issuer")
+  //  document.location.href = '/trust_asset?asset_code='+asset_code+'&asset_issuer='+asset_issuer
+  //})
 
-  $('#load-more-assets-btn').click(function() {
-    var nextUrl = $(this).data("next-url")
-    $(this).text("Loading...")
+  //$('#load-more-assets-btn').click(function() {
+  //  var nextUrl = $(this).data("next-url")
+  //  $(this).text("Loading...")
 
-    $.ajax({
-          method: 'GET',
-          url: "/fetch_next_assets",
-          data: {next_url: nextUrl},
-          success: function(data) {
-            var assets = data[0]
-            var nextUrl = data[1]
-            $('#load-more-assets-btn').data('next-url', nextUrl)
-            $('#load-more-assets-btn').text('Load More')
-            len = assets.length
+  //  $.ajax({
+  //        method: 'GET',
+  //        url: "/fetch_next_assets",
+  //        data: {next_url: nextUrl},
+  //        success: function(data) {
+  //          var assets = data[0]
+  //          var nextUrl = data[1]
+  //          $('#load-more-assets-btn').data('next-url', nextUrl)
+  //          $('#load-more-assets-btn').text('Load More')
+  //          len = assets.length
 
-            for (i=0; i<len; ++i) {
-              if (i in assets) {
-                asset = assets[i];
-                $('#assets-tbl tr:last').after("<tr><td>" +
-                asset["asset_code"] + "</td><td>" +
-                asset["asset_type"] + "</td><td>" +
-                asset["asset_issuer"] + "</td><td><button class='btn btn-brown trust-btn' 'data-asset-code'=" + asset['asset_code'] + " 'data-asset-issuer'=" + asset['asset_issuer'] + ">Trust</button></td><td>" + asset['_links']['toml']['href'] + "</td></tr>")
-              }
-            }
-    }})
-  })
+  //          for (i=0; i<len; ++i) {
+  //            if (i in assets) {
+  //              asset = assets[i];
+  //              $('#assets-tbl tr:last').after("<tr><td>" +
+  //              asset["asset_code"] + "</td><td>" +
+  //              asset["asset_type"] + "</td><td>" +
+  //              asset["asset_issuer"] + "</td><td><button class='btn btn-brown trust-btn' 'data-asset-code'=" + asset['asset_code'] + " 'data-asset-issuer'=" + asset['asset_issuer'] + ">Trust</button></td><td>" + asset['_links']['toml']['href'] + "</td></tr>")
+  //            }
+  //          }
+  //  }})
+  //})
