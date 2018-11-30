@@ -367,50 +367,8 @@ class WalletsController < ApplicationController
     logger.debug "--> Account #{session[:address]} is Inactive."
   end
 
-  def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=10"
-
-    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
-
-    order = if params[:order] == 'asc'
-              '&order=asc'
-            else
-              '&order=desc'
-            end
-    endpoint + order
-  end
-
-  def get_transactions
-    endpoint = set_transactions_endpoint()
-    url = STELLAR_API + endpoint
-
-    body = get_data_from_api(url)
-
-    # Set links for previous and next buttons
-    url = body['_links']['next']
-    next_cursor = set_cursor(url)
-
-    url = body['_links']['prev']
-    prev_cursor = set_cursor(url)
-
-    transactions = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-    [transactions, next_cursor, prev_cursor]
-  end
-
   def transactions
     @address = session[:address]
-    # begin
-    #   result = get_transactions()
-    #   @transactions = result[0]
-    #   @transactions = @transactions.reverse if params[:order] == 'asc_order'
-    #   @next_cursor = result[1]
-    #   @prev_cursor = result[2]
-    # rescue StandardError => e
-    #   puts "------------"
-    #   puts e
-    #   logger.debug '--> FAILED! Fetching transactions history failed.'
-    #   redirect_to failed_path(error_description: e)
-    # end
   end
 
   def get_assets
