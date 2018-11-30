@@ -119,7 +119,7 @@ to know more about Stellar Federation Addresses.
                     </div>
                     <span style={{color: "red"}}>{this.state.errors["username"]}</span>
                     <div className="text-muted mb-1">
-                      You will receive 2 XLM after verifying your email address.
+                      Your federation address will be created only after verifying your email address.
                     </div>
                     <input onClick={() => this.saveFederationAddress()} disabled={this.state.disabled} type="submit" name="commit" value="Save Federation Address" id="fed-address-submit" className="btn btn-brown" />
                   </form>
