@@ -22,112 +22,44 @@
 -# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 -# THE SOFTWARE.
 -#
-.card#portfolio-card
+.card#portfolio-card{"data-federation": @federation.to_json}
   .card-header
     %h1 Portfolio Exposure
   .card-body
     .row
       .col-md-12.col-lg-11
         Your Address:
-        .address#source-public-key
-          = session[:address]
+        .address#public-address{"data-address": @address.to_json}
+          = @address
       .col-md-12.col-lg-1
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
     .row
       .col
         - if @federation.present? and not @email_confirmed
           #verify-warning.text-center
-            .alert.alert-warning.mt-1
-              Please verify your email
-              = @federation
-              to activate Federation Account.
-              %br
-              %button.btn.btn-brown.mt-1#resend-confirmation-email-btn Resend Verification Email
+            = javascript_pack_tag 'verify_email_btn'
         - elsif @federation.present?
           Federation Address:
           #federation.address
             = @federation
         - else
-          %button.btn.btn-brown#create-federation-address-btn Create Federation Address
           #create-federation-account
-            = render partial: 'shared/create_federation_account'
+          = javascript_pack_tag 'create_federation_address'
           -# ToDo
           -# %button.btn.btn-brown#renew-token Renew Verification Token
     %br
     #progressbar
       .progress-label
         Fetching Data...
-    .table-responsive
-      %table#balances-tbl.table.table-striped
-        %thead
-          %tr
-            %th Coin
-            %th Issuer
-            %th Balance
-            %th USD Value
-        %tbody
+    #portfolio-table
+    = javascript_pack_tag 'portfolio_table'
 
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js"}
 %script{src: "https://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"}
 
 :javascript
-  $('#create-federation-address-btn').attr('disabled', 'disabled')
-  $('#resend-confirmation-email-btn').attr('disabled', 'disabled')
-  $('#create-federation-account').hide()
-  $('#create-federation-address-btn').click(function() {
-    $(this).hide()
-    $('#create-federation-account').show()
-  })
-
-  progressBar()
   new Clipboard('#copy_address')
 
   $("#balances-tbl").on("click", ".short-address", function() {
     $(this).css("maxWidth", "100%")
-  })
-  
-  $.ajax({
-    url: "/get_balances",
-  }).done(function(balances) {
-    if (balances == 404) {
-      $.post('/create_log', {message: '--> ERROR! Inactive Account.'})
-      document.location.href = "/inactive_account"
-    } else if (balances == "account_error") {
-      var message = 'Something Wrong with your account. Please check with Stellar Support or Contact Cryptomover Support.'
-      $.post('/create_log', {message: '--> ERROR! ' + message})
-      document.location.href = '/failed?error_description=' + message
-    } else if (balances == undefined) {
-      var message = 'Unable to reach Stellar Server. Check Network Connection Or Try again later.'
-      $.post('/create_log', {message: '--> ERROR! ' + message})
-      document.location.href = '/failed?error_description=' + message
-    } else {
-      $("#progressbar").hide()
-      $('#create-federation-address-btn').removeAttr('disabled')
-      $('#resend-confirmation-email-btn').removeAttr('disabled')
-      appendDataToTable(balances)
-      // second ajax start
-      $.ajax({
-        url: "/get_usd_prices",
-      }).done(function(balancesWithUsd) {
-        appendDataToTable(balancesWithUsd)
-      })
-      // second ajax end
-    }
-  })
-
-  $("#resend-confirmation-email-btn").click(function() {
-    $("#verify-warning").text("Sending...")
-    $("#verify-warning").addClass("alert")
-    $("#verify-warning").addClass("alert-success")
-
-    $.ajax({
-      type: "GET",
-      url: "/resend_confirmation_email"
-    }).done(function(data) {
-        if (data.split('!')[0] == 'ERROR') {
-          $("#verify-warning").removeClass("alert-success")
-          $("#verify-warning").addClass("alert-danger")
-        }
-        $("#verify-warning").text(data)
-    })
   })

@@ -28,7 +28,6 @@ class FederationsController < ApplicationController
   MAX_EMAILS = 3
 
   def index
-    
   end
 
   def confirm_email
@@ -86,9 +85,10 @@ class FederationsController < ApplicationController
   end
 
   def create
-    federation = Federation.new(federations_params)
-    if federation.username.empty?
-      format.js { render json: { error: 'empty_username' }, status: :unprocessable_entity }
+    begin
+      federation = Federation.new(federations_params)
+    rescue ActiveRecord::RecordNotUnique
+      format.js { render json: { errors: {message: 'Exists'}}, status: :unprocessable_entity }
       return
     end
 
@@ -113,6 +113,7 @@ class FederationsController < ApplicationController
   end
 
   private
+
   def federations_params
     params.require(:federation).permit(:username)
   end

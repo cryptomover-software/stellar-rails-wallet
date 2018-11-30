@@ -71,6 +71,7 @@ class WalletsController < ApplicationController
 
     @federation = session[:federation_address]
     @email_confirmed = session[:email_confirmed]
+    @address = session[:address]
   end
 
   def get_federation_server_address(address)
@@ -366,82 +367,41 @@ class WalletsController < ApplicationController
     logger.debug "--> Account #{session[:address]} is Inactive."
   end
 
-  def set_transactions_endpoint
-    endpoint = "/accounts/#{session[:address]}/payments?limit=3"
-
-    endpoint += "&cursor=#{params[:cursor]}" if params[:cursor]
-
-    order = if params[:order] == 'asc'
-              '&order=asc'
-            else
-              '&order=desc'
-            end
-    endpoint + order
-  end
-
-  def get_transactions
-    endpoint = set_transactions_endpoint()
-    url = STELLAR_API + endpoint
-
-    body = get_data_from_api(url)
-
-    # Set links for previous and next buttons
-    url = body['_links']['next']
-    next_cursor = set_cursor(url)
-
-    url = body['_links']['prev']
-    prev_cursor = set_cursor(url)
-
-    transactions = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-    [transactions, next_cursor, prev_cursor]
-  end
-
   def transactions
-    begin
-      result = get_transactions()
-      @transactions = result[0]
-      @transactions = @transactions.reverse if params[:order] == 'asc_order'
-      @next_cursor = result[1]
-      @prev_cursor = result[2]
-    rescue StandardError => e
-      puts "------------"
-      puts e
-      logger.debug '--> FAILED! Fetching transactions history failed.'
-      redirect_to failed_path(error_description: e)
-    end
+    @address = session[:address]
   end
 
-  def get_assets
-    endpoint = '/assets?limit=30'
-    url = STELLAR_API + endpoint
-    body = get_data_from_api(url)
+  # def get_assets
+  #   endpoint = '/assets?limit=30'
+  #   url = STELLAR_API + endpoint
+  #   body = get_data_from_api(url)
 
-    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-    next_url = body['_links']['next']['href']
-    [assets, next_url]
-  end
+  #   assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+  #   next_url = body['_links']['next']['href']
+  #   [assets, next_url]
+  # end
 
-  def fetch_next_assets
-    url = params[:next_url]
-    body = get_data_from_api(url)
-    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-    next_url = body['_links']['next']['href']
-    data = [assets, next_url]
-    respond_to do |format|
-      format.json { render json: data }
-    end
-  end
+  # def fetch_next_assets
+  #   url = params[:next_url]
+  #   body = get_data_from_api(url)
+  #   assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+  #   next_url = body['_links']['next']['href']
+  #   data = [assets, next_url]
+  #   respond_to do |format|
+  #     format.json { render json: data }
+  #   end
+  # end
 
   def browse_assets
-    begin
-      result = get_assets
-      @assets = result[0]
-      @next_url = result[1]
-    rescue StandardError # => e
-      # puts e
-      logger.debug '--> FAILED! Fetchin list of assets failed.'
-      redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
-    end
+    # begin
+    #   result = get_assets
+    #   @assets = result[0]
+    #   @next_url = result[1]
+    # rescue StandardError # => e
+    #   # puts e
+    #   logger.debug '--> FAILED! Fetchin list of assets failed.'
+    #   redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+    # end
   end
   
   def trust_asset
@@ -449,6 +409,7 @@ class WalletsController < ApplicationController
     balance = balances.select{|b| b['asset_type'] == NATIVE_ASSET}
     @lumens_balance = balance.first['balance']
     @federation = session[:federation_address]
+    @address = session[:address]
   end
 
   def calculate_max_allowed_amount(asset_type)
@@ -477,6 +438,7 @@ class WalletsController < ApplicationController
   def transfer_assets
     @federation = session[:federation_address]
     @balances = session[:balances]
+    @address = session[:address]
     
     @max_allowed_amount = calculate_max_allowed_amount(NATIVE_ASSET)
 

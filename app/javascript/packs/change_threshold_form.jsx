@@ -76,9 +76,13 @@ class ChangeThresholdForm extends React.Component {
         return true;
     }
     validateSeedInput(e) {
-        if(e.target.value) {
+        if (e.target.value) {
             this.setState({formIsValid: true});
             this.setState({errors: {'seed': null}});
+            this.setState({seed: e.target.value});
+        } else {
+            this.setState({formIsValid: false});
+            this.setState({errors: {'seed': 'Please enter private seed.'}});
             this.setState({seed: e.target.value});
         }
     }
@@ -242,7 +246,7 @@ class ChangeThresholdForm extends React.Component {
                 <div className="form-label">
                   Your Secret Seed
                 </div>
-                <input onChange={(event) => this.validateSeedInput(event)} className="form-control" id="secret-seed-one" type="password" value={this.state.seed} name="seed" placeholder="Enter your privade seed here" disabled={this.state.disabled}/>
+                <input onChange={(event) => this.validateSeedInput(event)} className="form-control" id="secret-seed-one" type="password" name="seed" placeholder="Enter your privade seed here" disabled={this.state.disabled}/>
                 <span style={{color: "red"}}>{this.state.errors["seed"]}</span>
               </div>
               <div className="fee-prompt mb-2 mt-2 text-danger">

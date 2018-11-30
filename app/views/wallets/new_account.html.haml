@@ -44,7 +44,7 @@
             %span This is your new public stellar address:
           .col-md-12
             .form-inline
-              .address#public-address
+              .address#public-address{"data-address": @address.to_json}
                 = @address
               %button{type: "button", class: "btn btn-brown", "data-clipboard-target": ".address", id: "copy_address"} Copy
         .row
@@ -62,13 +62,14 @@
           = link_to "minimum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
           \.
         #create-federation-account
-          - if @federation.present?
-            %span.alert.alert-success
-              SUCCESS! This is your Stellar Federation Server Address:
-              = @federation.username
-              *cryptomover.com
-          - else
-            = render partial: 'shared/create_federation_account'
+        = javascript_pack_tag 'create_federation_address'
+        -# - if @federation.present?
+        -#   %span.alert.alert-success
+        -#     SUCCESS! This is your Stellar Federation Server Address:
+        -#     = @federation.username
+        -#     *cryptomover.com
+        -# - else
+        -#   = render partial: 'shared/create_federation_account'
     .card-footer
       .row.mb-2
         .col-md-12.text-center
