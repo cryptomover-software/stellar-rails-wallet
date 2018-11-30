@@ -447,3 +447,23 @@ export const processTransfer = function (fundAccount, receiverPublicKey, federat
     }
 };
 // end process transfer
+// API to get transaction history and assets.
+export const historyAndAssetsAPI = function(url, self) {
+    fetch(url)
+        .then(res => res.json())
+        .then(
+            (result) => {
+                self.setState({
+                    data: result['_embedded']['records'],
+                    next: result['_links']['next']['href'],
+                    prev: result['_links']['prev']['href']
+                });
+                $('#progressbar').hide();
+            },
+            (error) => {
+                self.setState({
+                    errors: error
+                });
+            }
+        );
+};

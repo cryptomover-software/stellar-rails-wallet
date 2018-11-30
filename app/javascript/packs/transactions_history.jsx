@@ -25,7 +25,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import {progressBar, scrollToDiv, processTransfer} from './helper';
+import {progressBar, scrollToDiv, processTransfer, historyAndAssetsAPI} from './helper';
 
 const limit = 10;
 const apiURL = 'https://horizon.stellar.org';
@@ -35,53 +35,34 @@ class TransactionHistory extends React.Component {
     super(props);
         this.state = {
             address: this.props.address,
-            history: [],
+            data: [],
             next: '',
             prev: '',
             errors: {}
         };
         progressBar();
     }
-    callAPI(url) {
-        fetch(url)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    this.setState({
-                        history: result['_embedded']['records'],
-                        next: result['_links']['next']['href'],
-                        prev: result['_links']['prev']['href']
-                    });
-                    $('#progressbar').hide();
-                },
-                (error) => {
-                    this.setState({
-                        errors: error
-                    });
-                }
-            );
-    }
     componentDidMount() {
         var endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit;
         var url = apiURL + endpoint;
-        this.callAPI(url);
-        }
+        historyAndAssetsAPI(url, this);
+    }
     fetchTransaction(type) {
         progressBar();
         var endpoint = '';
         var url = '';
         if (type=='next') {
-            this.callAPI(this.state.next);
+            historyAndAssetsAPI(this.state.next, this);
         } else if (type=='prev') {
-            this.callAPI(this.state.prev);
+            historyAndAssetsAPI(this.state.prev, this);
         } else if (type=='first' || !type) {
             endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit;
             url = apiURL + endpoint;
-            this.callAPI(url);
+            historyAndAssetsAPI(url, this);
         } else if (type=='last') {
             endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit + "&order=desc";
             url = apiURL + endpoint;
-            this.callAPI(url);
+            historyAndAssetsAPI(url, this);
         }
         
     }
@@ -116,7 +97,7 @@ class TransactionHistory extends React.Component {
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.history.map((item, i) => {
+                    {this.state.data.map((item, i) => {
                         return [
                             <tr key={i}>
                               <td>{item['id']}</td>

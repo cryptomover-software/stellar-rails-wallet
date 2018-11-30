@@ -371,37 +371,37 @@ class WalletsController < ApplicationController
     @address = session[:address]
   end
 
-  def get_assets
-    endpoint = '/assets?limit=30'
-    url = STELLAR_API + endpoint
-    body = get_data_from_api(url)
+  # def get_assets
+  #   endpoint = '/assets?limit=30'
+  #   url = STELLAR_API + endpoint
+  #   body = get_data_from_api(url)
 
-    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-    next_url = body['_links']['next']['href']
-    [assets, next_url]
-  end
+  #   assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+  #   next_url = body['_links']['next']['href']
+  #   [assets, next_url]
+  # end
 
-  def fetch_next_assets
-    url = params[:next_url]
-    body = get_data_from_api(url)
-    assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
-    next_url = body['_links']['next']['href']
-    data = [assets, next_url]
-    respond_to do |format|
-      format.json { render json: data }
-    end
-  end
+  # def fetch_next_assets
+  #   url = params[:next_url]
+  #   body = get_data_from_api(url)
+  #   assets = body['_embedded']['records'].present? ? body['_embedded']['records'] : []
+  #   next_url = body['_links']['next']['href']
+  #   data = [assets, next_url]
+  #   respond_to do |format|
+  #     format.json { render json: data }
+  #   end
+  # end
 
   def browse_assets
-    begin
-      result = get_assets
-      @assets = result[0]
-      @next_url = result[1]
-    rescue StandardError # => e
-      # puts e
-      logger.debug '--> FAILED! Fetchin list of assets failed.'
-      redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
-    end
+    # begin
+    #   result = get_assets
+    #   @assets = result[0]
+    #   @next_url = result[1]
+    # rescue StandardError # => e
+    #   # puts e
+    #   logger.debug '--> FAILED! Fetchin list of assets failed.'
+    #   redirect_to failed_path(error_description: HTTPARTY_STANDARD_ERROR)
+    # end
   end
   
   def trust_asset
