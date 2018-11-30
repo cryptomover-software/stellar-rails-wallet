@@ -24,10 +24,10 @@
 //
 
 export const scrollToDiv = function (div) {
+    // scoll page to specific div
     var scrollPos = $(div).offset().top;
     $(window).scrollTop(scrollPos);
 };
-
 var successMessages = {
     'changeThreshold': ' Threshold changed successfully.',
     'addSigner': 'New signer added successfully.',
@@ -51,6 +51,9 @@ export const progressBar = function () {
 };
 
 export const submitTransaction = function (transaction, server, trxType) {
+    // use this function for submitting transaction to network
+    // where procedure and success/error messages are common.
+    // else use specific submit function.
     StellarSdk.Network.usePublicNetwork();
     server.submitTransaction(transaction)
         .then(function(transactionResult) {
@@ -210,6 +213,7 @@ function buildTransaction(sourceSecretKey, sourcePublicKey, sequence, receiverPu
 
 // check memo size
 function checkMemoSize(memo, memoType) {
+    // validating memo as per its type
     var setMemo = "Memo";
     var memoData = [];
 
@@ -244,6 +248,7 @@ function amountNotWithinLimit(amount) {
 // inform user that this account does not exist yet
 // and that he needs to fund it first
 function alertFundNewAccount() {
+    // ToDo: needs improvement
     $("#progressbar").hide();
 
     $("#secret-seed").prop("disabled", false);

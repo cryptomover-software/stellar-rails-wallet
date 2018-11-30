@@ -43,11 +43,14 @@ class TransactionHistory extends React.Component {
         progressBar();
     }
     componentDidMount() {
+        // display first set of transactions history
         var endpoint = "/accounts/" + this.state.address + "/payments?limit=" + limit;
         var url = apiURL + endpoint;
         historyAndAssetsAPI(url, this);
     }
     fetchTransaction(type) {
+        // fetch transaction history set as per button
+        // and display it
         progressBar();
         var endpoint = '';
         var url = '';

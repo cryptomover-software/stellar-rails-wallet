@@ -44,6 +44,9 @@ class TrustAssets extends React.Component {
         };
     }
     componentDidMount() {
+        // if user came to this page by clicking on Trust button from
+        // Browse Asset page,
+        // then show the code and issuer which user wants to trust
         const parsed = queryString.parse(location.search);
         this.setState({assetCode: parsed.asset_code});
         this.setState({assetIssuer: parsed.asset_issuer});
@@ -107,6 +110,7 @@ class TrustAssets extends React.Component {
         return true;
     }
     trustAsset() {
+        // submit transaction to network
         if (this.formValidForSubmission()) {
             progressBar();
             console.log("trusting");
@@ -118,6 +122,7 @@ class TrustAssets extends React.Component {
         }
     }
     trustTransaction() {
+        // only create transaction object and display it
         if (this.formValidForSubmission()) {
             this.setState({disabled: 'disabled'});
             var server = new StellarSdk.Server('https://horizon.stellar.org');

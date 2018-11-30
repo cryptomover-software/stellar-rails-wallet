@@ -85,9 +85,9 @@ class SendAssets extends React.Component {
             $("#send-max").text("Send Maximum Allowed: " + result[1]);
         });
     }
-    setFedAddress(key) {
-    }
+
     resolveFederationAddress(e) {
+        // resolve federation address to its Stellar key
         const self = this;
         const value = e.target.value.replace(/\s/g,'');
         if (value.includes('*') == true) {
@@ -108,6 +108,7 @@ class SendAssets extends React.Component {
     }
     // set the amount to the max amount allowed
     sendMaxAmount(e) {
+        // set max amount value in input box
         const value = $('#send-max').text();
         const amount = parseFloat(value.split(":")[1]);
         $("#amount-to-send").val(amount.replace(/\s/g,''));
@@ -193,6 +194,7 @@ class SendAssets extends React.Component {
         return true;
     }
     sendMoney(createTrx) {
+        // initiate send asset process
         if (this.formValidForSubmission()) {
             const fundAccount = this.state.fundAccount;
             const targetKey = this.state.targetKey;
