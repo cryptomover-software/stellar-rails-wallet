@@ -40,6 +40,7 @@ class TransactionHistory extends React.Component {
             prev: '',
             errors: {}
         };
+        progressBar();
     }
     callAPI(url) {
         fetch(url)
@@ -51,6 +52,7 @@ class TransactionHistory extends React.Component {
                         next: result['_links']['next']['href'],
                         prev: result['_links']['prev']['href']
                     });
+                    $('#progressbar').hide();
                 },
                 (error) => {
                     this.setState({
@@ -65,6 +67,7 @@ class TransactionHistory extends React.Component {
         this.callAPI(url);
         }
     fetchTransaction(type) {
+        progressBar();
         var endpoint = '';
         var url = '';
         if (type=='next') {
