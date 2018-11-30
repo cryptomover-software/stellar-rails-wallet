@@ -26,20 +26,26 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import {progressBar, trustAssets} from './helper';
+const queryString = require('query-string');
 
 class TrustAssets extends React.Component {
     constructor (props) {
-    super(props);
+        super(props);
         this.state = {
             address: this.props.address,
             formIsValid: false,
             disabled: 'true',
             seed: "",
-            assedCode: "",
+            assetCode: "",
             assetIssuer: "",
             limit: 0.0,
             errors: {}
         };
+    }
+    componentDidMount() {
+        const parsed = queryString.parse(location.search);
+        this.setState({assetCode: parsed.asset_code});
+        this.setState({assetIssuer: parsed.asset_issuer});
     }
     validateSeedInput(e) {
         const name = e.target.name;
@@ -136,14 +142,14 @@ class TrustAssets extends React.Component {
                 <div className="form-label">
                   Asset Code
                 </div>
-                <input onChange={(event) => this.validateInput(event, 'code')} className="form-control" id="asset-code" required="" type="text" autoComplete="off" placeholder="Enter Asset Code" name="assetCode"/>
+                <input onChange={(event) => this.validateInput(event, 'code')} className="form-control" id="asset-code" required="" type="text" autoComplete="off" placeholder="Enter Asset Code" name="assetCode" value={this.state.assetCode}/>
                 <span style={{color: "red"}}>{this.state.errors["assetCode"]}</span>
               </div>
               <div className="form-group">
                 <div className="form-label">
                   Asset Issuer
                 </div>
-                <input onChange={(event) => this.validateInput(event, 'issuer')} className="form-control" id="asset-issuer" required="" type="text" placeholder="Enter Asset Issuer" name="assetIssuer"/>
+                <input onChange={(event) => this.validateInput(event, 'issuer')} className="form-control" id="asset-issuer" required="" type="text" placeholder="Enter Asset Issuer" name="assetIssuer" value={this.state.assetIssuer}/>
                 <span style={{color: "red"}}>{this.state.errors["assetIssuer"]}</span>
               </div>
               <div className="form-group">
