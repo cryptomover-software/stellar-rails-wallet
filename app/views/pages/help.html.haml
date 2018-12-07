@@ -103,16 +103,33 @@
             All fields are compulsory.
           %li
             Use Browse assets to search for assets.
+      %h5
+        %u
+          Multisignature
+      %big
+        %ul
+          %li
+            Multisignature option is present on Send Asset, Trust asset, Sign Transaction and Advanced Settings page.
+          %li
+            To create a multisignature transaction object use
+            %b
+              Create Transaction
+            button on respective page.
+          %li
+            You can optionally choose to not sign this transaction object.
+          %li
+            Share this object with intended partners for them to sign and submit to network.
+      %h5
+        %u
+          Advanced Settings
+      %big
+        %ul
+          %li
+            Use Advanced Settings page to change treshold levels and add/remove signers as well as change signers weight.
+          %li
+            To delete existing signer, add it with weight zero.
+          %li
+            You can change threshold only if you have already added signers with enough weight.
       %p.text-center.text-muted
         Credit: Rocket Background Logo from
         = link_to "The Noun Project", "https://www.thenounproject.com", target: "_blank"
-    - if not session[:address]
-      #login-footer.card-footer.text-center
-        = link_to "https://medium.com/cryptomover", target: "_blank" do
-          %i.fab.fa-medium.fa-3x
-        = link_to "https://t.me/cryptomover", target: "_blank" do
-          %i.fab.fa-telegram.fa-3x
-        = link_to "https://twitter.com/cryptomover", target: "_blank" do
-          %i.fab.fa-twitter.fa-3x
-        = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
-          %i.fab.fa-github.fa-3x

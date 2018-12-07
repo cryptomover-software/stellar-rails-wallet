@@ -74,7 +74,7 @@
       .container
         .row
           .col.social
-            - if session[:address].present?
+            - if session[:address].present? or current_page?(action: 'help')
               = link_to "https://github.com/cryptomover-code/stellar-rails-wallet", target: "_blank" do
                 %i.fab.fa-github.fa-2x
 :javascript
