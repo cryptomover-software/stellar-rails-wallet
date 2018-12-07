@@ -2,7 +2,7 @@
 Stellar-Rails is an open source web browser based Stellar wallet created using Ruby on Rails web application framework.  
 Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wallet.svg?branch=master)](https://travis-ci.org/cryptomover-code/stellar-rails-wallet) | Development: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wallet.svg?branch=development)](https://travis-ci.org/cryptomover-code/stellar-rails-wallet)
 
-## Version 1.0.2
+## Version 1.5.1
 
 ## Functionalities of the current website  
   1. Check account balances.  
@@ -14,6 +14,7 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wa
   7. Login Using Federation address  
   8. Create Federation address with `cryptomover.com` domain  
   9. Send assets to federation address  
+  10. Multisignature support.  
 
 ## Technology Stack  
   1. Ruby 2.4.1  
@@ -28,17 +29,17 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-code/stellar-rails-wa
   5. Run command `bundle install` to install necessary ruby gems.   
   6. Add Recaptcha Keys.  
   7. Add `config/application.yml` to store email and other configuration settings.  
-  8. For production, add deploy script and your app server configuration.  
+  8. For production; add deploy script and your app server configuration.  
   9. For production, add `SECRET_KEY_BASE`  
   10. Run command `rails server` to start the server.  
   11. Access `http://localhost:3000` in your web browser.  
   
 ## ToDo  
-  1. Added Tests for new ReactJS code.  
-  2. Add any pending tests for Rails code  
+  1. Add tests for new ReactJS code.  
+  2. Add any pending tests for Rails code.  
   3. Check and offer support for all Browsers old and new.  
-  4. Renew email verification token functionality  
-  5. Search form in Browse asset.  
+  4. Add renew email verification token functionality.  
+  5. Add search form in Browse asset.  
   6. Ruby Sass is deprecated and will be unmaintained as of 26 March 2019. Replace Ruby Sass.  
   7. Show the real-time NAV of cryptomover Index funds in USD.  
   8. Display customer's total NAV and history in USD.  
