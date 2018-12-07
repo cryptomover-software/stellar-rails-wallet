@@ -73,19 +73,9 @@
     %footer.footer
       .container
         .row
-          .col-md-9
-            %strong
-              Developed By
-              = link_to "Cryptomover", "https://www.cryptomover.com"
-          .col-md-3.social
+          .col.social
             - if session[:address].present?
-              = link_to "https://medium.com/cryptomover", target: "_blank" do
-                %i.fab.fa-medium.fa-2x
-              = link_to "https://t.me/cryptomover", target: "_blank" do
-                %i.fab.fa-telegram.fa-2x
-              = link_to "https://twitter.com/cryptomover", target: "_blank" do
-                %i.fab.fa-twitter.fa-2x
-              = link_to "https://github.com/cryptomover-code/stellar-rails", target: "_blank" do
+              = link_to "https://github.com/cryptomover-code/stellar-rails-wallet", target: "_blank" do
                 %i.fab.fa-github.fa-2x
 :javascript
   $(document).ready(function(){

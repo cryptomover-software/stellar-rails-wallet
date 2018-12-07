@@ -326,10 +326,11 @@ footer {
     }    
 
     .social {
+        text-align: center;
         margin-top: 10px;
-        i {
-            padding-left: 10px;
-        }
+        /* i {
+           padding-left: 10px;
+           } */
         color: white;
         a:link, a:visited, a:hover {
             color: white;
