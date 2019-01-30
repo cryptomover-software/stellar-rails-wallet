@@ -309,7 +309,7 @@ class SendAssets extends React.Component {
                 <label className="form-check-label">
                   <input onClick={(event) => this.agreeTerms(event)} className="form-check-input" id="agree-terms-chk" name="agree-transfer-terms" type="checkbox" value="agree-terms" disabled={this.state.disabled}/>
                   I agree to
-                  <a href="https://github.com/cryptomover-code/stellar-rails/blob/master/LICENSE">Terms &amp; Conditions.</a>
+                  <a href="https://github.com/cryptomover-software/stellar-rails-wallet/blob/master/LICENSE">Terms &amp; Conditions.</a>
                 </label>
               </div>
               <div id="progressbar" className="mt-2 mb-1"></div>
