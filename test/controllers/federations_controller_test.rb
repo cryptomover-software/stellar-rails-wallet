@@ -54,6 +54,8 @@ class FederationsControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "confirm_email_with_valid_token" do
+    get login_path, params: {public_key:
+                               'GATEULHQJHKOF5VJNIDA2E4EDSLUEMPK4BVLKPLMMLJ57JGTII7VU4ZG'}
     @token = 'zyxw'
     get confirm_email_path, params: {token: @token}
     @federation = Federation.where(email_confirmation_token: @token).first
