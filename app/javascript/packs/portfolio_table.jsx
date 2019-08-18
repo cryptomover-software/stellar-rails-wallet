@@ -53,7 +53,6 @@ class PortfolioTable extends React.Component {
                 document.location.href = '/failed?error_description=' + message;
             } else {
                 $("#progressbar").hide();
-                $('#create-federation-address-btn').removeAttr('disabled');
                 $('#resend-confirmation-email-btn').removeAttr('disabled');
                 appendDataToTable(balances);
                 // second ajax start
