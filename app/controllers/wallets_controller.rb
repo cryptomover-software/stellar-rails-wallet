@@ -56,6 +56,7 @@ class WalletsController < ApplicationController
   INVALID_LOGIN_KEY = 'Invalid or Empty Login Key. Please check key again.'
   INVALID_CAPTCHA = 'Please Verify CAPTCHA Code.'
   # Other Errors
+  INVALID = 'invalid'
   INVALID_FEDERATION_ADDRESS = 'Invalid Federation Address OR Address Does not Exists.'
   FEDERATION_ADDRESS_NOT_FOUND = 'Federation address not registered with us.'
   UNDETERMINED_PRICE = 'undetermined'
@@ -103,6 +104,8 @@ class WalletsController < ApplicationController
     # TODO: Handle errors & when username do not exist on server
     begin
       response = HTTParty.get(url)
+      return INVALID if ((500..600).include? response.code) || response.code == 404
+
       response['account_id']
     rescue HTTParty::Error, SocketError => e
       puts e

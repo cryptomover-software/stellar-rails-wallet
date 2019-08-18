@@ -99,9 +99,13 @@ class SendAssets extends React.Component {
                 url: "/get_federation_address",
                 data: {address: value},
                 success: function(publicKey) {
-                    self.setState({targetFedAddress: publicKey});
-                    $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
-                    $('#send_money').removeAttr('disabled');
+                    if (publicKey != 'invalid') {
+                      $('#send_money').removeAttr('disabled');
+                      $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
+                      self.setState({targetFedAddress: publicKey});
+                    } else {
+                        $('#resolve-fed-address').text('ERROR! Invalid Federation Address. Check address and URL.')
+                    }
                 }
             });
         }
