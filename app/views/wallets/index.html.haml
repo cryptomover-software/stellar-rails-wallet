@@ -35,18 +35,10 @@
         %button{type: "button", class: "btn btn-info", "data-clipboard-target": ".address", id: "copy_address"} Copy
     .row
       .col
-        - if @federation.present? and not @email_confirmed
-          #verify-warning.text-center
-            = javascript_pack_tag 'verify_email_btn'
-        - elsif @federation.present?
+        - if @federation.present?
           Federation Address:
           #federation.address
             = @federation
-        - else
-          #create-federation-account
-          = javascript_pack_tag 'create_federation_address'
-          -# ToDo
-          -# %button.btn.btn-brown#renew-token Renew Verification Token
     %br
     #progressbar
       .progress-label
