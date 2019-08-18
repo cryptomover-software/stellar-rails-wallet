@@ -61,15 +61,6 @@
           %b This account doesn't exist on the Stellar network yet. To activate this account, send it at least 1 Lumen (XLM) to fulfill the
           = link_to "minimum balance", "https://www.stellar.org/developers/guides/concepts/fees.html#minimum-balance", target: "_blank"
           \.
-        #create-federation-account
-        = javascript_pack_tag 'create_federation_address'
-        -# - if @federation.present?
-        -#   %span.alert.alert-success
-        -#     SUCCESS! This is your Stellar Federation Server Address:
-        -#     = @federation.username
-        -#     *cryptomover.com
-        -# - else
-        -#   = render partial: 'shared/create_federation_account'
     .card-footer
       .row.mb-2
         .col-md-12.text-center
