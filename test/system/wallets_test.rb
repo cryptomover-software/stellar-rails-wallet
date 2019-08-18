@@ -36,34 +36,6 @@ class WalletsTest < ApplicationSystemTestCase
   #
   #   assert_selector "h1", text: "Wallets"
   # end
-
-  test 'display_federation_address_if_created_in_our_app' do
-    @federation_address = 'abhijit@cryptomover.com*cryptomover.com'
-    visit root_path
-    click_on '#agree-btn'
-    fill_in 'public-key', with: KEY1
-    click_button 'Login'
-    assert_selector '#federation', text: @federation_address
-    sleep 15
-    visit trust_asset_path
-    assert_selector '#federation', text: @federation_address
-    visit send_money_path
-    assert_selector '#federation', text: @federation_address
-  end
-
-  test 'resolve_federation_address_to_stellar_key' do
-    @federation_address = 'abhijit@cryptomover.com*cryptomover.com'
-    visit root_path
-    click_on '#agree-btn'
-    visit simulate_login_for_testing_path
-    visit send_money_path
-    fill_in 'target-account', with: @federation_address
-    sleep 3
-    click_on 'send-max'
-    sleep 2
-    assert_selector '#resolve-fed-address', text: KEY1
-  end
-
   test 'show_confirm_email_warning_if_not_confirmed' do
     visit root_path
     click_on '#agree-btn'
