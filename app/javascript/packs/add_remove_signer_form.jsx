@@ -298,9 +298,9 @@ const node2 = document.getElementById('advanced-settings-card');
 const signersData = JSON.parse(node2.getAttribute('data-signers'));
 
 const signers = signersData.map((signer) => 
-        <div key={signer.key}>
-          {signer.public_key}, {signer.weight}
-        </div>
+    <div key={signer.key}>
+        {signer.key}, {signer.weight}
+    </div>
 );
 
 ReactDOM.render(
