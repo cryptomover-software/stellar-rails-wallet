@@ -114,7 +114,7 @@ class SendAssets extends React.Component {
     sendMaxAmount(e) {
         // set max amount value in input box
         const value = $('#send-max').text();
-        const amount = parseFloat(value.split(":")[1]);
+        const amount = value.split(":")[1];
         $("#amount-to-send").val(amount.replace(/\s/g,''));
     }
     enableMemoInput() {
