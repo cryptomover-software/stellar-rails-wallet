@@ -128,7 +128,8 @@ class WalletsController < ApplicationController
   def set_session_addresses(address)
     if address.include? '*'
       session[:federation_address] = address
-      session[:address] = fetch_address_from_federation(address)
+      resolved_address = fetch_address_from_federation(address)
+      session[:address] = resolved_address unless resolved_address == INVALID
     else
       session[:address] = address
     end
