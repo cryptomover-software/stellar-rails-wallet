@@ -12,9 +12,8 @@ Master: [![Build Status](https://travis-ci.org/cryptomover-software/stellar-rail
   5. Fund new accounts.  
   6. Trust Assets.  
   7. Login Using Federation address  
-  8. Create Federation address with `cryptomover.com` domain  
-  9. Send assets to federation address  
-  10. Multisignature support.  
+  8. Send assets to federation address  
+  9. Multisignature support.  
 
 ## Technology Stack  
   1. Ruby 2.4.1  
