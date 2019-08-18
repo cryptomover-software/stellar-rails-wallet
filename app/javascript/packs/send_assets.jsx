@@ -85,7 +85,6 @@ class SendAssets extends React.Component {
             $("#send-max").text("Send Maximum Allowed: " + result[1]);
         });
     }
-
     resolveFederationAddress(e) {
         // resolve federation address to its Stellar key
         const self = this;
@@ -99,9 +98,13 @@ class SendAssets extends React.Component {
                 url: "/get_federation_address",
                 data: {address: value},
                 success: function(publicKey) {
-                    self.setState({targetFedAddress: publicKey});
-                    $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
-                    $('#send_money').removeAttr('disabled');
+                    if (publicKey != 'invalid') {
+                      $('#send_money').removeAttr('disabled');
+                      $('#resolve-fed-address').text(' Resolved to: ' + publicKey);
+                      self.setState({targetFedAddress: publicKey});
+                    } else {
+                        $('#resolve-fed-address').text('ERROR! Invalid Federation Address. Check address and URL.')
+                    }
                 }
             });
         }
@@ -110,8 +113,12 @@ class SendAssets extends React.Component {
     sendMaxAmount(e) {
         // set max amount value in input box
         const value = $('#send-max').text();
-        const amount = parseFloat(value.split(":")[1]);
-        $("#amount-to-send").val(amount.replace(/\s/g,''));
+        const amount = value.split(":")[1];
+        const new_value = parseFloat(amount.replace(/\s/g,''))
+        $("#amount-to-send").val(new_value);
+
+        let manual_event = { target: {name: 'amount_changed', value: new_value}};
+        this.validateInput(manual_event, 'amount');
     }
     enableMemoInput() {
         $("#memo").prop("disabled", false);
