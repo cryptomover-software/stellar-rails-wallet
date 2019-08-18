@@ -92,25 +92,10 @@ class WalletsController < ApplicationController
     end
   end
 
-  def get_federation_locally(username)
-    federation = Federation.where(username: username).first
-    return FEDERATION_ADDRESS_NOT_FOUND unless federation
-    session[:email_confirmed] = federation.email_confirmed
-
-    federation.address
-  end
-
   def fetch_address_from_federation(address)
     username = address.split('*')[0]
     domain_name = address.split('*')[1]
-    # All accounts created on our wallet are stored locally
-    # with domain name cryptomover.com.
-    # They will be synced with our Stellar Federation server.
-    return get_federation_locally(username) if domain_name == CRYPTOMOVER_DOMAIN
 
-    # mark email_confirmed true if this federation is not on our server
-    # because it might not be an email and we don't have control over it.
-    session[:email_confirmed] = true
     server_url = get_federation_server_address(address)
     return server_url if server_url == HTTPARTY_STANDARD_ERROR
     
@@ -143,11 +128,6 @@ class WalletsController < ApplicationController
       session[:address] = fetch_address_from_federation(address)
     else
       session[:address] = address
-      if Federation.exists?(address: address)
-        f = Federation.where(address: address).first
-        session[:federation_address] = "#{f.username}*cryptomover.com"
-        session[:email_confirmed] = f.email_confirmed
-      end
     end
   end
 
@@ -170,11 +150,7 @@ class WalletsController < ApplicationController
 
     set_session_addresses(address)
     # Failure to generate key pair indicates invalid Public Key.
-    if session[:address] == FEDERATION_ADDRESS_NOT_FOUND
-      message = FEDERATION_ADDRESS_NOT_FOUND
-    else
-      message = INVALID_LOGIN_KEY
-    end
+    message = INVALID_LOGIN_KEY if session[:address].blank?
 
     begin
       Stellar::KeyPair.from_address(session[:address])
@@ -209,7 +185,6 @@ class WalletsController < ApplicationController
     session[:address] = @address = random.address
     logger.debug "--> SUCCESS! New Account created with address #{session[:address]}"
     @seed = random.seed
-    @federation = Federation.where(address: session[:address]).first
   end
 
   def get_data_from_api(url)
