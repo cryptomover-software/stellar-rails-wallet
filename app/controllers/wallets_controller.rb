@@ -83,6 +83,8 @@ class WalletsController < ApplicationController
 
     begin
       response = HTTParty.get(url)
+      return INVALID if ((500..600).include? response.code) || response.code == 404
+
       toml = TomlRB.parse(response)
       url = toml['FEDERATION_SERVER']
       url.delete('\"')
@@ -98,7 +100,7 @@ class WalletsController < ApplicationController
     domain_name = address.split('*')[1]
 
     server_url = get_federation_server_address(address)
-    return server_url if server_url == HTTPARTY_STANDARD_ERROR
+    return server_url if server_url == HTTPARTY_STANDARD_ERROR || server_url == INVALID
     
     url = "#{server_url}?q=#{username}*#{domain_name}&type=name"
     # TODO: Handle errors & when username do not exist on server
