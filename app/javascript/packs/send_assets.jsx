@@ -85,7 +85,6 @@ class SendAssets extends React.Component {
             $("#send-max").text("Send Maximum Allowed: " + result[1]);
         });
     }
-
     resolveFederationAddress(e) {
         // resolve federation address to its Stellar key
         const self = this;
@@ -115,7 +114,11 @@ class SendAssets extends React.Component {
         // set max amount value in input box
         const value = $('#send-max').text();
         const amount = value.split(":")[1];
-        $("#amount-to-send").val(amount.replace(/\s/g,''));
+        const new_value = parseFloat(amount.replace(/\s/g,''))
+        $("#amount-to-send").val(new_value);
+
+        let manual_event = { target: {name: 'amount_changed', value: new_value}};
+        this.validateInput(manual_event, 'amount');
     }
     enableMemoInput() {
         $("#memo").prop("disabled", false);
