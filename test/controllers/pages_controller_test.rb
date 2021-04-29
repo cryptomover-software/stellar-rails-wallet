@@ -32,7 +32,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   #   assert true
   # end
   test 'agreement_modal' do
-    @agreement_message = 'I hereby confirm that I am not U.S. and/or Hong Kong citizen/permanent resident representing U.S and/or Hong Kong citizen/permanent residents.'
+    @agreement_message = 'I hereby confirm that I am not U.S. citizen/permanent resident representing U.S citizen/permanent residents.'
     get root_path
     # Agreement modal should be present in first visit
     assert_select '#agreement-modal' do |elements|
