@@ -68,7 +68,7 @@ gem "recaptcha", require: "recaptcha/rails"
 gem 'rails-controller-testing'
 gem 'pg'
 gem 'whenever', require: false
-gem 'rails-html-sanitizer', '~> 1.0.4'
+gem 'rails-html-sanitizer', '~> 1.4.3'
 gem "figaro"
 gem 'sendgrid-ruby'
 # security fix
